@@ -1,0 +1,36 @@
+{% extends 'myapp/base.html' %}
+
+{% block myheader %}
+  <h1>Create New Account</h1>
+{% endblock myheader %}
+
+{% block content %}
+  <div class="container my-4">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+        {% if message %}
+          <div class="alert {% if success %}alert-success{% else %}alert-danger{% endif %}" role="alert">
+            {{ message }}
+            {% if success %}
+              <a href="{% url 'login' %}" class="alert-link ms-2">Go to Login</a>
+            {% endif %}
+          </div>
+        {% endif %}
+        <form method="post" class="card shadow-sm p-4">
+          {% csrf_token %}
+          <label>Username</label><br/>
+          <input name="username" class="form-control" required /><br/>
+          <label>Password</label><br/>
+          <input name="password" type="password" class="form-control" required /><br/>
+          <label>First name</label><br/>
+          <input name="first_name" class="form-control" /><br/>
+          <label>Last name</label><br/>
+          <input name="last_name" class="form-control" /><br/>
+          <label>Email</label><br/>
+          <input name="email" type="email" class="form-control" /><br/>
+          <button type="submit" class="btn btn-primary mt-2">Register</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

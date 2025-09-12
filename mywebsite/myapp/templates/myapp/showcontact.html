@@ -1,0 +1,46 @@
+{% extends 'myapp/base.html' %}
+
+{% block myheader %}
+  <h1 class="display-5 fw-bold">Contact Submissions</h1>
+  <p class="lead text-muted">Visible to admin/staff users only</p>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Topic</th>
+          <th scope="col">Email</th>
+          <th scope="col">Detail</th>
+          <th scope="col">Complete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in contact %}
+        <tr>
+          <td>{{ c.id }}</td>
+          <td>{{ c.topic }}</td>
+          <td>{{ c.email }}</td>
+          <td>{{ c.detail }}</td>
+          <td>
+            {% if c.complete %}
+              <span class="badge bg-success">Yes</span>
+            {% else %}
+              <span class="badge bg-secondary">No</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center text-muted">No contact records found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+

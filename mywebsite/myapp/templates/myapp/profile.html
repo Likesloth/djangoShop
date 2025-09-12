@@ -1,0 +1,18 @@
+{% extends 'myapp/base.html' %}
+
+{% block myheader %}
+  <h1>Your Profile</h1>
+{% endblock myheader %}
+
+{% block content %}
+  <div class="container my-4">
+    <ul class="list-group">
+      <li class="list-group-item">Username: {{ request.user.username }}</li>
+      <li class="list-group-item">First name: {{ request.user.first_name }}</li>
+      <li class="list-group-item">Last name: {{ request.user.last_name }}</li>
+      <li class="list-group-item">Email: {{ request.user.email }}</li>
+    </ul>
+    <p class="mt-3"><a href="{% url 'edit_profile' %}" class="btn btn-outline-primary">Edit Profile</a></p>
+  </div>
+{% endblock %}
+
