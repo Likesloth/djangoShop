@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Product(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
@@ -25,7 +26,20 @@ class ContactList(models.Model):
 
     def __str__(self):
         return self.topic
-    
+
+
+class Action(models.Model):
+    contact = models.ForeignKey(ContactList, on_delete=models.CASCADE, related_name='actions')
+    name = models.CharField(max_length=200)
+    detail = models.TextField(null=True, blank=True)
+    complete = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     usertype = models.CharField(max_length=100, default='member')

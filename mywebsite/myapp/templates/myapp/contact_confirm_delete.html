@@ -1,0 +1,27 @@
+{% extends "myapp/base.html" %}
+
+{% block myheader %}
+  <h1 class="display-5 fw-bold">Delete Contact</h1>
+  <p class="lead text-muted">Removing this contact will also delete associated actions.</p>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card border-danger shadow-sm">
+        <div class="card-body">
+          <p>Are you sure you want to remove the contact <strong>{{ contact.topic }}</strong> ({{ contact.email }})?</p>
+          <form method="post">
+            {% csrf_token %}
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-danger">Yes, delete</button>
+              <a href="{% url 'showcontact-page' %}?contact={{ contact.id }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

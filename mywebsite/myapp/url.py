@@ -8,6 +8,12 @@ urlpatterns = [
     path('about/', aboutus, name="about-page"),
     path('contact/', contact, name="contact-page"),
     path('showcontacts/', showContact, name="showcontact-page"),
+    path('actions/create/', action_create, name="action-create"),
+    path('actions/<int:action_id>/', actionPage, name="action-detail"),
+    path('actions/<int:action_id>/edit/', action_update, name="action-update"),
+    path('actions/<int:action_id>/delete/', action_delete, name="action-delete"),
+    path('contacts/<int:contact_id>/toggle-complete/', contact_toggle_complete, name="contact-toggle-complete"),
+    path('contacts/<int:contact_id>/delete/', delete_contact, name="contact-delete"),
     # Use function-based login view and redirect by route name
     path('login/', userLogin, name="login"),
     path('logout/', userLogout, name="logout"),

@@ -42,8 +42,13 @@
             </li>
             {% if request.user.is_authenticated %}
             <li class="nav-item d-flex align-items-center">
-              <a class="nav-link text-muted" href="{% url 'profile' %}">
+              <a class="nav-link text-muted d-flex align-items-center" href="{% url 'profile' %}">
                 Hi, {% if request.user.first_name %}{{ request.user.first_name }}{% else %}{{ request.user.username }}{% endif %}
+                {% with t=request.user.profile.usertype|default:"" %}
+                  {% if t %}
+                    &nbsp;({{ t }})
+                  {% endif %}
+                {% endwith %}
               </a>
             </li>
             <li class="nav-item">

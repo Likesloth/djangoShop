@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import *
 
+
 # Customize the User admin so first/last name and email show on creation
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(required=False)
@@ -42,7 +43,28 @@ except admin.sites.NotRegistered:
     pass
 admin.site.register(User, CustomUserAdmin)
 
-# Register your models here.
-admin.site.register(Product)
-admin.site.register(ContactList)
-admin.site.register(Profile)
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ("title", "price", "instock")
+    search_fields = ("title",)
+
+
+@admin.register(ContactList)
+class ContactListAdmin(admin.ModelAdmin):
+    list_display = ("topic", "email", "complete")
+    list_filter = ("complete",)
+    search_fields = ("topic", "email")
+
+
+@admin.register(Action)
+class ActionAdmin(admin.ModelAdmin):
+    list_display = ("name", "contact", "complete", "created_at")
+    list_filter = ("complete", "contact")
+    search_fields = ("name", "detail", "contact__topic")
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", "usertype", "point")
+    search_fields = ("user__username", "usertype")
