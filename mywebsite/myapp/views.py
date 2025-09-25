@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -13,9 +14,11 @@ from .models import Action, ContactList, Product, Profile
 # Create your views here.
 
 def home(request):
-    allproduct = Product.objects.all()
-    context = {"pd": allproduct}
-    return render(request, "myapp/home.html", context)
+    all_products = Product.objects.all().order_by('-id')
+    paginator = Paginator(all_products, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, "myapp/home.html", {"allproduct": page_obj})
 
 
 def aboutus(request):
@@ -264,3 +267,5 @@ def addProduct(request):
     return render(request, "myapp/addProduct.html")
 
 
+def handler404(request, exception):
+    return render(request, "myapp/404errorPage.html", status=404)
