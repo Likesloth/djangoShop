@@ -249,3 +249,18 @@ def editProfile(request):
 def userLogout(request):
     logout(request)
     return redirect('login')
+def addProduct(request):
+    if request.method == "POST":
+        product = Product(
+            title=request.POST.get('title', '').strip(),
+            description=request.POST.get('description', ''),
+            price=request.POST.get('price') or None,
+            quantity=request.POST.get('quantity') or None,
+            picture=request.FILES.get('picture'),
+            specfile=request.FILES.get('specfile')
+        )
+        product.save()
+        return redirect('home-page')
+    return render(request, "myapp/addProduct.html")
+
+

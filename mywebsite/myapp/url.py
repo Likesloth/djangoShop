@@ -17,6 +17,7 @@ urlpatterns = [
     # Use function-based login view and redirect by route name
     path('login/', userLogin, name="login"),
     path('logout/', userLogout, name="logout"),
+    path('addproduct/', addProduct, name="add-product"),
     # Register and profile flows
     path('register/', userRegist, name="register"),
     path('profile/', userProfile, name="profile"),

@@ -6,7 +6,7 @@
 
 {% block myheader %}
   <h1 class="text-3xl font-semibold text-gray-800">Login</h1>
-{% endblock myheader %}
+{% endblock %}
 
 {% block content %}
   <div class="min-h-[60vh] flex items-start justify-center py-10">
@@ -25,25 +25,25 @@
           </div>
         </div>
       {% endif %}
-        <form method="POST" action="" class="bg-white shadow rounded-lg p-6 space-y-4">
-          {% csrf_token %}
+      <form method="POST" action="" class="bg-white shadow rounded-lg p-6 space-y-4">
+        {% csrf_token %}
 
-          <div>
-            <label for="username" class="block text-sm font-medium text-gray-700">User</label>
-            <input type="text" id="username" name="username" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
-          </div>
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700">User</label>
+          <input type="text" id="username" name="username" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        </div>
 
-          <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">Pass</label>
-            <input type="password" id="password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
-          </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Pass</label>
+          <input type="password" id="password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        </div>
 
-          <button type="submit" class="w-full inline-flex justify-center rounded-md bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Log in</button>
-          <p class="text-sm text-gray-600 text-center mt-2">
-            Don't have an account?
-            <a class="text-indigo-600 hover:underline" href="{% url 'register' %}">Create New Account</a>
-          </p>
-        </form>
+        <button type="submit" class="w-full inline-flex justify-center rounded-md bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Log in</button>
+        <p class="text-sm text-gray-600 text-center mt-2">
+          Don't have an account?
+          <a class="text-indigo-600 hover:underline" href="{% url 'register' %}">Create New Account</a>
+        </p>
+      </form>
     </div>
   </div>
-{% endblock content %}
+{% endblock %}

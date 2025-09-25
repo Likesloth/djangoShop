@@ -26,18 +26,26 @@
     {% for data in pd %}
       <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow max-w-sm w-full">
         <div class="p-6">
+          {% if data.picture %}
+            <img src="{{ data.picture.url }}" alt="{{ data.title }}" class="img-fluid rounded mb-3" style="max-height: 220px; object-fit: cover;">
+          {% endif %}
           <h2 class="text-xl font-semibold text-gray-900">{{ data.title }}</h2>
           <p class="mt-2 text-gray-600">{{ data.description }}</p>
           <dl class="mt-4 text-sm text-gray-700 text-center">
             <div class="flex justify-center items-baseline gap-3 py-1">
               <dt class="font-medium text-gray-800">Price</dt>
-              <dd>GH₵ {{ data.price }}</dd>
+              <dd>GHC {{ data.price }}</dd>
             </div>
             <div class="flex justify-center items-baseline gap-3 py-1">
               <dt class="font-medium text-gray-800">Stock</dt>
               <dd>{{ data.quantity }}</dd>
             </div>
           </dl>
+          {% if data.specfile %}
+            <a href="{{ data.specfile.url }}" class="btn btn-sm btn-outline-primary mt-3" download>
+              Download Spec
+            </a>
+          {% endif %}
         </div>
       </div>
     {% empty %}

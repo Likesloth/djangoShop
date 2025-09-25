@@ -67,8 +67,7 @@ ROOT_URLCONF = 'mywebsite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / "myapp" / "templates" ],
-        # 'DIRS': [],
+        'DIRS': [BASE_DIR / "myapp" / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,3 +143,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home-page'
 LOGOUT_REDIRECT_URL = 'login'
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
