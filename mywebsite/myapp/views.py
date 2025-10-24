@@ -81,14 +81,22 @@ def home2(request):
 @login_required(login_url='login')
 @user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
 def showContact(request):
-    contacts = ContactList.objects.all().order_by('-id').prefetch_related('actions')
-    selected_contact = None
+    contacts_qs = ContactList.objects.all().order_by('-id').prefetch_related('actions')
 
+    paginator = Paginator(contacts_qs, 10)
+    page_number = request.GET.get('page')
+    contacts = paginator.get_page(page_number)
+
+    selected_contact = None
     contact_id = request.GET.get('contact')
     if contact_id:
         selected_contact = get_object_or_404(ContactList, id=contact_id)
     else:
-        selected_contact = contacts.first()
+        # Default to the first contact on the current page (if any)
+        try:
+            selected_contact = contacts[0]
+        except IndexError:
+            selected_contact = None
 
     if selected_contact:
         actions = selected_contact.actions.all().order_by('-created_at')

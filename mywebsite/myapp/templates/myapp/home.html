@@ -32,7 +32,7 @@
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">{{ product.title }}</h5>
             <p class="card-text text-muted">{{ product.description }}</p>
-            <p class="fw-semibold mb-1">GHC {{ product.price }}</p>
+            <p class="fw-semibold mb-1">USD {{ product.price }}</p>
             <p class="text-secondary small">Stock: {{ product.quantity }}</p>
             {% if product.specfile %}
               <a href="{{ product.specfile.url }}" class="btn btn-primary btn-sm mt-auto align-self-start" download>more detail</a>
@@ -48,17 +48,25 @@
   </div>
 
   <nav aria-label="Product pagination" class="mt-4">
-    <ul class="pagination justify-content-center">
+    <ul class="pagination justify-content-center flex-wrap">
       <li class="page-item {% if not allproduct.has_previous %}disabled{% endif %}">
         <a class="page-link" href="{% if allproduct.has_previous %}?page={{ allproduct.previous_page_number }}{% else %}#{% endif %}" tabindex="{% if allproduct.has_previous %}0{% else %}-1{% endif %}">Previous</a>
       </li>
-      <li class="page-item active" aria-current="page">
-        <span class="page-link">{{ allproduct.number }}</span>
-      </li>
+
+      {# Page number links: 1, 2, 3, ... #}
+      {% for num in allproduct.paginator.page_range %}
+        <li class="page-item {% if allproduct.number == num %}active{% endif %}">
+          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+      {% endfor %}
+
       <li class="page-item {% if not allproduct.has_next %}disabled{% endif %}">
         <a class="page-link" href="{% if allproduct.has_next %}?page={{ allproduct.next_page_number }}{% else %}#{% endif %}" tabindex="{% if allproduct.has_next %}0{% else %}-1{% endif %}">Next</a>
       </li>
     </ul>
+    <div class="text-center text-muted small mt-2">
+      Page {{ allproduct.number }} of {{ allproduct.paginator.num_pages }}
+    </div>
   </nav>
 </div>
 {% endblock content %}
