@@ -29,7 +29,7 @@
                 <tr>
                   <th scope="col">Topic</th>
                   <th scope="col">Email</th>
-                  <th scope="col">Has Actions?</th>
+                  <th scope="col">Actions</th>
                   <th scope="col">Status</th>
                   <th scope="col" class="text-end">Options</th>
                 </tr>
@@ -42,9 +42,24 @@
                   <td>{{ c.email }}</td>
                   <td>
                     {% if action_total %}
-                      <span class="badge bg-secondary">{{ action_total }} action{{ action_total|pluralize }}</span>
+                      <div class="dropdown">
+                        <a class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          {{ action_total }} action{{ action_total|pluralize }}
+                        </a>
+                        <ul class="dropdown-menu">
+                          {% for a in c.actions.all|slice:":5" %}
+                            <li><a class="dropdown-item" href="{% url 'action-detail' a.id %}">{{ a.name }}</a></li>
+                          {% endfor %}
+                          {% if action_total > 5 %}
+                            <li><span class="dropdown-item-text text-muted">+{{ action_total|add:"-5" }} more</span></li>
+                          {% endif %}
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="{% url 'showcontact-page' %}?contact={{ c.id }}">View all for this contact</a></li>
+                          <li><a class="dropdown-item" href="{% url 'action-create' %}?contact={{ c.id }}">Add new action</a></li>
+                        </ul>
+                      </div>
                     {% else %}
-                      <span class="text-muted">None</span>
+                      <a class="btn btn-sm btn-outline-primary" href="{% url 'action-create' %}?contact={{ c.id }}">Add action</a>
                     {% endif %}
                   </td>
                   <td>

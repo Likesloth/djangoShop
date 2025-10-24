@@ -41,6 +41,9 @@ class Action(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['-updated_at', '-created_at']
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
