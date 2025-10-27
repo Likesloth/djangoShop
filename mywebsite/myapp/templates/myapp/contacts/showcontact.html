@@ -1,4 +1,4 @@
-{% extends "myapp/base.html" %}
+{% extends "myapp/layout/base.html" %}
 {% load static %}
 
 {% block head_extra %}
@@ -144,7 +144,7 @@
         </div>
         <div class="card-body" id="actions-list">
           {% if selected_contact %}
-            {% include 'myapp/_actions_list.html' with actions=actions %}
+            {% include 'myapp/actions/_actions_list.html' with actions=actions %}
           {% else %}
             <p class="text-muted mb-0">Select a contact to view their actions.</p>
           {% endif %}

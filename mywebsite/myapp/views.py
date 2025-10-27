@@ -19,11 +19,11 @@ def home(request):
     paginator = Paginator(all_products, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, "myapp/home.html", {"allproduct": page_obj})
+    return render(request, "myapp/pages/home.html", {"allproduct": page_obj})
 
 
 def aboutus(request):
-    return render(request, "myapp/aboutus.html")
+    return render(request, "myapp/pages/aboutus.html")
 
 
 def contact(request):
@@ -45,7 +45,7 @@ def contact(request):
         else:
             context['message'] = 'Please fill in all fields: topic, email, and detail.'
 
-    return render(request, 'myapp/contact.html', context)
+    return render(request, 'myapp/pages/contact.html', context)
 
 
 def userLogin(request):
@@ -71,7 +71,7 @@ def userLogin(request):
         except Exception:
             context['message'] = "An error occurred during login."
 
-    return render(request, 'myapp/login.html', context)
+    return render(request, 'myapp/auth/login.html', context)
 
 
 def home2(request):
@@ -114,7 +114,7 @@ def showContact(request):
         'actions': actions,
         'create_form': create_form,
     }
-    return render(request, 'myapp/showcontact.html', context)
+    return render(request, 'myapp/contacts/showcontact.html', context)
 
 
 @login_required(login_url='login')
@@ -135,14 +135,14 @@ def action_create(request):
                 initial['contact'] = contact
         form = ActionCreateForm(initial=initial)
 
-    return render(request, 'myapp/action_form.html', {'form': form, 'title': 'Create Action'})
+    return render(request, 'myapp/actions/action_form.html', {'form': form, 'title': 'Create Action'})
 
 
 @login_required(login_url='login')
 @user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
 def actionPage(request, action_id):
     action = get_object_or_404(Action.objects.select_related('contact'), id=action_id)
-    return render(request, 'myapp/action.html', {'action': action})
+    return render(request, 'myapp/actions/action.html', {'action': action})
 
 
 @login_required(login_url='login')
@@ -159,7 +159,7 @@ def action_update(request, action_id):
     else:
         form = ActionUpdateForm(instance=action)
 
-    return render(request, 'myapp/action_form.html', {'form': form, 'title': 'Update Action', 'action': action})
+    return render(request, 'myapp/actions/action_form.html', {'form': form, 'title': 'Update Action', 'action': action})
 
 
 @login_required(login_url='login')
@@ -176,7 +176,7 @@ def action_delete(request, action_id):
             return redirect(target)
         return redirect('showcontact-page')
 
-    return render(request, 'myapp/action_confirm_delete.html', {'action': action})
+    return render(request, 'myapp/actions/action_confirm_delete.html', {'action': action})
 
 
 @login_required(login_url='login')
@@ -206,7 +206,7 @@ def action_quick_create(request, contact_id):
             return redirect(f"{reverse('showcontact-page')}?contact={contact.id}")
     else:
         form = ActionQuickCreateForm()
-    return render(request, 'myapp/action_quick_create.html', {'form': form, 'contact': contact})
+    return render(request, 'myapp/actions/action_quick_create.html', {'form': form, 'contact': contact})
 
 
 @login_required(login_url='login')
@@ -234,7 +234,7 @@ def delete_contact(request, contact_id):
         messages.success(request, 'Contact deleted successfully.')
         return redirect('showcontact-page')
 
-    return render(request, 'myapp/contact_confirm_delete.html', {'contact': contact})
+    return render(request, 'myapp/contacts/contact_confirm_delete.html', {'contact': contact})
 
 
 def userRegist(request):
@@ -266,12 +266,12 @@ def userRegist(request):
             except Exception:
                 context['message'] = 'Failed to create account.'
 
-    return render(request, 'myapp/register.html', context)
+    return render(request, 'myapp/auth/register.html', context)
 
 
 @login_required(login_url='login')
 def userProfile(request):
-    return render(request, 'myapp/profile.html')
+    return render(request, 'myapp/profile/profile.html')
 
 
 @login_required(login_url='login')
@@ -285,7 +285,7 @@ def editProfile(request):
         user.save()
         return redirect('profile')
 
-    return render(request, 'myapp/editprofile.html')
+    return render(request, 'myapp/profile/editprofile.html')
 
 
 def userLogout(request):
@@ -303,11 +303,11 @@ def addProduct(request):
         )
         product.save()
         return redirect('home-page')
-    return render(request, "myapp/addProduct.html")
+    return render(request, "myapp/products/addProduct.html")
 
 
 def handler404(request, exception):
-    return render(request, "myapp/404errorPage.html", status=404)
+    return render(request, "myapp/pages/404errorPage.html", status=404)
 
 
 @login_required(login_url='login')
@@ -327,7 +327,7 @@ def contact_detail(request, contact_id):
     else:
         form = ActionQuickCreateForm()
 
-    return render(request, 'myapp/contact_detail.html', {
+    return render(request, 'myapp/contacts/contact_detail.html', {
         'contact': contact,
         'actions': actions,
         'form': form,
@@ -339,7 +339,7 @@ def contact_detail(request, contact_id):
 def contact_actions_fragment(request, contact_id):
     contact = get_object_or_404(ContactList, id=contact_id)
     actions = contact.actions.all().order_by('-updated_at')
-    html = render_to_string('myapp/_actions_list.html', {'actions': actions}, request=request)
+    html = render_to_string('myapp/actions/_actions_list.html', {'actions': actions}, request=request)
     return JsonResponse({
         'ok': True,
         'topic': contact.topic,
