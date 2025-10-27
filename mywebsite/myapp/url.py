@@ -26,6 +26,7 @@ urlpatterns = [
     path('register/', userRegist, name="register"),
     path('profile/', userProfile, name="profile"),
     path('profile/edit/', editProfile, name="edit_profile"),
+    path('settings/', settings_view, name="settings"),
     # Redirect to home after logout for a smooth UX
     
 ]

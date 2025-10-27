@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
@@ -271,7 +272,8 @@ def userRegist(request):
 
 @login_required(login_url='login')
 def userProfile(request):
-    return render(request, 'myapp/profile/profile.html')
+    # Redirect legacy profile page to consolidated settings
+    return redirect('settings')
 
 
 @login_required(login_url='login')
@@ -286,6 +288,53 @@ def editProfile(request):
         return redirect('profile')
 
     return render(request, 'myapp/profile/editprofile.html')
+
+
+@login_required(login_url='login')
+def settings_view(request):
+    context = {}
+    if request.method == 'POST':
+        action = (request.POST.get('action') or '').strip()
+        if action == 'profile':
+            data = request.POST
+            username = (data.get('username') or '').strip()
+            first_name = (data.get('first_name') or '').strip()
+            last_name = (data.get('last_name') or '').strip()
+            email = (data.get('email') or '').strip()
+
+            # Basic validation
+            if not username:
+                messages.error(request, 'Username is required.')
+            elif username != request.user.username and User.objects.filter(username=username).exists():
+                messages.error(request, 'This username is already taken.')
+            else:
+                u = request.user
+                u.username = username
+                u.first_name = first_name
+                u.last_name = last_name
+                u.email = email
+                u.save()
+                messages.success(request, 'Profile updated.')
+
+        elif action == 'password':
+            current_password = (request.POST.get('current_password') or '').strip()
+            new_password = (request.POST.get('new_password') or '').strip()
+            confirm_password = (request.POST.get('confirm_password') or '').strip()
+
+            user = authenticate(username=request.user.username, password=current_password)
+            if user is None:
+                messages.error(request, 'Current password is incorrect.')
+            elif not new_password:
+                messages.error(request, 'New password is required.')
+            elif new_password != confirm_password:
+                messages.error(request, 'New password and confirm password do not match.')
+            else:
+                request.user.set_password(new_password)
+                request.user.save()
+                update_session_auth_hash(request, request.user)
+                messages.success(request, 'Password updated.')
+
+    return render(request, 'myapp/profile/settings.html', context)
 
 
 def userLogout(request):
