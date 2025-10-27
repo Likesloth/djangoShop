@@ -58,6 +58,33 @@
     {% else %}
       <div class="alert alert-warning">This copy is already on loan. Use "Mark Returned" to return it.</div>
     {% endif %}
+
+    <div class="mt-4 row g-3">
+      <div class="col-md-6">
+        <div class="card glass-card">
+          <div class="card-header bg-light">Recent Checkouts</div>
+          <ul class="list-group list-group-flush">
+            {% for loan in recent_loans %}
+              <li class="list-group-item">{{ loan.checked_out_at|date:'Y-m-d H:i' }} • {{ loan.copy.book.title }} • {{ loan.borrower.username }}</li>
+            {% empty %}
+              <li class="list-group-item text-muted">No recent checkouts.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card glass-card">
+          <div class="card-header bg-light">Recent Returns</div>
+          <ul class="list-group list-group-flush">
+            {% for loan in recent_returns %}
+              <li class="list-group-item">{{ loan.returned_at|date:'Y-m-d H:i' }} • {{ loan.copy.book.title }} • {{ loan.borrower.username }}</li>
+            {% empty %}
+              <li class="list-group-item text-muted">No recent returns.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
   {% else %}
     {% if barcode %}
       <div class="alert alert-warning">No copy found for barcode: {{ barcode }}</div>

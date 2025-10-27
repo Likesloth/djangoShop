@@ -1,4 +1,11 @@
 from datetime import timedelta
+from decimal import Decimal
+
+try:
+    # Import lazily to avoid issues during migrations
+    from ..models import Policy
+except Exception:
+    Policy = None
 
 
 # Simple, configurable policy values
@@ -21,7 +28,17 @@ LIMITS = {
 
 
 def loan_period_days(user) -> int:
-    # Staff often have longer periods; align with lecturer for now
+    # If Policy table exists, prefer dynamic settings
+    if Policy is not None:
+        try:
+            cfg = Policy.current()
+            if getattr(user, "is_staff", False) or getattr(user, "is_superuser", False):
+                return int(cfg.lecturer_loan_days)
+            role = (getattr(getattr(user, "profile", None), "usertype", "student") or "student").lower()
+            return int(cfg.student_loan_days) if role in ("student", "member") else int(cfg.lecturer_loan_days)
+        except Exception:
+            pass
+    # Fallback constants
     if getattr(user, "is_staff", False) or getattr(user, "is_superuser", False):
         return LOAN_PERIODS.get("lecturer", 28)
     role = (getattr(getattr(user, "profile", None), "usertype", "default") or "default").lower()
@@ -44,6 +61,15 @@ def compute_renew_due_at(now, loan):
 
 
 def active_loan_limit(user) -> int:
+    if Policy is not None:
+        try:
+            cfg = Policy.current()
+            if getattr(user, "is_staff", False) or getattr(user, "is_superuser", False):
+                return int(cfg.lecturer_loan_limit)
+            role = (getattr(getattr(user, "profile", None), "usertype", "student") or "student").lower()
+            return int(cfg.student_loan_limit) if role in ("student", "member") else int(cfg.lecturer_loan_limit)
+        except Exception:
+            pass
     if getattr(user, "is_staff", False) or getattr(user, "is_superuser", False):
         return LIMITS.get("lecturer", 10)
     role = (getattr(getattr(user, "profile", None), "usertype", "default") or "default").lower()

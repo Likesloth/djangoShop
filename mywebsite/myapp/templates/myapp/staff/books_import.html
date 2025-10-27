@@ -1,0 +1,16 @@
+{% extends 'myapp/layout/base.html' %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 680px;">
+  <h2 class="mb-3">Import Books (CSV)</h2>
+  <p class="text-muted">Columns: isbn13, title, authors (separated by ;), language, year</p>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <input type="file" name="file" class="form-control" accept=".csv" required>
+    </div>
+    <button class="btn btn-primary" type="submit">Upload</button>
+  </form>
+</div>
+{% endblock content %}
+

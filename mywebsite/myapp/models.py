@@ -188,3 +188,24 @@ class Fine(models.Model):
     def __str__(self):
         status = "paid" if self.paid_at else "unpaid"
         return f"Fine {self.amount} ({status}) for loan {self.loan_id}"
+
+
+class Policy(models.Model):
+    # Single-row table to allow admin to tweak policies without code changes
+    student_loan_limit = models.PositiveIntegerField(default=5)
+    lecturer_loan_limit = models.PositiveIntegerField(default=10)
+    student_loan_days = models.PositiveIntegerField(default=14)
+    lecturer_loan_days = models.PositiveIntegerField(default=28)
+    fine_rate_per_day = models.DecimalField(max_digits=6, decimal_places=2, default=Decimal("5.00"))
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "Library Policy"
+
+    @classmethod
+    def current(cls):
+        obj = cls.objects.first()
+        if obj is None:
+            obj = cls.objects.create()
+        return obj

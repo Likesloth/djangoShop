@@ -132,11 +132,17 @@ def quick_checkout(request):
     else:
         form = LoanQuickCreateForm(initial={"due_at": default_due})
 
+    # Last N transactions for quick reference
+    recent_loans = Loan.objects.order_by('-checked_out_at').select_related('borrower', 'copy', 'copy__book')[:5]
+    recent_returns = Loan.objects.filter(returned_at__isnull=False).order_by('-returned_at').select_related('borrower', 'copy', 'copy__book')[:5]
+
     context = {
         "form": form,
         "copy": copy,
         "barcode": barcode,
         "active_loan": active_loan,
+        "recent_loans": recent_loans,
+        "recent_returns": recent_returns,
     }
 
     return render(request, "myapp/circulation/quick_checkout.html", context)

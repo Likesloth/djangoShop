@@ -38,4 +38,14 @@ urlpatterns = [
     path('circulation/desk/', quick_checkout, name="circulation-desk"),
     path('loans/mine/', my_loans, name="my-loans"),
     path('fines/mine/', my_fines, name="my-fines"),
+    # Staff tools
+    path('staff/overdues/', overdues_list, name='staff-overdues'),
+    path('staff/fines/', fines_ledger, name='staff-fines'),
+    path('staff/fines/<int:fine_id>/paid/', fine_mark_paid, name='staff-fine-paid'),
+    path('staff/books/new/', book_create_manual, name='staff-book-create'),
+    path('staff/reports/', reports_dashboard, name='staff-reports'),
+    path('staff/reports/overdues.csv', report_overdues_csv, name='report-overdues-csv'),
+    path('staff/reports/top-borrowed.csv', report_top_borrowed_csv, name='report-top-borrowed-csv'),
+    path('staff/reports/fines-summary.csv', report_fines_summary_csv, name='report-fines-summary-csv'),
+    path('staff/copy/<int:copy_id>/status/<str:status>/', copy_status_update, name='staff-copy-status'),
 ]

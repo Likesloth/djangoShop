@@ -1,0 +1,68 @@
+{% extends 'myapp/layout/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Reports Dashboard</h2>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-primary" href="{% url 'report-overdues-csv' %}">Overdues CSV</a>
+      <a class="btn btn-outline-primary" href="{% url 'report-top-borrowed-csv' %}">Top Borrowed CSV</a>
+      <a class="btn btn-outline-primary" href="{% url 'report-fines-summary-csv' %}">Fines Summary CSV</a>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-md-4">
+      <div class="card glass-card">
+        <div class="card-body">
+          <div class="fw-semibold text-muted">Overdue Loans</div>
+          <div class="display-6">{{ overdue_count }}</div>
+          <a class="btn btn-sm btn-outline-light mt-2" href="{% url 'staff-overdues' %}">View overdues</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card glass-card">
+        <div class="card-body">
+          <div class="fw-semibold text-muted">Unpaid Fines</div>
+          <div class="display-6">{{ fines_unpaid }}</div>
+          <a class="btn btn-sm btn-outline-light mt-2" href="{% url 'staff-fines' %}">Open fines ledger</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card glass-card">
+        <div class="card-body">
+          <div class="fw-semibold text-muted">Total Fines</div>
+          <div class="display-6">{{ fines_total }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card glass-card">
+    <div class="card-header bg-light">Top Borrowed (Top 10)</div>
+    <div class="table-responsive">
+      <table class="table table-sm table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Loans</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in top_borrowed %}
+            <tr>
+              <td>{{ row.copy__book__title }}</td>
+              <td>{{ row.count }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="2" class="text-muted">No data yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
