@@ -16,7 +16,6 @@ from .contacts import (
 from .catalog import catalog_list, book_detail
 from .circulation import loan_create, loan_update, quick_checkout
 from .account import my_loans, my_fines
-from .holds import place_hold, cancel_hold, holds_manage_ready, holds_expire_ready
 
 __all__ = [
     # home
@@ -33,6 +32,4 @@ __all__ = [
     "loan_create", "loan_update", "quick_checkout",
     # account
     "my_loans", "my_fines",
-    # holds
-    "place_hold", "cancel_hold", "holds_manage_ready", "holds_expire_ready",
 ]

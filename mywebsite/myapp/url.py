@@ -38,9 +38,4 @@ urlpatterns = [
     path('circulation/desk/', quick_checkout, name="circulation-desk"),
     path('loans/mine/', my_loans, name="my-loans"),
     path('fines/mine/', my_fines, name="my-fines"),
-    # Holds
-    path('holds/book/<int:book_id>/place/', place_hold, name="hold-place"),
-    path('holds/book/<int:book_id>/cancel/', cancel_hold, name="hold-cancel"),
-    path('holds/book/<int:book_id>/ready/', holds_manage_ready, name="holds-ready"),
-    path('holds/book/<int:book_id>/expire/', holds_expire_ready, name="holds-expire"),
 ]

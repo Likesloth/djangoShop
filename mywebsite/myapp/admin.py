@@ -99,13 +99,6 @@ class LoanAdmin(admin.ModelAdmin):
     search_fields = ("copy__barcode", "borrower__username")
 
 
-@admin.register(Hold)
-class HoldAdmin(admin.ModelAdmin):
-    list_display = ("book", "user", "queue_position", "is_ready", "expires_at", "created_at", "canceled_at")
-    list_filter = ("is_ready", "book")
-    search_fields = ("book__title", "user__username")
-
-
 @admin.register(Fine)
 class FineAdmin(admin.ModelAdmin):
     list_display = ("loan", "amount", "created_at", "paid_at")

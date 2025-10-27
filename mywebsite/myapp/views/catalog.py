@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q, Count
 
-from ..models import Book, BookCopy, Category, Tag, Hold
+from ..models import Book, BookCopy, Category, Tag
 
 
 def _descendant_ids(category: Category):
@@ -71,18 +71,9 @@ def book_detail(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     copies = book.copies.select_related().all()
     available_count = copies.filter(status=BookCopy.STATUS_AVAILABLE).count()
-    # Holds info
-    user_hold = None
-    if request.user.is_authenticated:
-        user_hold = Hold.objects.filter(book=book, user=request.user, canceled_at__isnull=True).first()
-    holds_queue = Hold.objects.filter(book=book, canceled_at__isnull=True, is_ready=False).order_by('queue_position', 'created_at')
-    ready_hold = Hold.objects.filter(book=book, canceled_at__isnull=True, is_ready=True).order_by('queue_position', 'created_at').first()
     context = {
         "book": book,
         "copies": copies,
         "available_count": available_count,
-        "user_hold": user_hold,
-        "holds_queue": holds_queue,
-        "ready_hold": ready_hold,
     }
     return render(request, "myapp/catalog/book_detail.html", context)
