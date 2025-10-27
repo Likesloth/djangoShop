@@ -3,11 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
-from .forms import ActionCreateForm, ActionUpdateForm
+from .forms import ActionCreateForm, ActionUpdateForm, ActionQuickCreateForm
 from .models import Action, ContactList, Product, Profile
 
 
@@ -180,6 +181,36 @@ def action_delete(request, action_id):
 
 @login_required(login_url='login')
 @user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
+def action_toggle_complete(request, action_id):
+    action = get_object_or_404(Action, id=action_id)
+    if request.method == 'POST':
+        complete_value = (request.POST.get('complete') or '').strip().lower()
+        action.complete = complete_value in ('1', 'true', 'yes', 'on')
+        action.save(update_fields=['complete'])
+        status_label = 'marked complete' if action.complete else 'marked pending'
+        messages.success(request, f'Action {status_label}.')
+    return redirect('action-detail', action_id=action.id)
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
+def action_quick_create(request, contact_id):
+    contact = get_object_or_404(ContactList, id=contact_id)
+    if request.method == 'POST':
+        form = ActionQuickCreateForm(request.POST)
+        if form.is_valid():
+            action = form.save(commit=False)
+            action.contact = contact
+            action.save()
+            messages.success(request, 'Action created successfully.')
+            return redirect(f"{reverse('showcontact-page')}?contact={contact.id}")
+    else:
+        form = ActionQuickCreateForm()
+    return render(request, 'myapp/action_quick_create.html', {'form': form, 'contact': contact})
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
 def contact_toggle_complete(request, contact_id):
     contact = get_object_or_404(ContactList, id=contact_id)
 
@@ -277,3 +308,41 @@ def addProduct(request):
 
 def handler404(request, exception):
     return render(request, "myapp/404errorPage.html", status=404)
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
+def contact_detail(request, contact_id):
+    contact = get_object_or_404(ContactList, id=contact_id)
+    actions = contact.actions.all().order_by('-updated_at')
+
+    if request.method == 'POST':
+        form = ActionQuickCreateForm(request.POST)
+        if form.is_valid():
+            action = form.save(commit=False)
+            action.contact = contact
+            action.save()
+            messages.success(request, 'Action created successfully.')
+            return redirect('contact-detail', contact_id=contact.id)
+    else:
+        form = ActionQuickCreateForm()
+
+    return render(request, 'myapp/contact_detail.html', {
+        'contact': contact,
+        'actions': actions,
+        'form': form,
+    })
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
+def contact_actions_fragment(request, contact_id):
+    contact = get_object_or_404(ContactList, id=contact_id)
+    actions = contact.actions.all().order_by('-updated_at')
+    html = render_to_string('myapp/_actions_list.html', {'actions': actions}, request=request)
+    return JsonResponse({
+        'ok': True,
+        'topic': contact.topic,
+        'html': html,
+        'new_url': reverse('action-quick-create', args=[contact.id]),
+    })

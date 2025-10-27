@@ -2,13 +2,15 @@
 {% load static %}
 
 {% block myheader %}
-    {#  <h1>This is the content from myheader</h1>  #}
+  <div class="hero-section">
+    <h1 class="display-6 fw-bold text-white mb-0">About Us</h1>
+  </div>
 {% endblock myheader %}
 
 {% block content %}
-  <script src="{% static 'js/myJS.js' %}"></script>
-  <script> myJS() </script>
-  <h1>About us</h1>
-  <h3>This is the about us webpage.</h3>
+  <div class="glass-card p-4">
+    <h3 class="mb-2">About us</h3>
+    <p class="mb-0 text-slate-300">This is the about us webpage.</p>
+  </div>
 {% endblock content %}
 

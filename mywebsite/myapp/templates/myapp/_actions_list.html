@@ -1,0 +1,22 @@
+{% if actions %}
+  <div class="list-group">
+    {% for action in actions %}
+      <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
+         href="{% url 'action-detail' action.id %}"
+         data-status="{% if action.complete %}done{% else %}pending{% endif %}">
+        <div>
+          <h6 class="mb-1">{{ action.name }}</h6>
+          <small class="text-muted">Updated {{ action.updated_at|date:'M d, Y H:i' }}</small>
+        </div>
+        {% if action.complete %}
+          <span class="badge bg-success">Done</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Pending</span>
+        {% endif %}
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-muted mb-0">No actions yet. Create the first one.</p>
+{% endif %}
+

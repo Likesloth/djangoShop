@@ -1,59 +1,84 @@
 {% extends 'myapp/base.html' %}
 {% load static %}
 
-{% block head_extra %}
-    <link rel="stylesheet" href="{% static 'css/myCss.css' %}">
-{% endblock head_extra %}
+{% block head_extra %}{% endblock head_extra %}
 
 {% block myheader %}
-    <h1 class="text-3xl sm:text-4xl font-bold text-center">CoC Gaming Shop</h1>
-    {% if user.is_authenticated %}
-      {% with t=user.profile.usertype|default:"" %}
-        {% if t|lower == 'vvip' %}
-          <p class="text-center text-green-700 mt-2">15% Discount for VVIP members</p>
-        {% elif t|lower == 'vip' %}
-          <p class="text-center text-green-700 mt-2">10% Discount for VIP members</p>
-        {% elif t|lower == 'member' %}
-          <p class="text-center text-green-700 mt-2">5% Discount for members</p>
+    <div class="hero-section position-relative">
+        <h1 class="display-5 fw-bold text-center text-white mb-2" style="position: relative; z-index: 1;">
+            🎮 CoC Gaming Shop
+        </h1>
+        {% if user.is_authenticated %}
+          {% with t=user.profile.usertype|default:"" %}
+            {% if t|lower == 'vvip' %}
+              <div class="text-center" style="position: relative; z-index: 1;">
+                <span class="discount-badge">⭐ 15% VVIP Discount Active</span>
+              </div>
+            {% elif t|lower == 'vip' %}
+              <div class="text-center" style="position: relative; z-index: 1;">
+                <span class="discount-badge">💎 10% VIP Discount Active</span>
+              </div>
+            {% elif t|lower == 'member' %}
+              <div class="text-center" style="position: relative; z-index: 1;">
+                <span class="discount-badge">🎯 5% Member Discount Active</span>
+              </div>
+            {% endif %}
+          {% endwith %}
         {% endif %}
-      {% endwith %}
-    {% endif %}
+    </div>
 {% endblock myheader %}
 
 {% block content %}
 <div class="container py-5">
   <div class="row g-4">
     {% for product in allproduct %}
-      <div class="col-12 col-sm-6 col-lg-4 d-flex">
-        <div class="card shadow-sm w-100">
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="product-card">
           {% if product.picture %}
-            <img src="{{ product.picture.url }}" alt="{{ product.title }}" class="card-img-top" style="height: 220px; object-fit: cover;">
+            <div style="overflow: hidden;">
+              <img src="{{ product.picture.url }}" alt="{{ product.title }}" class="product-image w-100">
+            </div>
           {% endif %}
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ product.title }}</h5>
-            <p class="card-text text-muted">{{ product.description }}</p>
-            <p class="fw-semibold mb-1">USD {{ product.price }}</p>
-            <p class="text-secondary small">Stock: {{ product.quantity }}</p>
+          <div class="p-4">
+            <h5 class="text-xl fw-bold text-white mb-2">{{ product.title }}</h5>
+            <p class="text-slate-300 mb-3">{{ product.description }}</p>
+            
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <p class="text-2xl fw-bold text-white mb-0">${{ product.price }}</p>
+              <span class="stock-badge text-slate-300">
+                📦 Stock: {{ product.quantity }}
+              </span>
+            </div>
+            
             {% if product.specfile %}
-              <a href="{{ product.specfile.url }}" class="btn btn-primary btn-sm mt-auto align-self-start" download>more detail</a>
+              <a href="{{ product.specfile.url }}" class="btn btn-primary-custom text-white w-100" download>
+                📄 View Details
+              </a>
             {% else %}
-              <span class="btn btn-sm btn-outline-secondary disabled mt-auto align-self-start">more detail</span>
+              <button class="btn w-100 text-slate-400" style="background: rgba(60, 70, 123, 0.2); border: 1px solid rgba(110, 140, 251, 0.2); cursor: not-allowed;" disabled>
+                No Details Available
+              </button>
             {% endif %}
           </div>
         </div>
       </div>
     {% empty %}
-      <div class="col-12 text-center text-muted">No products available.</div>
+      <div class="col-12 text-center">
+        <div class="p-5" style="background: rgba(60, 70, 123, 0.2); border-radius: 16px; border: 1px solid rgba(110, 140, 251, 0.3);">
+          <p class="text-slate-300 text-lg mb-0">🎮 No products available at the moment</p>
+        </div>
+      </div>
     {% endfor %}
   </div>
 
-  <nav aria-label="Product pagination" class="mt-4">
+  <nav aria-label="Product pagination" class="mt-5">
     <ul class="pagination justify-content-center flex-wrap">
       <li class="page-item {% if not allproduct.has_previous %}disabled{% endif %}">
-        <a class="page-link" href="{% if allproduct.has_previous %}?page={{ allproduct.previous_page_number }}{% else %}#{% endif %}" tabindex="{% if allproduct.has_previous %}0{% else %}-1{% endif %}">Previous</a>
+        <a class="page-link" href="{% if allproduct.has_previous %}?page={{ allproduct.previous_page_number }}{% else %}#{% endif %}" tabindex="{% if allproduct.has_previous %}0{% else %}-1{% endif %}">
+          ← Previous
+        </a>
       </li>
 
-      {# Page number links: 1, 2, 3, ... #}
       {% for num in allproduct.paginator.page_range %}
         <li class="page-item {% if allproduct.number == num %}active{% endif %}">
           <a class="page-link" href="?page={{ num }}">{{ num }}</a>
@@ -61,10 +86,12 @@
       {% endfor %}
 
       <li class="page-item {% if not allproduct.has_next %}disabled{% endif %}">
-        <a class="page-link" href="{% if allproduct.has_next %}?page={{ allproduct.next_page_number }}{% else %}#{% endif %}" tabindex="{% if allproduct.has_next %}0{% else %}-1{% endif %}">Next</a>
+        <a class="page-link" href="{% if allproduct.has_next %}?page={{ allproduct.next_page_number }}{% else %}#{% endif %}" tabindex="{% if allproduct.has_next %}0{% else %}-1{% endif %}">
+          Next →
+        </a>
       </li>
     </ul>
-    <div class="text-center text-muted small mt-2">
+    <div class="text-center text-slate-400 small mt-3">
       Page {{ allproduct.number }} of {{ allproduct.paginator.num_pages }}
     </div>
   </nav>

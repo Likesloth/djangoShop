@@ -1,15 +1,17 @@
 {% extends "myapp/base.html" %}
 
 {% block myheader %}
-  <h1 class="display-5 fw-bold">{{ title }}</h1>
-  <p class="lead text-muted">Log the next steps for each contact and keep track of progress</p>
+  <div class="hero-section text-center">
+    <h1 class="display-6 fw-bold text-white mb-1">{{ title }}</h1>
+    <p class="mb-0 lead-muted">Log next steps and keep track of progress</p>
+  </div>
 {% endblock %}
 
 {% block content %}
 <div class="container py-4">
   <div class="row justify-content-center">
     <div class="col-lg-8">
-      <div class="card shadow-sm">
+      <div class="card glass-card">
         <div class="card-body">
           <form method="post" novalidate>
             {% csrf_token %}
@@ -26,7 +28,7 @@
               </div>
             {% endfor %}
             <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="submit" class="btn btn-primary-custom">Save</button>
               {% if action %}
                 <a class="btn btn-outline-secondary" href="{% url 'action-detail' action.id %}">Cancel</a>
               {% else %}
