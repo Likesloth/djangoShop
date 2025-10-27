@@ -71,9 +71,41 @@ class Book(models.Model):
     publish_year = models.PositiveIntegerField(null=True, blank=True)
     cover = models.ImageField(upload_to="images/", null=True, blank=True)
     authors = models.ManyToManyField(Author, related_name="books", blank=True)
+    # Classification
+    # Category: hierarchical navigation
+    # Tag: flexible many-to-many labels for filtering
+    # Added for catalog navigation and filters
+    
+    # Declared below but referenced here via strings to avoid ordering issues
+    category = models.ForeignKey("Category", null=True, blank=True, on_delete=models.SET_NULL, related_name="books")
+    tags = models.ManyToManyField("Tag", blank=True, related_name="books")
 
     def __str__(self):
         return f"{self.title} ({self.isbn13})"
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=120)
+    slug = models.SlugField(max_length=140, unique=True)
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE, related_name="children")
+
+    class Meta:
+        verbose_name_plural = "Categories"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=120, unique=True)
+    slug = models.SlugField(max_length=140, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
 
 
 class BookCopy(models.Model):
@@ -120,3 +152,39 @@ class Loan(models.Model):
 
     def __str__(self):
         return f"{self.copy.barcode} → {self.borrower} (due {self.due_at:%Y-%m-%d})"
+
+
+class Hold(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="holds")
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="holds")
+    queue_position = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_ready = models.BooleanField(default=False)
+    expires_at = models.DateTimeField(null=True, blank=True)
+    canceled_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["queue_position", "created_at"]
+
+    def __str__(self):
+        status = "ready" if self.is_ready else "queued"
+        return f"Hold({self.book.title} by {self.user.username} – {status})"
+
+
+from decimal import Decimal
+
+
+class Fine(models.Model):
+    loan = models.ForeignKey(Loan, on_delete=models.CASCADE, related_name="fines")
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0.00"))
+    reason = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    paid_at = models.DateTimeField(null=True, blank=True)
+    payment_reference = models.CharField(max_length=120, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        status = "paid" if self.paid_at else "unpaid"
+        return f"Fine {self.amount} ({status}) for loan {self.loan_id}"

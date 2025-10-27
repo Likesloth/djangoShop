@@ -9,12 +9,59 @@
 
   <form method="get" class="row g-2 mb-4">
     <div class="col-sm-8 col-md-6">
-      <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Search title or ISBN" />
+      <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Search title/ISBN/author/tag" />
     </div>
     <div class="col-auto">
       <button class="btn btn-primary" type="submit">Search</button>
     </div>
   </form>
+
+  {% if top_categories %}
+    <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+      <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}" class="btn btn-outline-glass {% if not selected_category %}active{% endif %}">All</a>
+      {% for c in top_categories %}
+        {% if forloop.counter <= 8 %}
+          <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}" class="btn btn-outline-glass {% if selected_category and selected_category.id == c.id %}active{% endif %}">{{ c.name }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if top_categories|length > 8 %}
+        <div class="dropdown">
+          <button class="btn btn-outline-glass dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            {% for c in top_categories %}
+              {% if forloop.counter > 8 %}
+                <li><a class="dropdown-item" href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}">{{ c.name }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if popular_tags %}
+    <div class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+      {% for tag_item in popular_tags %}
+        {% if forloop.counter <= 12 %}
+          <a class="badge bg-secondary text-decoration-none" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if popular_tags|length > 12 %}
+        <a class="small text-decoration-none" data-bs-toggle="collapse" href="#moreTagsCatalog" role="button" aria-expanded="false" aria-controls="moreTagsCatalog">More tags</a>
+      {% endif %}
+    </div>
+    {% if popular_tags|length > 12 %}
+      <div class="collapse" id="moreTagsCatalog">
+        <div class="d-flex flex-wrap gap-2">
+          {% for tag_item in popular_tags %}
+            {% if forloop.counter > 12 %}
+              <a class="badge bg-secondary text-decoration-none" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
 
   <div class="list-group glass-card p-0">
     {% for book in books %}
@@ -22,6 +69,9 @@
         <div>
           <div class="fw-semibold">{{ book.title }}</div>
           <div class="text-muted-contrast small">ISBN: {{ book.isbn13 }} • {{ book.language }} • {{ book.publish_year }}</div>
+          {% if book.category %}
+            <div class="text-muted-contrast small">Category: {{ book.category.name }}</div>
+          {% endif %}
         </div>
         <span class="badge bg-success">Available: {{ book.available_count }}</span>
       </a>

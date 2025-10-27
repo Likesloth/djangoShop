@@ -56,8 +56,8 @@
                           {{ action_total }} action{{ action_total|pluralize }}
                         </a>
                         <ul class="dropdown-menu">
-                          {% for a in c.actions.all|slice:":5" %}
-                            <li><a class="dropdown-item" href="{% url 'action-detail' a.id %}">{{ a.name }}</a></li>
+                          {% for action_item in c.actions.all|slice:":5" %}
+                            <li><a class="dropdown-item" href="{% url 'action-detail' action_item.id %}">{{ action_item.name }}</a></li>
                           {% endfor %}
                           {% if action_total > 5 %}
                             <li><span class="dropdown-item-text text-muted">+{{ action_total|add:"-5" }} more</span></li>

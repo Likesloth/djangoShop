@@ -80,9 +80,9 @@ class AuthorAdmin(admin.ModelAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ("title", "isbn13", "publish_year", "language")
-    search_fields = ("title", "isbn13")
-    list_filter = ("language", "publish_year")
+    list_display = ("title", "isbn13", "publish_year", "language", "category")
+    search_fields = ("title", "isbn13", "authors__full_name")
+    list_filter = ("language", "publish_year", "category")
 
 
 @admin.register(BookCopy)
@@ -97,3 +97,30 @@ class LoanAdmin(admin.ModelAdmin):
     list_display = ("copy", "borrower", "checked_out_at", "due_at", "returned_at", "renew_count")
     list_filter = ("returned_at",)
     search_fields = ("copy__barcode", "borrower__username")
+
+
+@admin.register(Hold)
+class HoldAdmin(admin.ModelAdmin):
+    list_display = ("book", "user", "queue_position", "is_ready", "expires_at", "created_at", "canceled_at")
+    list_filter = ("is_ready", "book")
+    search_fields = ("book__title", "user__username")
+
+
+@admin.register(Fine)
+class FineAdmin(admin.ModelAdmin):
+    list_display = ("loan", "amount", "created_at", "paid_at")
+    list_filter = ("paid_at",)
+    search_fields = ("loan__copy__barcode", "loan__borrower__username")
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug", "parent")
+    list_filter = ("parent",)
+    search_fields = ("name", "slug")
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug")
+    search_fields = ("name", "slug")

@@ -6,7 +6,7 @@
     <div>
       <h2 class="mb-1">{{ book.title }}</h2>
       <div class="text-muted-contrast">ISBN: {{ book.isbn13 }} • {{ book.language }} • {{ book.publish_year }}</div>
-      <div class="text-muted-contrast">Authors: {% for a in book.authors.all %}{% if not forloop.first %}, {% endif %}{{ a.full_name }}{% empty %}—{% endfor %}</div>
+      <div class="text-muted-contrast">Authors: {% for author in book.authors.all %}{% if not forloop.first %}, {% endif %}{{ author.full_name }}{% empty %}—{% endfor %}</div>
     </div>
     <div>
       <span class="badge bg-success">Available: {{ available_count }}</span>
@@ -58,6 +58,31 @@
           {% endfor %}
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <div class="card glass-card mt-3">
+    <div class="card-header bg-light">Holds</div>
+    <div class="card-body">
+      {% if ready_hold %}
+        <div class="alert alert-info mb-3">Ready for: <strong>{{ ready_hold.user.username }}</strong> until {{ ready_hold.expires_at|date:'Y-m-d H:i' }}</div>
+      {% endif %}
+
+      <div class="mb-2 text-muted">Queue length: {{ holds_queue|length }}</div>
+      {% if request.user.is_authenticated and not request.user.is_staff and not request.user.is_superuser %}
+        {% if user_hold %}
+          <a href="{% url 'hold-cancel' book.id %}" class="btn btn-outline-warning btn-sm">Cancel my hold</a>
+        {% else %}
+          <a href="{% url 'hold-place' book.id %}" class="btn btn-outline-primary btn-sm">Place hold</a>
+        {% endif %}
+      {% endif %}
+
+      {% if request.user.is_staff or request.user.is_superuser %}
+        <div class="mt-3 d-flex gap-2">
+          <a href="{% url 'holds-ready' book.id %}" class="btn btn-sm btn-primary">Mark next ready</a>
+          <a href="{% url 'holds-expire' book.id %}" class="btn btn-sm btn-outline-secondary">Expire ready (if past)</a>
+        </div>
+      {% endif %}
     </div>
   </div>
 

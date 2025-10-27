@@ -16,6 +16,78 @@
 
 {% block content %}
 <div class="container py-5">
+  <form method="get" class="row g-2 mb-4">
+    <div class="col-sm-8 col-md-6">
+      <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Search title/ISBN/author/tag" />
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+  </form>
+
+  {% if top_categories %}
+    <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+      <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}" class="btn btn-outline-glass {% if not selected_category %}active{% endif %}">All</a>
+      {# First 8 categories as buttons #}
+      {% for c in top_categories %}
+        {% if forloop.counter <= 8 %}
+          <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}" class="btn btn-outline-glass {% if selected_category and selected_category.id == c.id %}active{% endif %}">{{ c.name }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {# Remaining categories go into a dropdown #}
+      {% if top_categories|length > 8 %}
+        <div class="dropdown">
+          <button class="btn btn-outline-glass dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            More
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            {% for c in top_categories %}
+              {% if forloop.counter > 8 %}
+                <li>
+                  <a class="dropdown-item" href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}">{{ c.name }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if selected_tag %}
+    <div class="mb-3">
+      <span class="badge bg-primary">Tag: {{ selected_tag.name }}</span>
+      <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_category %}category={{ selected_category.slug }}{% endif %}" class="ms-2 text-decoration-none">Clear tag</a>
+    </div>
+  {% endif %}
+
+  {% if popular_tags %}
+    <div class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+      {# Show first 12 tag chips inline #}
+      {% for tag_item in popular_tags %}
+        {% if forloop.counter <= 12 %}
+          <a class="badge bg-secondary text-decoration-none" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if popular_tags|length > 12 %}
+        <a class="small text-decoration-none" data-bs-toggle="collapse" href="#moreTagsHome" role="button" aria-expanded="false" aria-controls="moreTagsHome">More tags</a>
+      {% endif %}
+    </div>
+    {% if popular_tags|length > 12 %}
+      <div class="collapse" id="moreTagsHome">
+        <div class="d-flex flex-wrap gap-2">
+          {% for tag_item in popular_tags %}
+            {% if forloop.counter > 12 %}
+              <a class="badge bg-secondary text-decoration-none" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+
   <div class="row g-4">
     {% for book in books %}
       <div class="col-12 col-sm-6 col-lg-4">
@@ -27,11 +99,23 @@
           {% endif %}
           <div class="p-4">
             <h5 class="text-xl fw-bold text-white mb-1">{{ book.title }}</h5>
-            <p class="text-slate-300 mb-2">{% for a in book.authors.all %}{% if not forloop.first %}, {% endif %}{{ a.full_name }}{% empty %}&nbsp;{% endfor %}</p>
-            <div class="d-flex align-items-center justify-content-between mb-3">
+            <p class="text-slate-300 mb-2">{% for author in book.authors.all %}{% if not forloop.first %}, {% endif %}{{ author.full_name }}{% empty %}&nbsp;{% endfor %}</p>
+            <div class="d-flex align-items-center justify-content-between mb-2">
               <span class="stock-badge text-slate-300">📖 Year: {{ book.publish_year|default:"—" }}</span>
               <span class="stock-badge">✅ Available: {{ book.available_count }}</span>
             </div>
+            {% if book.category %}
+              <div class="mb-2">
+                <a class="text-decoration-none text-slate-300 small" href="?category={{ book.category.slug }}">Category: {{ book.category.name }}</a>
+              </div>
+            {% endif %}
+            {% if book.tags.all %}
+              <div class="mb-2 d-flex flex-wrap gap-2">
+                {% for tag_item in book.tags.all|slice:':3' %}
+                  <a class="badge bg-secondary text-decoration-none" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
+                {% endfor %}
+              </div>
+            {% endif %}
             <a href="{% url 'catalog-detail' book.id %}" class="btn btn-primary-custom text-white w-100">View details</a>
           </div>
         </div>
@@ -48,19 +132,18 @@
   <nav aria-label="Books pagination" class="mt-5">
     <ul class="pagination justify-content-center flex-wrap">
       <li class="page-item {% if not books.has_previous %}disabled{% endif %}">
-        <a class="page-link" href="{% if books.has_previous %}?page={{ books.previous_page_number }}{% else %}#{% endif %}">← Previous</a>
+        <a class="page-link" href="{% if books.has_previous %}?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_category %}category={{ selected_category.slug }}&{% endif %}{% if selected_tag %}tag={{ selected_tag.slug }}&{% endif %}page={{ books.previous_page_number }}{% else %}#{% endif %}">← Previous</a>
       </li>
 
       {% for num in books.paginator.page_range %}
-        <li class="page-item {% if books.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        <li class="page-item {% if books.number == num %}active{% endif %}"><a class="page-link" href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_category %}category={{ selected_category.slug }}&{% endif %}{% if selected_tag %}tag={{ selected_tag.slug }}&{% endif %}page={{ num }}">{{ num }}</a></li>
       {% endfor %}
 
       <li class="page-item {% if not books.has_next %}disabled{% endif %}">
-        <a class="page-link" href="{% if books.has_next %}?page={{ books.next_page_number }}{% else %}#{% endif %}">Next →</a>
+        <a class="page-link" href="{% if books.has_next %}?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_category %}category={{ selected_category.slug }}&{% endif %}{% if selected_tag %}tag={{ selected_tag.slug }}&{% endif %}page={{ books.next_page_number }}{% else %}#{% endif %}">Next →</a>
       </li>
     </ul>
     <div class="text-center text-slate-400 small mt-3">Page {{ books.number }} of {{ books.paginator.num_pages }}</div>
   </nav>
 </div>
 {% endblock content %}
-

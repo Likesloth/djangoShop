@@ -10,7 +10,14 @@ LOAN_PERIODS = {
 }
 
 MAX_RENEWALS = 2
-FINE_RATE_PER_DAY = 5  # THB/day (not used yet)
+FINE_RATE_PER_DAY = 5  # THB/day
+HOLD_PICKUP_DAYS = 3
+LIMITS = {
+    "student": 5,
+    "member": 5,
+    "lecturer": 10,
+    "default": 5,
+}
 
 
 def loan_period_days(user) -> int:
@@ -35,3 +42,13 @@ def compute_renew_due_at(now, loan):
     from_date = loan.due_at if loan.due_at and loan.due_at > now else now
     return from_date + timedelta(days=loan_period_days(loan.borrower))
 
+
+def active_loan_limit(user) -> int:
+    if getattr(user, "is_staff", False) or getattr(user, "is_superuser", False):
+        return LIMITS.get("lecturer", 10)
+    role = (getattr(getattr(user, "profile", None), "usertype", "default") or "default").lower()
+    return LIMITS.get(role, LIMITS["default"])
+
+
+def can_borrow(user, current_active_count: int) -> bool:
+    return current_active_count < active_loan_limit(user)

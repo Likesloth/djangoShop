@@ -92,12 +92,12 @@ def settings_view(request):
             elif username != request.user.username and User.objects.filter(username=username).exists():
                 messages.error(request, 'This username is already taken.')
             else:
-                u = request.user
-                u.username = username
-                u.first_name = first_name
-                u.last_name = last_name
-                u.email = email
-                u.save()
+                user_to_update = request.user
+                user_to_update.username = username
+                user_to_update.first_name = first_name
+                user_to_update.last_name = last_name
+                user_to_update.email = email
+                user_to_update.save()
                 messages.success(request, 'Profile updated.')
         elif action == 'password':
             current_password = (request.POST.get('current_password') or '').strip()
@@ -121,4 +121,3 @@ def settings_view(request):
 def userLogout(request):
     logout(request)
     return redirect('login')
-

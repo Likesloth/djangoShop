@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from ..models import Loan
+from ..models import Loan, Fine
 from ..services.policy import can_renew, compute_renew_due_at
 
 
@@ -33,3 +33,11 @@ def my_loans(request):
         'past_loans': past,
     })
 
+
+@login_required(login_url='login')
+def my_fines(request):
+    fines = Fine.objects.filter(loan__borrower=request.user).select_related('loan', 'loan__copy', 'loan__copy__book')
+    return render(request, 'myapp/account/my_fines.html', {
+        'unpaid': [f for f in fines if not f.paid_at],
+        'paid': [f for f in fines if f.paid_at],
+    })
