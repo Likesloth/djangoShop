@@ -1,7 +1,9 @@
-{% extends 'myapp/base.html' %}
+{% extends 'myapp/layout/base.html' %}
 
 {% block myheader %}
-  <h1>Create New Account</h1>
+  <div class="hero-section">
+    <h1 class="display-6 fw-bold text-white mb-0">Create New Account</h1>
+  </div>
 {% endblock myheader %}
 
 {% block content %}
@@ -16,7 +18,7 @@
             {% endif %}
           </div>
         {% endif %}
-        <form method="post" class="card shadow-sm p-4">
+        <form method="post" class="glass-card p-4">
           {% csrf_token %}
           <label>Username</label><br/>
           <input name="username" class="form-control" required /><br/>
@@ -28,7 +30,7 @@
           <input name="last_name" class="form-control" /><br/>
           <label>Email</label><br/>
           <input name="email" type="email" class="form-control" /><br/>
-          <button type="submit" class="btn btn-primary mt-2">Register</button>
+          <button type="submit" class="btn btn-primary-custom mt-2">Register</button>
         </form>
       </div>
     </div>

@@ -1,13 +1,15 @@
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
-from .forms import ActionCreateForm, ActionUpdateForm
+from .forms import ActionCreateForm, ActionUpdateForm, ActionQuickCreateForm
 from .models import Action, ContactList, Product, Profile
 
 
@@ -18,11 +20,11 @@ def home(request):
     paginator = Paginator(all_products, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, "myapp/home.html", {"allproduct": page_obj})
+    return render(request, "myapp/pages/home.html", {"allproduct": page_obj})
 
 
 def aboutus(request):
-    return render(request, "myapp/aboutus.html")
+    return render(request, "myapp/pages/aboutus.html")
 
 
 def contact(request):
@@ -44,7 +46,7 @@ def contact(request):
         else:
             context['message'] = 'Please fill in all fields: topic, email, and detail.'
 
-    return render(request, 'myapp/contact.html', context)
+    return render(request, 'myapp/pages/contact.html', context)
 
 
 def userLogin(request):
@@ -70,7 +72,7 @@ def userLogin(request):
         except Exception:
             context['message'] = "An error occurred during login."
 
-    return render(request, 'myapp/login.html', context)
+    return render(request, 'myapp/auth/login.html', context)
 
 
 def home2(request):
@@ -113,7 +115,7 @@ def showContact(request):
         'actions': actions,
         'create_form': create_form,
     }
-    return render(request, 'myapp/showcontact.html', context)
+    return render(request, 'myapp/contacts/showcontact.html', context)
 
 
 @login_required(login_url='login')
@@ -134,14 +136,14 @@ def action_create(request):
                 initial['contact'] = contact
         form = ActionCreateForm(initial=initial)
 
-    return render(request, 'myapp/action_form.html', {'form': form, 'title': 'Create Action'})
+    return render(request, 'myapp/actions/action_form.html', {'form': form, 'title': 'Create Action'})
 
 
 @login_required(login_url='login')
 @user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
 def actionPage(request, action_id):
     action = get_object_or_404(Action.objects.select_related('contact'), id=action_id)
-    return render(request, 'myapp/action.html', {'action': action})
+    return render(request, 'myapp/actions/action.html', {'action': action})
 
 
 @login_required(login_url='login')
@@ -158,7 +160,7 @@ def action_update(request, action_id):
     else:
         form = ActionUpdateForm(instance=action)
 
-    return render(request, 'myapp/action_form.html', {'form': form, 'title': 'Update Action', 'action': action})
+    return render(request, 'myapp/actions/action_form.html', {'form': form, 'title': 'Update Action', 'action': action})
 
 
 @login_required(login_url='login')
@@ -175,7 +177,37 @@ def action_delete(request, action_id):
             return redirect(target)
         return redirect('showcontact-page')
 
-    return render(request, 'myapp/action_confirm_delete.html', {'action': action})
+    return render(request, 'myapp/actions/action_confirm_delete.html', {'action': action})
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
+def action_toggle_complete(request, action_id):
+    action = get_object_or_404(Action, id=action_id)
+    if request.method == 'POST':
+        complete_value = (request.POST.get('complete') or '').strip().lower()
+        action.complete = complete_value in ('1', 'true', 'yes', 'on')
+        action.save(update_fields=['complete'])
+        status_label = 'marked complete' if action.complete else 'marked pending'
+        messages.success(request, f'Action {status_label}.')
+    return redirect('action-detail', action_id=action.id)
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
+def action_quick_create(request, contact_id):
+    contact = get_object_or_404(ContactList, id=contact_id)
+    if request.method == 'POST':
+        form = ActionQuickCreateForm(request.POST)
+        if form.is_valid():
+            action = form.save(commit=False)
+            action.contact = contact
+            action.save()
+            messages.success(request, 'Action created successfully.')
+            return redirect(f"{reverse('showcontact-page')}?contact={contact.id}")
+    else:
+        form = ActionQuickCreateForm()
+    return render(request, 'myapp/actions/action_quick_create.html', {'form': form, 'contact': contact})
 
 
 @login_required(login_url='login')
@@ -203,7 +235,7 @@ def delete_contact(request, contact_id):
         messages.success(request, 'Contact deleted successfully.')
         return redirect('showcontact-page')
 
-    return render(request, 'myapp/contact_confirm_delete.html', {'contact': contact})
+    return render(request, 'myapp/contacts/contact_confirm_delete.html', {'contact': contact})
 
 
 def userRegist(request):
@@ -235,12 +267,13 @@ def userRegist(request):
             except Exception:
                 context['message'] = 'Failed to create account.'
 
-    return render(request, 'myapp/register.html', context)
+    return render(request, 'myapp/auth/register.html', context)
 
 
 @login_required(login_url='login')
 def userProfile(request):
-    return render(request, 'myapp/profile.html')
+    # Redirect legacy profile page to consolidated settings
+    return redirect('settings')
 
 
 @login_required(login_url='login')
@@ -254,7 +287,54 @@ def editProfile(request):
         user.save()
         return redirect('profile')
 
-    return render(request, 'myapp/editprofile.html')
+    return render(request, 'myapp/profile/editprofile.html')
+
+
+@login_required(login_url='login')
+def settings_view(request):
+    context = {}
+    if request.method == 'POST':
+        action = (request.POST.get('action') or '').strip()
+        if action == 'profile':
+            data = request.POST
+            username = (data.get('username') or '').strip()
+            first_name = (data.get('first_name') or '').strip()
+            last_name = (data.get('last_name') or '').strip()
+            email = (data.get('email') or '').strip()
+
+            # Basic validation
+            if not username:
+                messages.error(request, 'Username is required.')
+            elif username != request.user.username and User.objects.filter(username=username).exists():
+                messages.error(request, 'This username is already taken.')
+            else:
+                u = request.user
+                u.username = username
+                u.first_name = first_name
+                u.last_name = last_name
+                u.email = email
+                u.save()
+                messages.success(request, 'Profile updated.')
+
+        elif action == 'password':
+            current_password = (request.POST.get('current_password') or '').strip()
+            new_password = (request.POST.get('new_password') or '').strip()
+            confirm_password = (request.POST.get('confirm_password') or '').strip()
+
+            user = authenticate(username=request.user.username, password=current_password)
+            if user is None:
+                messages.error(request, 'Current password is incorrect.')
+            elif not new_password:
+                messages.error(request, 'New password is required.')
+            elif new_password != confirm_password:
+                messages.error(request, 'New password and confirm password do not match.')
+            else:
+                request.user.set_password(new_password)
+                request.user.save()
+                update_session_auth_hash(request, request.user)
+                messages.success(request, 'Password updated.')
+
+    return render(request, 'myapp/profile/settings.html', context)
 
 
 def userLogout(request):
@@ -272,8 +352,46 @@ def addProduct(request):
         )
         product.save()
         return redirect('home-page')
-    return render(request, "myapp/addProduct.html")
+    return render(request, "myapp/products/addProduct.html")
 
 
 def handler404(request, exception):
-    return render(request, "myapp/404errorPage.html", status=404)
+    return render(request, "myapp/pages/404errorPage.html", status=404)
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
+def contact_detail(request, contact_id):
+    contact = get_object_or_404(ContactList, id=contact_id)
+    actions = contact.actions.all().order_by('-updated_at')
+
+    if request.method == 'POST':
+        form = ActionQuickCreateForm(request.POST)
+        if form.is_valid():
+            action = form.save(commit=False)
+            action.contact = contact
+            action.save()
+            messages.success(request, 'Action created successfully.')
+            return redirect('contact-detail', contact_id=contact.id)
+    else:
+        form = ActionQuickCreateForm()
+
+    return render(request, 'myapp/contacts/contact_detail.html', {
+        'contact': contact,
+        'actions': actions,
+        'form': form,
+    })
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
+def contact_actions_fragment(request, contact_id):
+    contact = get_object_or_404(ContactList, id=contact_id)
+    actions = contact.actions.all().order_by('-updated_at')
+    html = render_to_string('myapp/actions/_actions_list.html', {'actions': actions}, request=request)
+    return JsonResponse({
+        'ok': True,
+        'topic': contact.topic,
+        'html': html,
+        'new_url': reverse('action-quick-create', args=[contact.id]),
+    })

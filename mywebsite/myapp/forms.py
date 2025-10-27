@@ -24,3 +24,13 @@ class ActionUpdateForm(forms.ModelForm):
             'detail': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'complete': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+
+class ActionQuickCreateForm(forms.ModelForm):
+    class Meta:
+        model = Action
+        fields = ['name', 'detail']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Action name'}),
+            'detail': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe the action'}),
+        }

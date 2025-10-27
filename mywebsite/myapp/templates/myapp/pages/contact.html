@@ -1,7 +1,9 @@
-{% extends 'myapp/base.html' %}
+{% extends 'myapp/layout/base.html' %}
 
 {% block myheader %}
-<h1> Contact US </h1>
+<div class="hero-section">
+  <h1 class="display-6 fw-bold text-white mb-0">Contact Us</h1>
+</div>
 {% endblock myheader %}
 
 {% block content %}
@@ -15,7 +17,7 @@
           </div>
         {% endif %}
 
-        <form method="POST" action="" class="card shadow-sm p-4">
+        <form method="POST" action="" class="glass-card p-4">
           {% csrf_token %} <!-- Cross-site request forgery -->
 
           <div class="mb-3">
@@ -34,7 +36,7 @@
           </div>
 
           <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary-custom">Submit</button>
           </div>
         </form>
       </div>
