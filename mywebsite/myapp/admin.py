@@ -68,3 +68,32 @@ class ActionAdmin(admin.ModelAdmin):
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ("user", "usertype", "point")
     search_fields = ("user__username", "usertype")
+
+
+# ==== Library registrations ====
+
+@admin.register(Author)
+class AuthorAdmin(admin.ModelAdmin):
+    list_display = ("full_name",)
+    search_fields = ("full_name",)
+
+
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    list_display = ("title", "isbn13", "publish_year", "language")
+    search_fields = ("title", "isbn13")
+    list_filter = ("language", "publish_year")
+
+
+@admin.register(BookCopy)
+class BookCopyAdmin(admin.ModelAdmin):
+    list_display = ("book", "barcode", "status", "location")
+    list_filter = ("status", "location")
+    search_fields = ("barcode", "book__title", "book__isbn13")
+
+
+@admin.register(Loan)
+class LoanAdmin(admin.ModelAdmin):
+    list_display = ("copy", "borrower", "checked_out_at", "due_at", "returned_at", "renew_count")
+    list_filter = ("returned_at",)
+    search_fields = ("copy__barcode", "borrower__username")

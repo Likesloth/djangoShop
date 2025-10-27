@@ -1,0 +1,37 @@
+from datetime import timedelta
+
+
+# Simple, configurable policy values
+LOAN_PERIODS = {
+    "student": 14,
+    "member": 14,
+    "lecturer": 28,
+    "default": 14,
+}
+
+MAX_RENEWALS = 2
+FINE_RATE_PER_DAY = 5  # THB/day (not used yet)
+
+
+def loan_period_days(user) -> int:
+    # Staff often have longer periods; align with lecturer for now
+    if getattr(user, "is_staff", False) or getattr(user, "is_superuser", False):
+        return LOAN_PERIODS.get("lecturer", 28)
+    role = (getattr(getattr(user, "profile", None), "usertype", "default") or "default").lower()
+    return LOAN_PERIODS.get(role, LOAN_PERIODS["default"])
+
+
+def calculate_due_at(now, user):
+    return now + timedelta(days=loan_period_days(user))
+
+
+def can_renew(loan) -> bool:
+    # MVP: limit by count only. Add hold checks later.
+    return (loan.returned_at is None) and (loan.renew_count < MAX_RENEWALS)
+
+
+def compute_renew_due_at(now, loan):
+    # Extend from the later of due_at or now by the user's policy period
+    from_date = loan.due_at if loan.due_at and loan.due_at > now else now
+    return from_date + timedelta(days=loan_period_days(loan.borrower))
+

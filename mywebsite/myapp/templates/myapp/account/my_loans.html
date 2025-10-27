@@ -1,0 +1,77 @@
+{% extends 'myapp/layout/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-3">My Loans</h2>
+
+  <div class="card glass-card mb-4">
+    <div class="card-header bg-light">Active Loans</div>
+    <div class="table-responsive">
+      <table class="table table-sm table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Barcode</th>
+            <th>Due</th>
+            <th>Renews</th>
+            <th style="width: 120px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for loan in active_loans %}
+            <tr>
+              <td>{{ loan.copy.book.title }}</td>
+              <td>{{ loan.copy.barcode }}</td>
+              <td>{{ loan.due_at|date:'Y-m-d H:i' }}</td>
+              <td>{{ loan.renew_count }}</td>
+              <td>
+                {% if loan.renew_count < 2 %}
+                  <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="renew">
+                    <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                    <button type="submit" class="btn btn-sm btn-warning">Renew</button>
+                  </form>
+                {% else %}
+                  <span class="text-muted small">Max renewals reached</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="text-muted">No active loans.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card glass-card">
+    <div class="card-header bg-light">Loan History</div>
+    <div class="table-responsive">
+      <table class="table table-sm table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Barcode</th>
+            <th>Checked out</th>
+            <th>Returned at</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for loan in past_loans %}
+            <tr>
+              <td>{{ loan.copy.book.title }}</td>
+              <td>{{ loan.copy.barcode }}</td>
+              <td>{{ loan.checked_out_at|date:'Y-m-d H:i' }}</td>
+              <td>{{ loan.returned_at|date:'Y-m-d H:i' }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4" class="text-muted">No past loans.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+

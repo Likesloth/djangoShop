@@ -3,7 +3,8 @@ from .views import *
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('', home, name="home-page"),
+    path('', library_home, name="home-page"),
+    path('shop/', home, name="shop-home"),
     path('home2', home2, name="home2-page"),
     path('about/', aboutus, name="about-page"),
     path('contact/', contact, name="contact-page"),
@@ -28,5 +29,12 @@ urlpatterns = [
     path('profile/edit/', editProfile, name="edit_profile"),
     path('settings/', settings_view, name="settings"),
     # Redirect to home after logout for a smooth UX
-    
+    # Catalog (Library)
+    path('catalog/', catalog_list, name="catalog-list"),
+    path('catalog/book/<int:book_id>/', book_detail, name="catalog-detail"),
+    # Circulation (Library)
+    path('circulation/loan/create/', loan_create, name="loan-create"),
+    path('circulation/loan/<int:loan_id>/edit/', loan_update, name="loan-update"),
+    path('circulation/desk/', quick_checkout, name="circulation-desk"),
+    path('loans/mine/', my_loans, name="my-loans"),
 ]

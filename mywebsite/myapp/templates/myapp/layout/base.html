@@ -47,13 +47,16 @@
             </div>
             <div class="hidden sm:ml-6 sm:block">
               <div class="flex space-x-4">
+                <a href="{% url 'catalog-list' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Catalog</a>
                 <a href="{% url 'about-page' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">About us</a>
                 <a href="{% url 'contact-page' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Contact</a>
                 {% if request.user.is_authenticated %}
                   {% if request.user.is_staff or request.user.is_superuser %}
                     <a href="{% url 'add-product' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Add Product</a>
                     <a href="{% url 'showcontact-page' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Show Contact</a>
+                    <a href="{% url 'circulation-desk' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Desk</a>
                   {% endif %}
+                  <a href="{% url 'my-loans' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">My Loans</a>
                 {% endif %}
               </div>
             </div>
