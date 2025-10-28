@@ -119,11 +119,6 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ("name", "slug")
 
 
-@admin.register(Hold)
-class HoldAdmin(admin.ModelAdmin):
-    list_display = ("book", "user", "queue_position", "is_ready", "created_at")
-    list_filter = ("is_ready",)
-    search_fields = ("book__title", "user__username")
 
 
 @admin.register(Policy)

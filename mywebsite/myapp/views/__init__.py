@@ -14,7 +14,7 @@ from .contacts import (
     contact_actions_fragment,
 )
 from .catalog import catalog_list, book_detail
-from .circulation import loan_create, loan_update, quick_checkout
+from .circulation import loan_create, loan_update
 from .account import my_loans, my_fines
 from .cart import cart_view, cart_add, cart_remove, cart_place_request
 from .requests import (
@@ -37,6 +37,7 @@ from .staff import (
     report_overdues_csv,
     report_top_borrowed_csv,
     report_fines_summary_csv,
+    loans_by_user,
 )
 
 __all__ = [
@@ -51,7 +52,7 @@ __all__ = [
     # catalog
     "catalog_list", "book_detail",
     # circulation
-    "loan_create", "loan_update", "quick_checkout",
+    "loan_create", "loan_update",
     # account
     "my_loans", "my_fines",
     # cart + requests
@@ -59,5 +60,5 @@ __all__ = [
     "my_requests", "requests_queue", "request_detail", "assign_item_copy", "unassign_item_copy", "mark_request_ready", "confirm_pickup", "cancel_request",
     # staff
     "copy_status_update", "overdues_list", "fines_ledger", "fine_mark_paid", "book_create_manual", "reports_dashboard",
-    "report_overdues_csv", "report_top_borrowed_csv", "report_fines_summary_csv",
+    "report_overdues_csv", "report_top_borrowed_csv", "report_fines_summary_csv", "loans_by_user",
 ]

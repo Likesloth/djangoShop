@@ -1,0 +1,70 @@
+{% extends 'myapp/layout/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Active Loans by User</h2>
+
+  <form method="get" class="row g-2 mb-3">
+    <div class="col-sm-6 col-md-4">
+      <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search by username or email" />
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+    {% if q %}
+      <div class="col-auto">
+        <a class="btn btn-outline-secondary" href="{% url 'staff-loans-by-user' %}">Clear</a>
+      </div>
+    {% endif %}
+  </form>
+
+  {% if borrower %}
+    <div class="mb-2">Showing loans for: <strong>{{ borrower.username }}</strong> ({{ borrower.email }})</div>
+  {% elif q %}
+    <div class="text-muted mb-2">No user found matching "{{ q }}". Showing all active loans.</div>
+  {% endif %}
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Borrower</th>
+          <th>Title</th>
+          <th>Barcode</th>
+          <th>Checked Out</th>
+          <th>Due</th>
+          <th>Overdue</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for loan in loans %}
+          <tr{% if loan.due_at and loan.due_at|date:'U' < now|date:'U' %} class="table-warning"{% endif %}>
+            <td>{{ loan.borrower.username }}</td>
+            <td>{{ loan.copy.book.title }}</td>
+            <td>{{ loan.copy.barcode }}</td>
+            <td>{{ loan.checked_out_at|date:'Y-m-d H:i' }}</td>
+            <td>{{ loan.due_at|date:'Y-m-d H:i' }}</td>
+            <td>
+              {% if loan.due_at and loan.due_at|date:'U' < now|date:'U' %}
+                Overdue
+              {% else %}
+                
+              {% endif %}
+            </td>
+            <td>
+              <form method="post" action="" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="return" />
+                <input type="hidden" name="loan_id" value="{{ loan.id }}" />
+                <button class="btn btn-sm btn-success" type="submit">Mark Returned</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="7" class="text-muted">No active loans.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -41,7 +41,6 @@ urlpatterns = [
     # Circulation (Library)
     path('circulation/loan/create/', loan_create, name="loan-create"),
     path('circulation/loan/<int:loan_id>/edit/', loan_update, name="loan-update"),
-    path('circulation/desk/', quick_checkout, name="circulation-desk"),
     path('loans/mine/', my_loans, name="my-loans"),
     path('fines/mine/', my_fines, name="my-fines"),
     # Staff tools
@@ -62,4 +61,6 @@ urlpatterns = [
     path('staff/requests/<int:request_id>/ready/', mark_request_ready, name='staff-request-mark-ready'),
     path('staff/requests/<int:request_id>/pickup/', confirm_pickup, name='staff-request-confirm-pickup'),
     path('staff/requests/<int:request_id>/cancel/', cancel_request, name='staff-request-cancel'),
+    # Staff: Loans by user
+    path('staff/loans/', loans_by_user, name='staff-loans-by-user'),
 ]

@@ -58,7 +58,6 @@
               {% if request.user.is_staff or request.user.is_superuser %}
                 <td>
                   <div class="d-flex gap-1 flex-wrap">
-                    <a class="btn btn-sm btn-primary" href="{% url 'circulation-desk' %}?barcode={{ copy.barcode }}">Desk</a>
                     <a class="btn btn-sm btn-outline-success" href="{% url 'staff-copy-status' copy.id 'AVAILABLE' %}">Available</a>
                     <a class="btn btn-sm btn-outline-warning" href="{% url 'staff-copy-status' copy.id 'REPAIR' %}">Repair</a>
                     <a class="btn btn-sm btn-outline-danger" href="{% url 'staff-copy-status' copy.id 'LOST' %}">Lost</a>

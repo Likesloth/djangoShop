@@ -156,21 +156,6 @@ class Loan(models.Model):
         return f"{self.copy.barcode} → {self.borrower} (due {self.due_at:%Y-%m-%d})"
 
 
-class Hold(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="holds")
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="holds")
-    queue_position = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_ready = models.BooleanField(default=False)
-    expires_at = models.DateTimeField(null=True, blank=True)
-    canceled_at = models.DateTimeField(null=True, blank=True)
-
-    class Meta:
-        ordering = ["queue_position", "created_at"]
-
-    def __str__(self):
-        status = "ready" if self.is_ready else "queued"
-        return f"Hold({self.book.title} by {self.user.username} – {status})"
 
 
 from decimal import Decimal

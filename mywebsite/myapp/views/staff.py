@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from ..models import Book, BookCopy, Loan, Fine, Author
+from ..services.policy import FINE_RATE_PER_DAY
 
 
 @login_required(login_url='login')
@@ -50,13 +51,6 @@ def fine_mark_paid(request, fine_id):
     messages.success(request, 'Fine marked as paid.')
     return redirect('staff-fines')
 
-
-@login_required(login_url='login')
-@user_passes_test(lambda user: user.is_staff or user.is_superuser, login_url='login')
-def desk_recent(request):
-    recent_loans = Loan.objects.order_by('-checked_out_at').select_related('borrower', 'copy', 'copy__book')[:10]
-    recent_returns = Loan.objects.filter(returned_at__isnull=False).order_by('-returned_at').select_related('borrower', 'copy', 'copy__book')[:10]
-    return render(request, 'myapp/staff/desk_recent.html', {'recent_loans': recent_loans, 'recent_returns': recent_returns})
 
 
 # Reports (CSV)
@@ -221,3 +215,46 @@ def reports_dashboard(request):
         'fines_paid': fines_paid,
     }
     return render(request, 'myapp/staff/reports.html', context)
+
+
+# Active loans by user with return action
+@login_required(login_url='login')
+@user_passes_test(lambda user: user.is_staff or user.is_superuser, login_url='login')
+def loans_by_user(request):
+    from django.contrib.auth.models import User
+    borrower = None
+    q = (request.GET.get('q') or '').strip()
+    if q:
+        borrower = (
+            User.objects.filter(Q(username__iexact=q) | Q(email__iexact=q)).first()
+        )
+
+    if request.method == 'POST':
+        action = (request.POST.get('action') or '').strip()
+        loan_id = (request.POST.get('loan_id') or '').strip()
+        if action == 'return' and loan_id:
+            loan = get_object_or_404(Loan.objects.select_related('copy', 'borrower'), pk=loan_id)
+            if loan.returned_at is None:
+                loan.returned_at = timezone.now()
+                loan.save(update_fields=['returned_at'])
+                if loan.copy and loan.copy.status != BookCopy.STATUS_AVAILABLE:
+                    loan.copy.status = BookCopy.STATUS_AVAILABLE
+                    loan.copy.save(update_fields=['status'])
+                # Overdue fine (same logic as circulation desk)
+                if loan.due_at and loan.returned_at > loan.due_at:
+                    days_over = (loan.returned_at.date() - loan.due_at.date()).days
+                    if days_over > 0:
+                        Fine.objects.create(loan=loan, amount=days_over * FINE_RATE_PER_DAY, reason=f"Overdue {days_over} day(s)")
+                messages.success(request, f"Marked returned: {loan.copy.barcode} for {loan.borrower.username}.")
+            return redirect(request.path + (f"?q={q}" if q else ""))
+
+    loans_qs = Loan.objects.filter(returned_at__isnull=True).select_related('borrower', 'copy', 'copy__book').order_by('borrower__username', 'due_at')
+    if borrower:
+        loans_qs = loans_qs.filter(borrower=borrower)
+
+    return render(request, 'myapp/staff/loans_by_user.html', {
+        'q': q,
+        'borrower': borrower,
+        'loans': loans_qs,
+        'now': timezone.now(),
+    })
