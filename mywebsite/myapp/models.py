@@ -69,7 +69,7 @@ class Book(models.Model):
     title = models.CharField(max_length=255)
     language = models.CharField(max_length=50, blank=True)
     publish_year = models.PositiveIntegerField(null=True, blank=True)
-    cover = models.ImageField(upload_to="images/", null=True, blank=True)
+    cover = models.ImageField(upload_to="images/books/", null=True, blank=True)
     authors = models.ManyToManyField(Author, related_name="books", blank=True)
     # Classification
     # Category: hierarchical navigation

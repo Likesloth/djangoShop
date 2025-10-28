@@ -21,6 +21,11 @@
     </div>
   </div>
 
+  {% if book.cover %}
+    <div class="mb-3">
+      <img src="{{ book.cover.url }}" alt="{{ book.title }} cover" style="max-height:220px;width:auto;border-radius:6px;" />
+    </div>
+  {% endif %}
   <div class="card glass-card">
     <div class="card-header bg-light">Copies</div>
     <div class="table-responsive">

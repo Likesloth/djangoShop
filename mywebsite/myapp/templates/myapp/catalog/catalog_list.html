@@ -65,12 +65,15 @@
   <div class="list-group glass-card p-0">
     {% for book in books %}
       <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{% url 'catalog-detail' book.id %}">
-        <div>
-          <div class="fw-semibold">{{ book.title }}</div>
+        <div class="d-flex align-items-center">
+          {% if book.cover %}<img src="{{ book.cover.url }}" alt="{{ book.title }} cover" class="me-3 rounded" style="width:48px;height:64px;object-fit:cover;" />{% endif %}
+          <div>
+            <div class="fw-semibold">{{ book.title }}</div>
           <div class="text-muted-contrast small">ISBN: {{ book.isbn13 }} • {{ book.language }} • {{ book.publish_year }}</div>
           {% if book.category %}
             <div class="text-muted-contrast small">Category: {{ book.category.name }}</div>
           {% endif %}
+          </div>
         </div>
         <span class="badge bg-success">Available: {{ book.available_count }}</span>
       </a>

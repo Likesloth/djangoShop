@@ -64,7 +64,8 @@ def library_home(request):
         if selected_tag:
             books_qs = books_qs.filter(tags=selected_tag)
 
-    paginator = Paginator(books_qs, 6)
+    # Show 8 books per page to fit two rows of four cards
+    paginator = Paginator(books_qs, 8)
     page_number = request.GET.get('page')
     books = paginator.get_page(page_number)
     top_categories = (
