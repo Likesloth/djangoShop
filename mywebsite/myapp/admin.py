@@ -117,3 +117,40 @@ class CategoryAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     list_display = ("name", "slug")
     search_fields = ("name", "slug")
+
+
+@admin.register(Hold)
+class HoldAdmin(admin.ModelAdmin):
+    list_display = ("book", "user", "queue_position", "is_ready", "created_at")
+    list_filter = ("is_ready",)
+    search_fields = ("book__title", "user__username")
+
+
+@admin.register(Policy)
+class PolicyAdmin(admin.ModelAdmin):
+    list_display = ("student_loan_limit", "lecturer_loan_limit", "student_loan_days", "lecturer_loan_days", "fine_rate_per_day", "updated_at")
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ("id", "owner", "created_at", "updated_at")
+    search_fields = ("owner__username",)
+
+
+@admin.register(CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ("cart", "book", "added_at")
+    search_fields = ("cart__owner__username", "book__title")
+
+
+@admin.register(PickupRequest)
+class PickupRequestAdmin(admin.ModelAdmin):
+    list_display = ("id", "requester", "status", "pickup_location", "pickup_by", "requested_at", "ready_at", "picked_up_at")
+    list_filter = ("status", "pickup_location")
+    search_fields = ("requester__username",)
+
+
+@admin.register(PickupRequestItem)
+class PickupRequestItemAdmin(admin.ModelAdmin):
+    list_display = ("request", "book", "assigned_copy")
+    search_fields = ("request__requester__username", "book__title", "assigned_copy__barcode")

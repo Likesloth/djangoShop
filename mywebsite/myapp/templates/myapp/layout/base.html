@@ -56,6 +56,7 @@
                       <a class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white dropdown-toggle" href="#" id="staffMenu" data-bs-toggle="dropdown" aria-expanded="false">Staff</a>
                       <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="staffMenu">
                         <li><a class="dropdown-item" href="{% url 'circulation-desk' %}">Desk</a></li>
+                        <li><a class="dropdown-item" href="{% url 'staff-requests-queue' %}">Requests</a></li>
                         <li><a class="dropdown-item" href="{% url 'staff-overdues' %}">Overdues</a></li>
                         <li><a class="dropdown-item" href="{% url 'staff-fines' %}">Fines</a></li>
                         <li><a class="dropdown-item" href="{% url 'staff-reports' %}">Reports</a></li>
@@ -65,6 +66,8 @@
                     </div>
                   {% endif %}
                   <a href="{% url 'my-loans' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">My Loans</a>
+                  <a href="{% url 'cart-view' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Cart</a>
+                  <a href="{% url 'my-requests' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">My Requests</a>
                   <a href="{% url 'my-fines' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">My Fines</a>
                 {% endif %}
               </div>
@@ -100,6 +103,7 @@
             {% if request.user.is_staff or request.user.is_superuser %}
               <div class="mt-2 px-3 text-xs uppercase text-gray-400">Staff</div>
               <a href="{% url 'circulation-desk' %}" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Desk</a>
+              <a href="{% url 'staff-requests-queue' %}" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Requests</a>
               <a href="{% url 'staff-overdues' %}" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Overdues</a>
               <a href="{% url 'staff-fines' %}" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Fines</a>
               <a href="{% url 'staff-reports' %}" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Reports</a>
@@ -107,6 +111,8 @@
             {% endif %}
             <div class="mt-2 px-3 text-xs uppercase text-gray-400">Account</div>
             <a href="{% url 'my-loans' %}" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">My Loans</a>
+            <a href="{% url 'cart-view' %}" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Cart</a>
+            <a href="{% url 'my-requests' %}" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">My Requests</a>
             <a href="{% url 'my-fines' %}" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">My Fines</a>
             <a href="{% url 'settings' %}" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-white/5 hover:text-white">Your profile</a>
           {% else %}

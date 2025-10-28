@@ -1,0 +1,27 @@
+{% extends 'myapp/layout/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>My Pickup Requests</h2>
+  {% if requests %}
+    <div class="list-group">
+      {% for r in requests %}
+        <div class="list-group-item">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">Request #{{ r.id }} — {{ r.get_status_display }}</h5>
+            <small>Requested {{ r.requested_at|date:'Y-m-d H:i' }}</small>
+          </div>
+          <p class="mb-1">Pickup location: {{ r.pickup_location|default:'Main Desk' }}{% if r.pickup_by %} • Pickup by: {{ r.pickup_by|date:'Y-m-d' }}{% endif %}</p>
+          <ul class="mb-0">
+            {% for item in r.items.all %}
+              <li>{{ item.book.title }}{% if item.assigned_copy %} — reserved: {{ item.assigned_copy.barcode }}{% endif %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No requests yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,33 @@
+{% extends 'myapp/layout/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Pickup Requests Queue</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Requester</th>
+        <th>Status</th>
+        <th>Requested</th>
+        <th>Pickup By</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in requests %}
+        <tr>
+          <td>#{{ r.id }}</td>
+          <td>{{ r.requester.username }}</td>
+          <td>{{ r.get_status_display }}</td>
+          <td>{{ r.requested_at|date:'Y-m-d H:i' }}</td>
+          <td>{{ r.pickup_by|date:'Y-m-d' }}</td>
+          <td><a href="{% url 'staff-request-detail' r.id %}" class="btn btn-sm btn-outline-primary">Open</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6">No pending requests.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+

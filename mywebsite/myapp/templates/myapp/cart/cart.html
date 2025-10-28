@@ -1,0 +1,65 @@
+{% extends 'myapp/layout/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>My Cart</h2>
+  {% if items %}
+    <form method="post" action="{% url 'cart-place-request' %}">
+      {% csrf_token %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th style="width: 280px;">Select Copy (Barcode)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for it in items %}
+          <tr>
+            <td>
+              <a href="{% url 'catalog-detail' it.book.id %}">{{ it.book.title }}</a>
+            </td>
+            <td>
+              {% with copies=it.book.copies.all %}
+                {% if copies %}
+                  <select name="copy_{{ it.id }}" class="form-select form-select-sm">
+                    <option value="">-- Any available copy --</option>
+                    {% for cp in copies %}
+                      {% if cp.status == 'AVAILABLE' %}
+                        <option value="{{ cp.id }}">{{ cp.barcode }} ({{ cp.location }})</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                {% else %}
+                  <em>No copies found</em>
+                {% endif %}
+              {% endwith %}
+            </td>
+            <td>
+              <a href="{% url 'cart-remove' it.book.id %}" class="btn btn-sm btn-outline-danger">Remove</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="row gy-2">
+      <div class="col-auto">
+        <label for="pickup_by" class="form-label">Pickup by</label>
+        <input type="date" id="pickup_by" name="pickup_by" class="form-control" />
+      </div>
+      <div class="col-auto">
+        <label for="pickup_location" class="form-label">Pickup location</label>
+        <select id="pickup_location" name="pickup_location" class="form-select">
+          <option value="Main Desk">Main Desk</option>
+        </select>
+      </div>
+      <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Place Request</button>
+      </div>
+    </div>
+    </form>
+  {% else %}
+    <p>Your cart is empty. Browse the <a href="{% url 'catalog-list' %}">catalog</a>.</p>
+  {% endif %}
+</div>
+{% endblock %}

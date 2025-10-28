@@ -27,6 +27,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
+# Allow ngrok domains in development for external testing
+if DEBUG:
+    # Support both current and legacy ngrok domains
+    ALLOWED_HOSTS += ['.ngrok-free.app', '.ngrok.app']
+
+# Trust ngrok origins for CSRF when using HTTPS tunnels
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok-free.app',
+    'https://*.ngrok.app',
+]
+
 
 # Application definition
 

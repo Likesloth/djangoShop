@@ -110,12 +110,14 @@ class Tag(models.Model):
 
 class BookCopy(models.Model):
     STATUS_AVAILABLE = "AVAILABLE"
+    STATUS_RESERVED = "RESERVED"  # reserved for pickup
     STATUS_ON_LOAN = "ON_LOAN"
     STATUS_LOST = "LOST"
     STATUS_REPAIR = "REPAIR"
 
     STATUS_CHOICES = [
         (STATUS_AVAILABLE, "Available"),
+        (STATUS_RESERVED, "Reserved"),
         (STATUS_ON_LOAN, "On loan"),
         (STATUS_LOST, "Lost"),
         (STATUS_REPAIR, "Repair"),
@@ -209,3 +211,75 @@ class Policy(models.Model):
         if obj is None:
             obj = cls.objects.create()
         return obj
+
+
+# ==== Cart and Pickup Request (MVP) ====
+
+
+class Cart(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="carts")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Cart #{self.id} by {self.owner}"
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("cart", "book")
+
+    def __str__(self):
+        return f"{self.book.title} in cart {self.cart_id}"
+
+
+class PickupRequest(models.Model):
+    STATUS_PENDING = "PENDING"
+    STATUS_PREPARING = "PREPARING"
+    STATUS_READY = "READY"
+    STATUS_PICKED_UP = "PICKED_UP"
+    STATUS_CANCELED = "CANCELED"
+    STATUS_EXPIRED = "EXPIRED"
+
+    STATUS_CHOICES = [
+        (STATUS_PENDING, "Pending"),
+        (STATUS_PREPARING, "Preparing"),
+        (STATUS_READY, "Ready for pickup"),
+        (STATUS_PICKED_UP, "Picked up"),
+        (STATUS_CANCELED, "Canceled"),
+        (STATUS_EXPIRED, "Expired"),
+    ]
+
+    requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="pickup_requests")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    pickup_location = models.CharField(max_length=120, blank=True)
+    pickup_by = models.DateField(null=True, blank=True)
+    requested_at = models.DateTimeField(auto_now_add=True)
+    prepared_at = models.DateTimeField(null=True, blank=True)
+    ready_at = models.DateTimeField(null=True, blank=True)
+    picked_up_at = models.DateTimeField(null=True, blank=True)
+    canceled_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Request #{self.id} by {self.requester} ({self.status})"
+
+
+class PickupRequestItem(models.Model):
+    request = models.ForeignKey(PickupRequest, on_delete=models.CASCADE, related_name="items")
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    # Staff may assign a specific copy during preparation
+    assigned_copy = models.ForeignKey(BookCopy, on_delete=models.SET_NULL, null=True, blank=True, related_name="assigned_in_requests")
+    note = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        unique_together = ("request", "book")
+
+    def __str__(self):
+        base = f"{self.book.title} in request {self.request_id}"
+        if self.assigned_copy_id:
+            return f"{base} -> {self.assigned_copy.barcode}"
+        return base

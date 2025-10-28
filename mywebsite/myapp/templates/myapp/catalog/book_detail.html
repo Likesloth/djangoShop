@@ -9,7 +9,15 @@
       <div class="text-muted-contrast">Authors: {% for author in book.authors.all %}{% if not forloop.first %}, {% endif %}{{ author.full_name }}{% empty %}—{% endfor %}</div>
     </div>
     <div>
-      <span class="badge bg-success">Available: {{ available_count }}</span>
+      <div class="text-end">
+        <span class="badge bg-success">Available: {{ available_count }}</span>
+        {% if request.user.is_authenticated %}
+          <div class="mt-2">
+            <a href="{% url 'cart-add' book.id %}" class="btn btn-sm btn-primary">Add to Cart</a>
+            <a href="{% url 'cart-view' %}" class="btn btn-sm btn-outline-secondary">View Cart</a>
+          </div>
+        {% endif %}
+      </div>
     </div>
   </div>
 
@@ -37,6 +45,8 @@
                   <span class="badge bg-success">Available</span>
                 {% elif copy.status == 'ON_LOAN' %}
                   <span class="badge bg-warning text-dark">On loan</span>
+                {% elif copy.status == 'RESERVED' %}
+                  <span class="badge bg-info text-dark">Reserved</span>
                 {% elif copy.status == 'REPAIR' %}
                   <span class="badge bg-secondary">Repair</span>
                 {% elif copy.status == 'LOST' %}
