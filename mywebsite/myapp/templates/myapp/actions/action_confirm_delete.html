@@ -9,21 +9,15 @@
 
 {% block content %}
 <div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-lg-6">
-      <div class="card glass-card border-danger">
-        <div class="card-body">
-          <p>Are you sure you want to delete <strong>{{ action.name }}</strong> linked to <strong>{{ action.contact.topic }}</strong>?</p>
-          <form method="post">
-            {% csrf_token %}
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-danger">Yes, delete</button>
-              <a href="{% url 'action-detail' action.id %}" class="btn btn-outline-secondary">Cancel</a>
-            </div>
-          </form>
-        </div>
+  <div class="max-w-xl mx-auto rounded-2xl border border-red-300 bg-white/70 backdrop-blur-md p-5">
+    <p class="text-slate-800">Are you sure you want to delete <strong>{{ action.name }}</strong> linked to <strong>{{ action.contact.topic }}</strong>?</p>
+    <form method="post" class="mt-4">
+      {% csrf_token %}
+      <div class="flex gap-2">
+        <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-red-600 hover:bg-red-500 text-white shadow">Yes, delete</button>
+        <a href="{% url 'action-detail' action.id %}" class="inline-flex items-center justify-center px-3 py-2 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50">Cancel</a>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 {% endblock %}

@@ -2,57 +2,57 @@
 
 {% block content %}
 <div class="container py-4">
-  <h2 class="mb-3">Add Book</h2>
-  <div class="card glass-card p-3">
+  <h2 class="text-xl font-semibold text-slate-900 mb-3">Add Book</h2>
+  <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md p-5">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      <div class="row g-3">
-        <div class="col-md-4 col-lg-3">
-          <label class="form-label text-white">ISBN-13</label>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="lg:col-span-1">
+          <label class="block text-sm font-medium text-slate-800 mb-1">ISBN-13</label>
           <input type="text" name="isbn13" class="form-control" required>
         </div>
-        <div class="col-md-8 col-lg-9">
-          <label class="form-label text-white">Title</label>
+        <div class="lg:col-span-3">
+          <label class="block text-sm font-medium text-slate-800 mb-1">Title</label>
           <input type="text" name="title" class="form-control" required>
         </div>
-        <div class="col-md-6">
-          <label class="form-label text-white">Authors</label>
+        <div class="md:col-span-1 lg:col-span-2">
+          <label class="block text-sm font-medium text-slate-800 mb-1">Authors</label>
           <input type="text" name="authors" class="form-control" placeholder="e.g. Robert C. Martin; Kent Beck">
-          <div class="form-text">Separate multiple authors with ;</div>
+          <div class="text-slate-600 text-sm mt-1">Separate multiple authors with ;</div>
         </div>
-        <div class="col-md-3">
-          <label class="form-label text-white">Language</label>
+        <div>
+          <label class="block text-sm font-medium text-slate-800 mb-1">Language</label>
           <input type="text" name="language" class="form-control" value="EN">
         </div>
-        <div class="col-md-3">
-          <label class="form-label text-white">Publish Year</label>
+        <div>
+          <label class="block text-sm font-medium text-slate-800 mb-1">Publish Year</label>
           <input type="number" name="publish_year" class="form-control" min="0">
         </div>
-        <div class="col-md-6">
-          <label class="form-label text-white">Category Path</label>
+        <div class="md:col-span-1 lg:col-span-2">
+          <label class="block text-sm font-medium text-slate-800 mb-1">Category Path</label>
           <input type="text" name="category_path" class="form-control" placeholder="e.g. Science > Computer Science > Software Engineering">
-          <div class="form-text">Use > to create hierarchy</div>
+          <div class="text-slate-600 text-sm mt-1">Use > to create hierarchy</div>
         </div>
-        <div class="col-md-6">
-          <label class="form-label text-white">Tags</label>
+        <div class="md:col-span-1 lg:col-span-2">
+          <label class="block text-sm font-medium text-slate-800 mb-1">Tags</label>
           <input type="text" name="tags" class="form-control" placeholder="e.g. design-patterns; clean-code">
         </div>
-        <div class="col-md-6">
-          <label class="form-label text-white">Cover Image</label>
+        <div class="md:col-span-1 lg:col-span-2">
+          <label class="block text-sm font-medium text-slate-800 mb-1">Cover Image</label>
           <input type="file" name="cover" class="form-control" accept="image/*">
         </div>
-        <div class="col-md-3">
-          <label class="form-label text-white">First Copy Barcode (optional)</label>
+        <div>
+          <label class="block text-sm font-medium text-slate-800 mb-1">First Copy Barcode (optional)</label>
           <input type="text" name="first_barcode" class="form-control" placeholder="BC-XXXX-001">
         </div>
-        <div class="col-md-3">
-          <label class="form-label text-white">Location</label>
+        <div>
+          <label class="block text-sm font-medium text-slate-800 mb-1">Location</label>
           <input type="text" name="location" class="form-control" value="Main">
         </div>
       </div>
-      <div class="mt-3 d-flex gap-2">
-        <button class="btn btn-primary" type="submit">Save</button>
-        <a class="btn btn-outline-secondary" href="{% url 'catalog-list' %}">Cancel</a>
+      <div class="mt-4 flex gap-2">
+        <button class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo text-white hover:opacity-90 shadow" type="submit">Save</button>
+        <a class="inline-flex items-center justify-center px-3 py-2 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50" href="{% url 'catalog-list' %}">Cancel</a>
       </div>
     </form>
   </div>

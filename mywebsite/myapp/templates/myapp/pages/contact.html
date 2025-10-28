@@ -17,7 +17,7 @@
           </div>
         {% endif %}
 
-        <form method="POST" action="" class="glass-card p-4">
+        <form method="POST" action="" class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md p-4">
           {% csrf_token %} <!-- Cross-site request forgery -->
 
           <div class="mb-3">
@@ -36,7 +36,7 @@
           </div>
 
           <div class="d-grid">
-            <button type="submit" class="btn btn-primary-custom">Submit</button>
+            <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow">Submit</button>
           </div>
         </form>
       </div>

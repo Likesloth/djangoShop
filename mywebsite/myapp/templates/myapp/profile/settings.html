@@ -15,13 +15,13 @@
       <div class="panel-subtitle">Use a permanent address where you can receive mail.</div>
     </div>
     <div class="col-12 col-lg-8">
-      <form method="post" class="glass-card p-4">
+      <form method="post" class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md p-4">
         {% csrf_token %}
         <input type="hidden" name="action" value="profile" />
         <div class="d-flex align-items-center gap-3 mb-4">
           <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80" alt="avatar" class="rounded-3" style="width:80px;height:80px;object-fit:cover;" />
           <div>
-            <label class="btn btn-outline-glass mb-1" for="avatarInput">Change avatar</label>
+            <label class="px-3 py-2 rounded-md border border-indigo-300/35 text-slate-200 bg-transparent hover:bg-indigo-800/20 mb-1" for="avatarInput">Change avatar</label>
             <input id="avatarInput" type="file" class="d-none" disabled>
             <div class="text-slate-400 small">JPG, GIF or PNG. 1MB max. (coming soon)</div>
           </div>
@@ -51,8 +51,8 @@
         </div>
 
         <div class="d-flex gap-2 mt-4">
-          <button type="submit" class="btn btn-primary-custom">Save</button>
-          <a href="{% url 'logout' %}" class="btn btn-outline-glass">Sign out</a>
+          <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow">Save</button>
+          <a href="{% url 'logout' %}" class="px-3 py-2 rounded-md border border-indigo-300/35 text-slate-200 bg-transparent hover:bg-indigo-800/20">Sign out</a>
         </div>
       </form>
     </div>
@@ -65,7 +65,7 @@
       <div class="panel-subtitle">Update your password associated with your account.</div>
     </div>
     <div class="col-12 col-lg-8">
-      <form method="post" class="glass-card p-4">
+      <form method="post" class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md p-4">
         {% csrf_token %}
         <input type="hidden" name="action" value="password" />
         <div class="mb-3">
@@ -80,7 +80,7 @@
           <label class="form-label">Confirm password</label>
           <input type="password" name="confirm_password" class="form-control" />
         </div>
-        <button type="submit" class="btn btn-primary-custom">Save</button>
+        <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow">Save</button>
       </form>
     </div>
   </div>

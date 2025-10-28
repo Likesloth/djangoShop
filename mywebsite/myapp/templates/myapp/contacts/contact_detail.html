@@ -8,18 +8,18 @@
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="row g-4">
-    <div class="col-lg-5">
-      <div class="card glass-card">
+<div class="max-w-7xl mx-auto px-4 py-6">
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+    <div class="lg:col-span-2">
+      <div class="card rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md">
         <div class="card-header bg-light fw-semibold">Contact Info</div>
         <div class="card-body">
           <div class="mb-2"><strong>Email:</strong> {{ contact.email }}</div>
           <div class="mb-2"><strong>Status:</strong>
             {% if contact.complete %}
-              <span class="badge bg-success">Complete</span>
+              <span class="inline-block rounded bg-emerald-600/80 text-white text-xs px-2 py-0.5">Complete</span>
             {% else %}
-              <span class="badge bg-warning text-dark">Pending</span>
+              <span class="inline-block rounded bg-amber-500/80 text-black text-xs px-2 py-0.5">Pending</span>
             {% endif %}
           </div>
           <div>
@@ -31,33 +31,33 @@
               {% csrf_token %}
               {% if contact.complete %}
                 <input type="hidden" name="complete" value="false">
-                <button class="btn btn-outline-secondary btn-sm" type="submit">Mark pending</button>
+                <button class="px-3 py-2 rounded-md border border-slate-400/40 text-slate-200 hover:bg-white/10 text-sm" type="submit">Mark pending</button>
               {% else %}
                 <input type="hidden" name="complete" value="true">
-                <button class="btn btn-outline-success btn-sm" type="submit">Mark complete</button>
+                <button class="px-3 py-2 rounded-md border border-emerald-400/40 text-emerald-200 hover:bg-white/10 text-sm" type="submit">Mark complete</button>
               {% endif %}
-              <a class="btn btn-outline-primary btn-sm" href="{% url 'showcontact-page' %}?contact={{ contact.id }}">Back to list</a>
+              <a class="px-3 py-2 rounded-md border border-indigo-300/35 text-slate-200 hover:bg-indigo-800/20 text-sm" href="{% url 'showcontact-page' %}?contact={{ contact.id }}">Back to list</a>
             </form>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-lg-7">
-      <div class="card glass-card mb-3">
+    <div class="lg:col-span-3">
+      <div class="card rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md mb-3">
         <div class="card-header bg-light fw-semibold">Actions</div>
         <div class="card-body">
           {% if actions %}
-            <div class="list-group">
+            <div class="divide-y divide-white/10 rounded-md border border-white/10">
               {% for action in actions %}
-                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start" href="{% url 'action-detail' action.id %}">
+                <a class="flex justify-between items-start px-3 py-2 hover:bg-white/5" href="{% url 'action-detail' action.id %}">
                   <div>
                     <h6 class="mb-1">{{ action.name }}</h6>
                     <small class="text-muted">Updated {{ action.updated_at|date:'M d, Y H:i' }}</small>
                   </div>
                   {% if action.complete %}
-                    <span class="badge bg-success">Done</span>
+                    <span class="inline-block rounded bg-emerald-600/80 text-white text-xs px-2 py-0.5">Done</span>
                   {% else %}
-                    <span class="badge bg-warning text-dark">Pending</span>
+                    <span class="inline-block rounded bg-amber-500/80 text-black text-xs px-2 py-0.5">Pending</span>
                   {% endif %}
                 </a>
               {% endfor %}
@@ -68,7 +68,7 @@
         </div>
       </div>
 
-      <div class="card glass-card">
+      <div class="card rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md">
         <div class="card-header bg-light fw-semibold">Add Action</div>
         <div class="card-body">
           <form method="post">
@@ -82,7 +82,7 @@
               {{ form.detail }}
             </div>
             <div class="d-flex justify-content-end">
-              <button class="btn btn-primary-custom" type="submit">Create Action</button>
+              <button class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow" type="submit">Create Action</button>
             </div>
           </form>
         </div>
@@ -91,3 +91,4 @@
   </div>
 </div>
 {% endblock %}
+

@@ -1,33 +1,37 @@
 {% extends 'myapp/layout/base.html' %}
 {% block content %}
-<div class="container mt-4">
-  <h2>Pickup Requests Queue</h2>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Requester</th>
-        <th>Status</th>
-        <th>Requested</th>
-        <th>Pickup By</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for r in requests %}
-        <tr>
-          <td>#{{ r.id }}</td>
-          <td>{{ r.requester.username }}</td>
-          <td>{{ r.get_status_display }}</td>
-          <td>{{ r.requested_at|date:'Y-m-d H:i' }}</td>
-          <td>{{ r.pickup_by|date:'Y-m-d' }}</td>
-          <td><a href="{% url 'staff-request-detail' r.id %}" class="btn btn-sm btn-outline-primary">Open</a></td>
-        </tr>
-      {% empty %}
-        <tr><td colspan="6">No pending requests.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="container py-4">
+  <h2 class="text-xl font-semibold text-slate-900 mb-3">Pickup Requests Queue</h2>
+  <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full align-middle">
+        <thead class="bg-lavender/40 text-slate-700 text-sm">
+          <tr>
+            <th class="text-left px-4 py-2">ID</th>
+            <th class="text-left px-4 py-2">Requester</th>
+            <th class="text-left px-4 py-2">Status</th>
+            <th class="text-left px-4 py-2">Requested</th>
+            <th class="text-left px-4 py-2">Pickup By</th>
+            <th class="text-left px-4 py-2"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-peach-300/60">
+          {% for r in requests %}
+            <tr>
+              <td class="px-4 py-2">#{{ r.id }}</td>
+              <td class="px-4 py-2">{{ r.requester.username }}</td>
+              <td class="px-4 py-2">{{ r.get_status_display }}</td>
+              <td class="px-4 py-2">{{ r.requested_at|date:'Y-m-d H:i' }}</td>
+              <td class="px-4 py-2">{{ r.pickup_by|date:'Y-m-d' }}</td>
+              <td class="px-4 py-2"><a href="{% url 'staff-request-detail' r.id %}" class="inline-flex items-center px-2.5 py-1.5 rounded-md border border-indigo text-indigo hover:bg-indigo/10 text-sm">Open</a></td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6" class="px-4 py-3 text-slate-600">No pending requests.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}
 

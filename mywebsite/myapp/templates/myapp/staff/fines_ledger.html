@@ -2,70 +2,72 @@
 
 {% block content %}
 <div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Fines Ledger</h2>
-    <a class="btn btn-outline-primary" href="{% url 'report-fines-summary-csv' %}">Fines Summary CSV</a>
+  <div class="flex items-center justify-between mb-3">
+    <h2 class="text-xl font-semibold text-slate-100">Fines Ledger</h2>
+    <a class="inline-flex items-center px-3 py-2 rounded-md border border-indigo-300/40 text-indigo-200 hover:bg-indigo-700/30 hover:text-white transition"
+       href="{% url 'report-fines-summary-csv' %}">Fines Summary CSV</a>
   </div>
 
-  <div class="row g-4">
-    <div class="col-md-6">
-      <div class="card glass-card">
-        <div class="card-header bg-light">Unpaid</div>
-        <div class="table-responsive">
-          <table class="table table-sm table-striped align-middle mb-0">
-            <thead>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md overflow-hidden">
+      <div class="px-4 py-2 bg-white/5 text-slate-200 font-semibold">Unpaid</div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-slate-200">
+          <thead class="bg-white/5 text-slate-300 text-sm">
+            <tr>
+              <th class="text-left px-4 py-2">Book</th>
+              <th class="text-left px-4 py-2">Borrower</th>
+              <th class="text-left px-4 py-2">Amount</th>
+              <th class="text-left px-4 py-2">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/10">
+            {% for fine in unpaid %}
               <tr>
-                <th>Book</th>
-                <th>Borrower</th>
-                <th>Amount</th>
-                <th>Action</th>
+                <td class="px-4 py-2">{{ fine.loan.copy.book.title }}</td>
+                <td class="px-4 py-2">{{ fine.loan.borrower.username }}</td>
+                <td class="px-4 py-2">{{ fine.amount }}</td>
+                <td class="px-4 py-2">
+                  <a class="inline-flex items-center px-2.5 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white text-sm shadow"
+                     href="{% url 'staff-fine-paid' fine.id %}">Mark Paid</a>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {% for fine in unpaid %}
-                <tr>
-                  <td>{{ fine.loan.copy.book.title }}</td>
-                  <td>{{ fine.loan.borrower.username }}</td>
-                  <td>{{ fine.amount }}</td>
-                  <td>
-                    <a class="btn btn-sm btn-success" href="{% url 'staff-fine-paid' fine.id %}">Mark Paid</a>
-                  </td>
-                </tr>
-              {% empty %}
-                <tr><td colspan="4" class="text-muted">No unpaid fines.</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+            {% empty %}
+              <tr>
+                <td colspan="4" class="px-4 py-3 text-slate-400">No unpaid fines.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card glass-card">
-        <div class="card-header bg-light">Paid</div>
-        <div class="table-responsive">
-          <table class="table table-sm table-striped align-middle mb-0">
-            <thead>
+    <div class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md overflow-hidden">
+      <div class="px-4 py-2 bg-white/5 text-slate-200 font-semibold">Paid</div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-slate-200">
+          <thead class="bg-white/5 text-slate-300 text-sm">
+            <tr>
+              <th class="text-left px-4 py-2">Book</th>
+              <th class="text-left px-4 py-2">Borrower</th>
+              <th class="text-left px-4 py-2">Amount</th>
+              <th class="text-left px-4 py-2">Paid at</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/10">
+            {% for fine in paid %}
               <tr>
-                <th>Book</th>
-                <th>Borrower</th>
-                <th>Amount</th>
-                <th>Paid at</th>
+                <td class="px-4 py-2">{{ fine.loan.copy.book.title }}</td>
+                <td class="px-4 py-2">{{ fine.loan.borrower.username }}</td>
+                <td class="px-4 py-2">{{ fine.amount }}</td>
+                <td class="px-4 py-2">{{ fine.paid_at|date:'Y-m-d H:i' }}</td>
               </tr>
-            </thead>
-            <tbody>
-              {% for fine in paid %}
-                <tr>
-                  <td>{{ fine.loan.copy.book.title }}</td>
-                  <td>{{ fine.loan.borrower.username }}</td>
-                  <td>{{ fine.amount }}</td>
-                  <td>{{ fine.paid_at|date:'Y-m-d H:i' }}</td>
-                </tr>
-              {% empty %}
-                <tr><td colspan="4" class="text-muted">No paid fines.</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+            {% empty %}
+              <tr>
+                <td colspan="4" class="px-4 py-3 text-slate-400">No paid fines.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

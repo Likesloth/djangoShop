@@ -10,7 +10,7 @@
   <div class="container my-4">
     <div class="row justify-content-center">
       <div class="col-12 col-md-8 col-lg-6">
-        <form method="post" class="glass-card p-4">
+        <form method="post" class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md p-4">
           {% csrf_token %}
           <label>First name</label><br/>
           <input name="first_name" class="form-control" value="{{ request.user.first_name }}" /><br/>
@@ -18,7 +18,7 @@
           <input name="last_name" class="form-control" value="{{ request.user.last_name }}" /><br/>
           <label>Email</label><br/>
           <input name="email" type="email" class="form-control" value="{{ request.user.email }}" /><br/>
-          <button type="submit" class="btn btn-primary-custom mt-2">Save</button>
+          <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow mt-2">Save</button>
         </form>
       </div>
     </div>

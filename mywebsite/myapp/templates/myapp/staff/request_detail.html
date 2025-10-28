@@ -1,64 +1,65 @@
 {% extends 'myapp/layout/base.html' %}
 {% block content %}
-<div class="container mt-4">
+<div class="max-w-7xl mx-auto px-4 py-6">
   <h2>Request #{{ pr.id }}</h2>
-  <p>
+  <div class="mt-1 text-slate-300">
     Requester: <strong>{{ pr.requester.username }}</strong> •
-    Status: <span class="badge bg-secondary">{{ pr.get_status_display }}</span> •
+    Status: <span class="inline-block rounded bg-slate-600/80 text-white text-xs px-2 py-0.5">{{ pr.get_status_display }}</span> •
     Pickup location: {{ pr.pickup_location|default:'Main Desk' }} •
     Pickup by: {{ pr.pickup_by|date:'Y-m-d' }}
-  </p>
+  </div>
 
-  <h5>Items</h5>
-  <table class="table">
-    <thead>
-      <tr>
+  <h5 class="mt-4 text-white">Items</h5>
+  <div class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md overflow-hidden mt-2">\n    <div class="hidden md:grid grid-cols-12 gap-2 px-4 py-2 bg-white/5 text-slate-200 text-sm font-semibold">\n      <div class="col-span-5">Title</div>\n      <div class="col-span-3">Assigned Copy</div>\n      <div class="col-span-4">Assign</div>\n    </div>\n    <div class="divide-y divide-white/10">
+    
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-2 px-4 py-3 items-center">
         <th>Title</th>
         <th>Assigned Copy</th>
         <th>Assign</th>
-      </tr>
-    </thead>
-    <tbody>
+      </div>
+    
+    
       {% for it in pr.items.all %}
-        <tr>
-          <td>{{ it.book.title }}</td>
-          <td>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-2 px-4 py-3 items-center">
+          <div class="md:col-span-5">{{ it.book.title }}</div>
+          <div class="md:col-span-5">
             {% if it.assigned_copy %}
               {{ it.assigned_copy.barcode }}
-              <form method="post" action="{% url 'staff-request-unassign-item' pr.id it.id %}" class="d-inline ms-2">
+              <form method="post" action="{% url 'staff-request-unassign-item' pr.id it.id %}" class="inline-block ml-2">
                 {% csrf_token %}
-                <button class="btn btn-sm btn-outline-danger" type="submit">Unassign</button>
+                <button class="px-2 py-1 rounded-md border border-red-400/40 text-red-200 hover:bg-white/10 text-xs" type="submit">Unassign</button>
               </form>
             {% else %}
               <em>Not assigned</em>
             {% endif %}
-          </td>
-          <td>
-            <form method="post" action="{% url 'staff-request-assign-item' pr.id it.id %}" class="d-flex gap-2">
+          </div>
+          <div class="md:col-span-5">
+            <form method="post" action="{% url 'staff-request-assign-item' pr.id it.id %}" class="flex gap-2">
               {% csrf_token %}
-              <input type="text" name="barcode" placeholder="Scan/enter barcode" class="form-control form-control-sm"/>
-              <button class="btn btn-sm btn-outline-success" type="submit">Assign</button>
+              <input type="text" name="barcode" placeholder="Scan/enter barcode" class="flex-1 rounded-md bg-black/30 border border-indigo-300/35 px-3 py-2 text-slate-100"/>
+              <button class="px-3 py-2 rounded-md border border-emerald-400/40 text-emerald-200 hover:bg-white/10 text-sm" type="submit">Assign</button>
             </form>
-          </td>
-        </tr>
+          </div>
+        </div>
       {% endfor %}
-    </tbody>
-  </table>
+    
+      </div>\n  </div>
 
-  <div class="d-flex gap-2">
-    <a class="btn btn-outline-secondary" href="{% url 'staff-requests-queue' %}">Back</a>
+  <div class="flex gap-2">
+    <a class="px-3 py-2 rounded-md border border-slate-400/40 text-slate-200 hover:bg-white/10" href="{% url 'staff-requests-queue' %}">Back</a>
     <form method="post" action="{% url 'staff-request-mark-ready' pr.id %}">
       {% csrf_token %}
-      <button class="btn btn-primary" type="submit">Mark Ready</button>
+      <button class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow" type="submit">Mark Ready</button>
     </form>
     <form method="post" action="{% url 'staff-request-confirm-pickup' pr.id %}">
       {% csrf_token %}
-      <button class="btn btn-success" type="submit">Confirm Pickup</button>
+      <button class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white shadow" type="submit">Confirm Pickup</button>
     </form>
     <form method="post" action="{% url 'staff-request-cancel' pr.id %}">
       {% csrf_token %}
-      <button class="btn btn-danger" type="submit">Cancel</button>
+      <button class="inline-flex items-center justify-center px-3 py-2 rounded-md border border-red-400/40 text-red-200 hover:bg-white/10" type="submit">Cancel</button>
     </form>
   </div>
 </div>
 {% endblock %}
+

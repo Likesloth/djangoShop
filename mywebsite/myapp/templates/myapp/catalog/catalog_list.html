@@ -1,81 +1,75 @@
 {% extends 'myapp/layout/base.html' %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Catalog</h2>
+<div class="max-w-7xl mx-auto px-4 py-6">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-2xl font-semibold text-white">Catalog</h2>
   </div>
 
-  <form method="get" class="row g-2 mb-4">
-    <div class="col-sm-8 col-md-6">
-      <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Search title/ISBN/author/tag" />
-    </div>
-    <div class="col-auto">
-      <button class="btn btn-primary" type="submit">Search</button>
-    </div>
+  <form method="get" class="flex flex-wrap gap-2 mb-4 items-center">
+    <input type="text" name="q" value="{{ search_query }}" class="flex-1 min-w-[220px] rounded-md bg-black/30 border border-indigo-300/35 px-3 py-2 text-slate-100 placeholder:text-slate-400" placeholder="Search title/ISBN/author/tag" />
+    <button class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow" type="submit">Search</button>
   </form>
 
   {% if top_categories %}
-    <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
-      <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}" class="btn btn-outline-glass {% if not selected_category %}active{% endif %}">All</a>
+    <div class="mb-3 flex flex-wrap items-center gap-2">
+      <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}" class="px-3 py-2 rounded-md border border-indigo-300/35 text-slate-200 bg-transparent hover:bg-indigo-800/20 {% if not selected_category %}ring-1 ring-indigo-400/50{% endif %}">All</a>
       {% for c in top_categories %}
         {% if forloop.counter <= 8 %}
-          <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}" class="btn btn-outline-glass {% if selected_category and selected_category.id == c.id %}active{% endif %}">{{ c.name }}</a>
+          <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}" class="px-3 py-2 rounded-md border border-indigo-300/35 text-slate-200 bg-transparent hover:bg-indigo-800/20 {% if selected_category and selected_category.id == c.id %}active{% endif %}">{{ c.name }}</a>
         {% endif %}
       {% endfor %}
       {% if top_categories|length > 8 %}
-        <div class="dropdown">
-          <button class="btn btn-outline-glass dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">More</button>
-          <ul class="dropdown-menu dropdown-menu-dark">
+        <details class="relative">
+          <summary class="px-3 py-2 rounded-md border border-indigo-300/35 text-slate-200 bg-transparent hover:bg-indigo-800/20 cursor-pointer list-none">More</summary>
+          <div class="absolute mt-2 w-56 rounded-md border border-indigo-300/25 bg-slate-900/90 backdrop-blur-md p-2 z-40">
             {% for c in top_categories %}
               {% if forloop.counter > 8 %}
-                <li><a class="dropdown-item" href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}">{{ c.name }}</a></li>
+                <a class="block px-3 py-2 rounded text-slate-200 hover:bg-white/10" href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}">{{ c.name }}</a>
               {% endif %}
             {% endfor %}
-          </ul>
-        </div>
+          </div>
+        </details>
       {% endif %}
     </div>
   {% endif %}
 
   {% if popular_tags %}
-    <div class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+    <div class="mb-2 flex flex-wrap gap-2 items-center">
       {% for tag_item in popular_tags %}
         {% if forloop.counter <= 12 %}
-          <a class="badge bg-secondary text-decoration-none" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
+          <a class="inline-block rounded bg-slate-600/60 text-white text-xs px-2 py-0.5 no-underline" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
         {% endif %}
       {% endfor %}
       {% if popular_tags|length > 12 %}
-        <a class="small text-decoration-none" data-bs-toggle="collapse" href="#moreTagsCatalog" role="button" aria-expanded="false" aria-controls="moreTagsCatalog">More tags</a>
+        <details>
+          <summary class="cursor-pointer text-sm text-slate-300">More tags</summary>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {% for tag_item in popular_tags %}
+              {% if forloop.counter > 12 %}
+                <a class="inline-block rounded bg-slate-600/60 text-white text-xs px-2 py-0.5 no-underline" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </details>
       {% endif %}
     </div>
-    {% if popular_tags|length > 12 %}
-      <div class="collapse" id="moreTagsCatalog">
-        <div class="d-flex flex-wrap gap-2">
-          {% for tag_item in popular_tags %}
-            {% if forloop.counter > 12 %}
-              <a class="badge bg-secondary text-decoration-none" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}
   {% endif %}
 
-  <div class="list-group glass-card p-0">
+  <div class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md divide-y divide-white/10">
     {% for book in books %}
-      <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{% url 'catalog-detail' book.id %}">
-        <div class="d-flex align-items-center">
-          {% if book.cover %}<img src="{{ book.cover.url }}" alt="{{ book.title }} cover" class="me-3 rounded" style="width:48px;height:64px;object-fit:cover;" />{% endif %}
+      <a class=\"flex justify-between items-center px-3 py-3 hover:bg-white/5\" href="{% url 'catalog-detail' book.id %}">
+        <div class=\"flex items-center\">
+          {% if book.cover %}<img src="{{ book.cover.url }}" alt="{{ book.title }} cover" class=\"mr-3 rounded\" style="width:48px;height:64px;object-fit:contain;object-position:center;background:rgba(0,0,0,0.15);display:block;" />{% endif %}
           <div>
-            <div class="fw-semibold">{{ book.title }}</div>
-          <div class="text-muted-contrast small">ISBN: {{ book.isbn13 }} • {{ book.language }} • {{ book.publish_year }}</div>
+            <div class=\"font-semibold\">{{ book.title }}</div>
+          <div class=\"text-slate-300 text-sm\">ISBN: {{ book.isbn13 }} • {{ book.language }} • {{ book.publish_year }}</div>
           {% if book.category %}
-            <div class="text-muted-contrast small">Category: {{ book.category.name }}</div>
+            <div class=\"text-slate-300 text-sm\">Category: {{ book.category.name }}</div>
           {% endif %}
           </div>
         </div>
-        <span class="badge bg-success">Available: {{ book.available_count }}</span>
+        <span class=\"inline-block rounded bg-emerald-600/80 text-white text-xs px-2 py-0.5\">Available: {{ book.available_count }}</span>
       </a>
     {% empty %}
       <div class="text-muted">No books found.</div>

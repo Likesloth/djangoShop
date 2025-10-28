@@ -7,150 +7,155 @@
 
 {% block myheader %}
   <div class="hero-section text-center">
-    <h1 class="display-6 fw-bold text-white mb-1">Contact Submissions</h1>
-    <p class="mb-0 lead-muted">Review inbound messages and plan follow-up actions</p>
+    <h1 class="text-3xl sm:text-4xl font-bold text-white mb-1">Contact Submissions</h1>
+    <p class="mb-0 text-indigo-100">Review inbound messages and plan follow-up actions</p>
   </div>
 {% endblock %}
 
 {% block content %}
 <div class="container py-4">
   {% if messages %}
-    <div class="row mb-3">
-      <div class="col">
-        {% for message in messages %}
-          <div class="alert alert-{{ message.tags|default:'info' }}" role="alert">
-            {{ message }}
-          </div>
-        {% endfor %}
-      </div>
+    <div class="mb-3">
+      {% for message in messages %}
+        {% if 'success' in message.tags %}
+          <div class="rounded-2xl border-2 border-emerald-300 bg-emerald-50 text-emerald-700 px-5 py-3 mb-2">{{ message }}</div>
+        {% elif 'error' in message.tags %}
+          <div class="rounded-2xl border-2 border-red-300 bg-red-50 text-red-700 px-5 py-3 mb-2">{{ message }}</div>
+        {% elif 'warning' in message.tags %}
+          <div class="rounded-2xl border-2 border-amber-300 bg-amber-50 text-amber-700 px-5 py-3 mb-2">{{ message }}</div>
+        {% else %}
+          <div class="rounded-2xl border-2 border-gray-300 bg-white text-gray-700 px-5 py-3 mb-2">{{ message }}</div>
+        {% endif %}
+      {% endfor %}
     </div>
   {% endif %}
-  <div class="row g-4">
-    <div class="col-lg-7">
-      <div class="card glass-card">
-        <div class="card-header bg-light fw-semibold">Contacts</div>
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-striped align-middle mb-0" id="contacts-table">
-              <thead>
-                <tr>
-                  <th scope="col">Topic</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Actions</th>
-                  <th scope="col">Status</th>
-                  <th scope="col" class="text-end">Options</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for c in contacts %}
-                {% with c.actions.count as action_total %}
-                <tr class="{% if selected_contact and c.id == selected_contact.id %}selected-row{% endif %} clickable-row" data-contact-id="{{ c.id }}" data-topic="{{ c.topic }}">
-                  <td>
-                    <a class="text-decoration-none link-light js-contact" href="{% url 'contact-detail' c.id %}">{{ c.topic }}</a>
-                  </td>
-                  <td>{{ c.email }}</td>
-                  <td>
-                    {% if action_total %}
-                      <div class="dropdown">
-                        <a class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          {{ action_total }} action{{ action_total|pluralize }}
-                        </a>
-                        <ul class="dropdown-menu">
-                          {% for action_item in c.actions.all|slice:":5" %}
-                            <li><a class="dropdown-item" href="{% url 'action-detail' action_item.id %}">{{ action_item.name }}</a></li>
-                          {% endfor %}
-                          {% if action_total > 5 %}
-                            <li><span class="dropdown-item-text text-muted">+{{ action_total|add:"-5" }} more</span></li>
-                          {% endif %}
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="{% url 'showcontact-page' %}?contact={{ c.id }}">View all for this contact</a></li>
-                          <li><a class="dropdown-item" href="{% url 'action-create' %}?contact={{ c.id }}">Add new action</a></li>
-                        </ul>
-                      </div>
-                    {% else %}
-                      <a class="btn btn-sm btn-outline-primary" href="{% url 'action-create' %}?contact={{ c.id }}">Add action</a>
-                    {% endif %}
-                  </td>
-                  <td>
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                      <span class="badge {% if c.complete %}bg-success{% else %}bg-warning text-dark{% endif %}">
-                        {% if c.complete %}Complete{% else %}Pending{% endif %}
-                      </span>
-                      <form method="post" action="{% url 'contact-toggle-complete' c.id %}" class="d-inline">
-                        {% csrf_token %}
-                        {% if c.complete %}
-                          <input type="hidden" name="complete" value="false">
-                          <button type="submit" class="btn btn-sm btn-outline-secondary">Mark pending</button>
-                        {% else %}
-                          <input type="hidden" name="complete" value="true">
-                          <button type="submit" class="btn btn-sm btn-outline-success">Mark complete</button>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+    <!-- Contacts table -->
+    <div class="lg:col-span-7">
+      <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md overflow-hidden">
+        <div class="px-4 py-2 bg-lavender/40 text-slate-800 font-semibold">Contacts</div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full align-middle" id="contacts-table">
+            <thead class="bg-lavender/40 text-slate-700 text-sm">
+              <tr>
+                <th class="text-left px-4 py-2">Topic</th>
+                <th class="text-left px-4 py-2">Email</th>
+                <th class="text-left px-4 py-2">Actions</th>
+                <th class="text-left px-4 py-2">Status</th>
+                <th class="text-right px-4 py-2">Options</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-peach-300/60">
+              {% for c in contacts %}
+              {% with c.actions.count as action_total %}
+              <tr class="{% if selected_contact and c.id == selected_contact.id %}selected-row{% endif %} clickable-row" data-contact-id="{{ c.id }}" data-topic="{{ c.topic }}">
+                <td class="px-4 py-2">
+                  <a class="js-contact text-indigo underline" href="{% url 'contact-detail' c.id %}">{{ c.topic }}</a>
+                </td>
+                <td class="px-4 py-2">{{ c.email }}</td>
+                <td class="px-4 py-2">
+                  {% if action_total %}
+                    <details class="relative inline-block">
+                      <summary class="inline-flex items-center px-2 py-1.5 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50 cursor-pointer select-none">{{ action_total }} action{{ action_total|pluralize }}</summary>
+                      <ul class="absolute mt-2 w-56 rounded-xl border border-peach-400/70 bg-white/95 shadow-xl p-2 z-10">
+                        {% for action_item in c.actions.all|slice:":5" %}
+                          <li><a class="block px-3 py-2 rounded-lg hover:bg-lavender/40" href="{% url 'action-detail' action_item.id %}">{{ action_item.name }}</a></li>
+                        {% endfor %}
+                        {% if action_total > 5 %}
+                          <li><span class="block px-3 py-2 text-slate-500">+{{ action_total|add:"-5" }} more</span></li>
                         {% endif %}
-                      </form>
-                    </div>
-                  </td>
-                  <td class="text-end">
-                    <div class="btn-group btn-group-sm" role="group">
-                      <a class="btn btn-outline-primary" href="{% url 'contact-detail' c.id %}">View</a>
-                      <a class="btn btn-outline-danger" href="{% url 'contact-delete' c.id %}">Delete</a>
-                    </div>
-                  </td>
-                </tr>
-                {% endwith %}
-                {% empty %}
-                <tr>
-                  <td colspan="5" class="text-center text-muted py-4">No contact records found.</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+                        <li><hr class="my-1 border-peach-300/60"></li>
+                        <li><a class="block px-3 py-2 rounded-lg hover:bg-lavender/40" href="{% url 'showcontact-page' %}?contact={{ c.id }}">View all for this contact</a></li>
+                        <li><a class="block px-3 py-2 rounded-lg hover:bg-lavender/40" href="{% url 'action-create' %}?contact={{ c.id }}">Add new action</a></li>
+                      </ul>
+                    </details>
+                  {% else %}
+                    <a class="inline-flex items-center px-2.5 py-1.5 rounded-md border border-indigo text-indigo hover:bg-indigo/10 text-sm" href="{% url 'action-create' %}?contact={{ c.id }}">Add action</a>
+                  {% endif %}
+                </td>
+                <td class="px-4 py-2">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium {% if c.complete %}bg-emerald-50 text-emerald-700 border border-emerald-300{% else %}bg-amber-50 text-amber-800 border border-amber-300{% endif %}">
+                      {% if c.complete %}Complete{% else %}Pending{% endif %}
+                    </span>
+                    <form method="post" action="{% url 'contact-toggle-complete' c.id %}" class="inline">
+                      {% csrf_token %}
+                      {% if c.complete %}
+                        <input type="hidden" name="complete" value="false">
+                        <button type="submit" class="inline-flex items-center px-2 py-1 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50 text-sm">Mark pending</button>
+                      {% else %}
+                        <input type="hidden" name="complete" value="true">
+                        <button type="submit" class="inline-flex items-center px-2 py-1 rounded-md border border-emerald-300 text-emerald-700 hover:bg-emerald-50 text-sm">Mark complete</button>
+                      {% endif %}
+                    </form>
+                  </div>
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <div class="inline-flex items-center gap-2">
+                    <a class="inline-flex items-center px-2.5 py-1.5 rounded-md border border-indigo text-indigo hover:bg-indigo/10 text-sm" href="{% url 'contact-detail' c.id %}">View</a>
+                    <a class="inline-flex items-center px-2.5 py-1.5 rounded-md border border-red-300 text-red-700 hover:bg-red-50 text-sm" href="{% url 'contact-delete' c.id %}">Delete</a>
+                  </div>
+                </td>
+              </tr>
+              {% endwith %}
+              {% empty %}
+              <tr>
+                <td colspan="5" class="px-4 py-4 text-center text-slate-500">No contact records found.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
       </div>
-      <nav aria-label="Contacts pagination" class="mt-3">
-        <ul class="pagination justify-content-center flex-wrap">
-          <li class="page-item {% if not contacts.has_previous %}disabled{% endif %}">
-            <a class="page-link" href="{% if contacts.has_previous %}?page={{ contacts.previous_page_number }}{% if selected_contact %}&contact={{ selected_contact.id }}{% endif %}{% else %}#{% endif %}">Previous</a>
-          </li>
 
+      <nav aria-label="Contacts pagination" class="mt-3">
+        <ul class="flex items-center justify-center flex-wrap gap-2">
+          <li>
+            <a class="px-3 py-2 rounded-md border border-peach-400/70 bg-white/70 text-slate-800 hover:bg-white/90 {% if not contacts.has_previous %}pointer-events-none opacity-50{% endif %}"
+               href="{% if contacts.has_previous %}?page={{ contacts.previous_page_number }}{% if selected_contact %}&contact={{ selected_contact.id }}{% endif %}{% else %}#{% endif %}">Previous</a>
+          </li>
           {% for num in contacts.paginator.page_range %}
-            <li class="page-item {% if contacts.number == num %}active{% endif %}">
-              <a class="page-link" href="?page={{ num }}{% if selected_contact %}&contact={{ selected_contact.id }}{% endif %}">{{ num }}</a>
+            <li>
+              <a class="px-3 py-2 rounded-md border border-peach-400/70 bg-white/70 text-slate-800 hover:bg-white/90 {% if contacts.number == num %}!bg-indigo !text-white !border-indigo{% endif %}"
+                 href="?page={{ num }}{% if selected_contact %}&contact={{ selected_contact.id }}{% endif %}">{{ num }}</a>
             </li>
           {% endfor %}
-
-          <li class="page-item {% if not contacts.has_next %}disabled{% endif %}">
-            <a class="page-link" href="{% if contacts.has_next %}?page={{ contacts.next_page_number }}{% if selected_contact %}&contact={{ selected_contact.id }}{% endif %}{% else %}#{% endif %}">Next</a>
+          <li>
+            <a class="px-3 py-2 rounded-md border border-peach-400/70 bg-white/70 text-slate-800 hover:bg-white/90 {% if not contacts.has_next %}pointer-events-none opacity-50{% endif %}"
+               href="{% if contacts.has_next %}?page={{ contacts.next_page_number }}{% if selected_contact %}&contact={{ selected_contact.id }}{% endif %}{% else %}#{% endif %}">Next</a>
           </li>
         </ul>
-        <div class="text-center text-muted small">
+        <div class="text-center text-slate-600 text-sm mt-2">
           Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}
         </div>
       </nav>
     </div>
-    <div class="col-lg-5">
-      <div class="card glass-card mb-3" id="actions-panel">
-        <div class="card-header bg-light fw-semibold d-flex align-items-center justify-content-between">
+
+    <!-- Actions side panel -->
+    <div class="lg:col-span-5">
+      <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md mb-3" id="actions-panel">
+        <div class="px-4 py-2 bg-lavender/40 text-slate-800 font-semibold flex items-center justify-between">
           <span id="actions-header-topic">Actions for {% if selected_contact %}{{ selected_contact.topic }}{% else %}selected contact{% endif %}</span>
-          <div class="d-flex align-items-center gap-2" id="actions-header-controls">
-            <div class="btn-group btn-group-sm" role="group" aria-label="Filter actions">
-              <button type="button" class="btn btn-outline-light" data-filter="all">All</button>
-              <button type="button" class="btn btn-outline-light" data-filter="pending">Pending</button>
-              <button type="button" class="btn btn-outline-light" data-filter="done">Done</button>
+          <div class="flex items-center gap-2" id="actions-header-controls">
+            <div aria-label="Filter actions" class="flex items-center gap-2">
+              <button type="button" class="px-2 py-1 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50 text-sm" data-filter="all">All</button>
+              <button type="button" class="px-2 py-1 rounded-md border border-amber-300 text-amber-700 hover:bg-amber-50 text-sm" data-filter="pending">Pending</button>
+              <button type="button" class="px-2 py-1 rounded-md border border-emerald-300 text-emerald-700 hover:bg-emerald-50 text-sm" data-filter="done">Done</button>
             </div>
             {% if selected_contact %}
-              <a class="btn btn-primary-custom btn-sm" id="actions-new-link" href="{% url 'action-quick-create' selected_contact.id %}">New</a>
+              <a class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo text-white hover:opacity-90 shadow btn-sm" id="actions-new-link" href="{% url 'action-quick-create' selected_contact.id %}">New</a>
             {% endif %}
           </div>
         </div>
-        <div class="card-body" id="actions-list">
+        <div class="p-3" id="actions-list">
           {% if selected_contact %}
             {% include 'myapp/actions/_actions_list.html' with actions=actions %}
           {% else %}
-            <p class="text-muted mb-0">Select a contact to view their actions.</p>
+            <p class="text-slate-600 mb-0">Select a contact to view their actions.</p>
           {% endif %}
         </div>
       </div>
-      
     </div>
   </div>
 </div>

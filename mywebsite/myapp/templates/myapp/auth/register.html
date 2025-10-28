@@ -18,7 +18,7 @@
             {% endif %}
           </div>
         {% endif %}
-        <form method="post" class="glass-card p-4">
+        <form method="post" class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md p-4">
           {% csrf_token %}
           <label>Username</label><br/>
           <input name="username" class="form-control" required /><br/>
@@ -30,7 +30,7 @@
           <input name="last_name" class="form-control" /><br/>
           <label>Email</label><br/>
           <input name="email" type="email" class="form-control" /><br/>
-          <button type="submit" class="btn btn-primary-custom mt-2">Register</button>
+          <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow mt-2">Register</button>
         </form>
       </div>
     </div>

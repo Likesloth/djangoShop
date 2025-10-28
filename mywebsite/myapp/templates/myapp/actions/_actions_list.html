@@ -1,28 +1,28 @@
 {% for action in actions %}
-  <div class="d-flex align-items-start justify-content-between border-bottom py-2 action-item" data-status="{% if action.complete %}done{% else %}pending{% endif %}">
+  <div class="flex items-start justify-between border-b border-peach-300/60 py-2 action-item" data-status="{% if action.complete %}done{% else %}pending{% endif %}">
     <div>
-      <a class="text-decoration-none link-light" href="{% url 'action-detail' action.id %}">{{ action.name }}</a>
+      <a class="font-semibold text-indigo hover:underline" href="{% url 'action-detail' action.id %}">{{ action.name }}</a>
       {% if action.note %}
-        <div class="small text-muted">{{ action.note }}</div>
+        <div class="text-sm text-slate-600">{{ action.note }}</div>
       {% endif %}
-      <div class="small text-muted">Updated: {{ action.updated_at|date:'Y-m-d H:i' }}</div>
+      <div class="text-sm text-slate-600">Updated: {{ action.updated_at|date:'Y-m-d H:i' }}</div>
     </div>
-    <div class="d-flex align-items-center gap-2">
-      <form method="post" action="{% url 'action-toggle-complete' action.id %}" class="d-inline">
+    <div class="flex items-center gap-2">
+      <form method="post" action="{% url 'action-toggle-complete' action.id %}" class="inline">
         {% csrf_token %}
         {% if action.complete %}
           <input type="hidden" name="complete" value="false">
-          <button type="submit" class="btn btn-sm btn-outline-secondary">Mark pending</button>
+          <button type="submit" class="inline-flex items-center px-2 py-1 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50 text-sm">Mark pending</button>
         {% else %}
           <input type="hidden" name="complete" value="true">
-          <button type="submit" class="btn btn-sm btn-outline-success">Mark done</button>
+          <button type="submit" class="inline-flex items-center px-2 py-1 rounded-md border border-emerald-300 text-emerald-700 hover:bg-emerald-50 text-sm">Mark done</button>
         {% endif %}
       </form>
-      <a class="btn btn-sm btn-outline-primary" href="{% url 'action-update' action.id %}">Edit</a>
-      <a class="btn btn-sm btn-outline-danger" href="{% url 'action-delete' action.id %}">Delete</a>
+      <a class="inline-flex items-center px-2 py-1 rounded-md border border-indigo text-indigo hover:bg-indigo/10 text-sm" href="{% url 'action-update' action.id %}">Edit</a>
+      <a class="inline-flex items-center px-2 py-1 rounded-md border border-red-300 text-red-700 hover:bg-red-50 text-sm" href="{% url 'action-delete' action.id %}">Delete</a>
     </div>
   </div>
 {% empty %}
-  <p class="text-muted mb-0">No actions yet.</p>
+  <p class="text-slate-600 mb-0">No actions yet.</p>
 {% endfor %}
 

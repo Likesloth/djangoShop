@@ -1,72 +1,72 @@
 {% extends 'myapp/layout/base.html' %}
 
 {% block content %}
-<div class="container py-4">
-  <h2 class="mb-3">My Loans</h2>
+<div class="max-w-7xl mx-auto px-4 py-6">
+  <h2 class="text-2xl font-semibold text-white mb-3">My Loans</h2>
 
-  <div class="card glass-card mb-4">
-    <div class="card-header bg-light">Active Loans</div>
-    <div class="table-responsive">
-      <table class="table table-sm table-striped align-middle mb-0">
+  <div class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md mb-4 overflow-hidden">
+    <div class="px-3 py-2 bg-white/5 text-slate-200 font-semibold">Active Loans</div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-slate-200">
         <thead>
-          <tr>
-            <th>Title</th>
-            <th>Barcode</th>
-            <th>Due</th>
-            <th>Renews</th>
-            <th style="width: 120px;">Actions</th>
+          <tr class="bg-white/5">
+            <th class="text-left px-3 py-2 text-sm font-semibold">Title</th>
+            <th class="text-left px-3 py-2 text-sm font-semibold">Barcode</th>
+            <th class="text-left px-3 py-2 text-sm font-semibold">Due</th>
+            <th class="text-left px-3 py-2 text-sm font-semibold">Renews</th>
+            <th class="text-left px-3 py-2 text-sm font-semibold">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-white/10">
           {% for loan in active_loans %}
             <tr>
-              <td>{{ loan.copy.book.title }}</td>
-              <td>{{ loan.copy.barcode }}</td>
-              <td>{{ loan.due_at|date:'Y-m-d H:i' }}</td>
-              <td>{{ loan.renew_count }}</td>
-              <td>
+              <td class="px-3 py-2">{{ loan.copy.book.title }}</td>
+              <td class="px-3 py-2">{{ loan.copy.barcode }}</td>
+              <td class="px-3 py-2">{{ loan.due_at|date:'Y-m-d H:i' }}</td>
+              <td class="px-3 py-2">{{ loan.renew_count }}</td>
+              <td class="px-3 py-2">
                 {% if loan.renew_count < 2 %}
                   <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="renew">
                     <input type="hidden" name="loan_id" value="{{ loan.id }}">
-                    <button type="submit" class="btn btn-sm btn-warning">Renew</button>
+                    <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 rounded-md bg-amber-600 hover:bg-amber-500 text-white text-sm">Renew</button>
                   </form>
                 {% else %}
-                  <span class="text-muted small">Max renewals reached</span>
+                  <span class="text-slate-400 text-sm">Max renewals reached</span>
                 {% endif %}
               </td>
             </tr>
           {% empty %}
-            <tr><td colspan="5" class="text-muted">No active loans.</td></tr>
+            <tr><td colspan="5" class="px-3 py-3 text-slate-400">No active loans.</td></tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
 
-  <div class="card glass-card">
-    <div class="card-header bg-light">Loan History</div>
-    <div class="table-responsive">
-      <table class="table table-sm table-striped align-middle mb-0">
+  <div class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md overflow-hidden">
+    <div class="px-3 py-2 bg-white/5 text-slate-200 font-semibold">Loan History</div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-slate-200">
         <thead>
-          <tr>
-            <th>Title</th>
-            <th>Barcode</th>
-            <th>Checked out</th>
-            <th>Returned at</th>
+          <tr class="bg-white/5">
+            <th class="text-left px-3 py-2 text-sm font-semibold">Title</th>
+            <th class="text-left px-3 py-2 text-sm font-semibold">Barcode</th>
+            <th class="text-left px-3 py-2 text-sm font-semibold">Checked out</th>
+            <th class="text-left px-3 py-2 text-sm font-semibold">Returned at</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-white/10">
           {% for loan in past_loans %}
             <tr>
-              <td>{{ loan.copy.book.title }}</td>
-              <td>{{ loan.copy.barcode }}</td>
-              <td>{{ loan.checked_out_at|date:'Y-m-d H:i' }}</td>
-              <td>{{ loan.returned_at|date:'Y-m-d H:i' }}</td>
+              <td class="px-3 py-2">{{ loan.copy.book.title }}</td>
+              <td class="px-3 py-2">{{ loan.copy.barcode }}</td>
+              <td class="px-3 py-2">{{ loan.checked_out_at|date:'Y-m-d H:i' }}</td>
+              <td class="px-3 py-2">{{ loan.returned_at|date:'Y-m-d H:i' }}</td>
             </tr>
           {% empty %}
-            <tr><td colspan="4" class="text-muted">No past loans.</td></tr>
+            <tr><td colspan="4" class="px-3 py-3 text-slate-400">No past loans.</td></tr>
           {% endfor %}
         </tbody>
       </table>

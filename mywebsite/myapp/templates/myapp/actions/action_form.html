@@ -9,36 +9,30 @@
 
 {% block content %}
 <div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="card glass-card">
-        <div class="card-body">
-          <form method="post" novalidate>
-            {% csrf_token %}
-            {% for field in form %}
-              <div class="mb-3">
-                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.help_text %}
-                  <div class="form-text">{{ field.help_text }}</div>
-                {% endif %}
-                {% for error in field.errors %}
-                  <div class="text-danger small">{{ error }}</div>
-                {% endfor %}
-              </div>
-            {% endfor %}
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary-custom">Save</button>
-              {% if action %}
-                <a class="btn btn-outline-secondary" href="{% url 'action-detail' action.id %}">Cancel</a>
-              {% else %}
-                <a class="btn btn-outline-secondary" href="{% url 'showcontact-page' %}">Cancel</a>
-              {% endif %}
-            </div>
-          </form>
+  <div class="max-w-3xl mx-auto rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md p-5">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-slate-800 mb-1" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}
+            <div class="text-slate-600 text-sm mt-1">{{ field.help_text }}</div>
+          {% endif %}
+          {% for error in field.errors %}
+            <div class="text-red-600 text-sm mt-1">{{ error }}</div>
+          {% endfor %}
         </div>
+      {% endfor %}
+      <div class="flex gap-2">
+        <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo text-white hover:opacity-90 shadow">Save</button>
+        {% if action %}
+          <a class="inline-flex items-center justify-center px-3 py-2 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50" href="{% url 'action-detail' action.id %}">Cancel</a>
+        {% else %}
+          <a class="inline-flex items-center justify-center px-3 py-2 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50" href="{% url 'showcontact-page' %}">Cancel</a>
+        {% endif %}
       </div>
-    </div>
+    </form>
   </div>
 </div>
 {% endblock %}

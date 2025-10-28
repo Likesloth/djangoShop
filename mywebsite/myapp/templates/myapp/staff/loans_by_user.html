@@ -1,18 +1,18 @@
 {% extends 'myapp/layout/base.html' %}
 {% block content %}
-<div class="container mt-4">
-  <h2>Active Loans by User</h2>
+<div class="container py-4">
+  <h2 class="text-xl font-semibold text-slate-900 mb-3">Active Loans by User</h2>
 
-  <form method="get" class="row g-2 mb-3">
-    <div class="col-sm-6 col-md-4">
-      <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search by username or email" />
+  <form method="get" class="flex flex-wrap items-center gap-2 mb-3">
+    <div class="w-full sm:w-auto sm:flex-1 max-w-md">
+      <input type="text" name="q" value="{{ q }}" class="w-full px-3 py-2 rounded-md border-2 border-peach-400/70 bg-white/80 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent" placeholder="Search by username or email" />
     </div>
-    <div class="col-auto">
-      <button class="btn btn-primary" type="submit">Search</button>
+    <div>
+      <button class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo text-white hover:opacity-90 shadow" type="submit">Search</button>
     </div>
     {% if q %}
-      <div class="col-auto">
-        <a class="btn btn-outline-secondary" href="{% url 'staff-loans-by-user' %}">Clear</a>
+      <div>
+        <a class="inline-flex items-center justify-center px-3 py-2 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50" href="{% url 'staff-loans-by-user' %}">Clear</a>
       </div>
     {% endif %}
   </form>
@@ -20,51 +20,51 @@
   {% if borrower %}
     <div class="mb-2">Showing loans for: <strong>{{ borrower.username }}</strong> ({{ borrower.email }})</div>
   {% elif q %}
-    <div class="text-muted mb-2">No user found matching "{{ q }}". Showing all active loans.</div>
+    <div class="text-slate-600 mb-2">No user found matching "{{ q }}". Showing all active loans.</div>
   {% endif %}
 
-  <div class="table-responsive">
-    <table class="table table-striped align-middle">
-      <thead>
-        <tr>
-          <th>Borrower</th>
-          <th>Title</th>
-          <th>Barcode</th>
-          <th>Checked Out</th>
-          <th>Due</th>
-          <th>Overdue</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for loan in loans %}
-          <tr{% if loan.due_at and loan.due_at|date:'U' < now|date:'U' %} class="table-warning"{% endif %}>
-            <td>{{ loan.borrower.username }}</td>
-            <td>{{ loan.copy.book.title }}</td>
-            <td>{{ loan.copy.barcode }}</td>
-            <td>{{ loan.checked_out_at|date:'Y-m-d H:i' }}</td>
-            <td>{{ loan.due_at|date:'Y-m-d H:i' }}</td>
-            <td>
-              {% if loan.due_at and loan.due_at|date:'U' < now|date:'U' %}
-                Overdue
-              {% else %}
-                
-              {% endif %}
-            </td>
-            <td>
-              <form method="post" action="" class="d-inline">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="return" />
-                <input type="hidden" name="loan_id" value="{{ loan.id }}" />
-                <button class="btn btn-sm btn-success" type="submit">Mark Returned</button>
-              </form>
-            </td>
+  <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full align-middle">
+        <thead class="bg-lavender/40 text-slate-700 text-sm">
+          <tr>
+            <th class="text-left px-4 py-2">Borrower</th>
+            <th class="text-left px-4 py-2">Title</th>
+            <th class="text-left px-4 py-2">Barcode</th>
+            <th class="text-left px-4 py-2">Checked Out</th>
+            <th class="text-left px-4 py-2">Due</th>
+            <th class="text-left px-4 py-2">Overdue</th>
+            <th class="text-left px-4 py-2">Action</th>
           </tr>
-        {% empty %}
-          <tr><td colspan="7" class="text-muted">No active loans.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody class="divide-y divide-peach-300/60">
+          {% for loan in loans %}
+            <tr class="{% if loan.due_at and loan.due_at|date:'U' < now|date:'U' %}bg-amber-50{% endif %}">
+              <td class="px-4 py-2">{{ loan.borrower.username }}</td>
+              <td class="px-4 py-2">{{ loan.copy.book.title }}</td>
+              <td class="px-4 py-2">{{ loan.copy.barcode }}</td>
+              <td class="px-4 py-2">{{ loan.checked_out_at|date:'Y-m-d H:i' }}</td>
+              <td class="px-4 py-2">{{ loan.due_at|date:'Y-m-d H:i' }}</td>
+              <td class="px-4 py-2">
+                {% if loan.due_at and loan.due_at|date:'U' < now|date:'U' %}
+                  <span class="inline-flex items-center px-2 py-1 rounded-md border border-amber-300 text-amber-700 bg-amber-50 text-xs font-medium">Overdue</span>
+                {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <form method="post" action="" class="inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="return" />
+                  <input type="hidden" name="loan_id" value="{{ loan.id }}" />
+                  <button class="inline-flex items-center px-2.5 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white text-sm shadow" type="submit">Mark Returned</button>
+                </form>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="7" class="px-4 py-3 text-slate-600">No active loans.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 {% endblock %}

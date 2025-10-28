@@ -9,47 +9,41 @@
 
 {% block content %}
 <div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="card glass-card">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start">
-            <div>
-              <h2 class="h4 mb-2">{{ action.name }}</h2>
-              <p class="text-muted mb-1">Linked contact:
-                <a href="{% url 'showcontact-page' %}?contact={{ action.contact.id }}">
-                  {{ action.contact.topic }}
-                </a>
-              </p>
-              <span class="badge {% if action.complete %}bg-success{% else %}bg-warning text-dark{% endif %}">
-                {% if action.complete %}Completed{% else %}Pending{% endif %}
-              </span>
-            </div>
-            <div class="text-end">
-              <small class="text-muted-contrast d-block">Created {{ action.created_at|date:"M d, Y" }}</small>
-              <small class="text-muted-contrast">Updated {{ action.updated_at|date:"M d, Y H:i" }}</small>
-            </div>
-          </div>
-          <hr>
-          <h3 class="h5">Details</h3>
-          <p class="mb-4">{{ action.detail|default:"No additional details provided." }}</p>
-          <div class="d-flex flex-wrap gap-2">
-            <a class="btn btn-primary-custom" href="{% url 'action-update' action.id %}">Edit action</a>
-            <a class="btn btn-outline-danger" href="{% url 'action-delete' action.id %}">Delete action</a>
-            <form method="post" action="{% url 'action-toggle-complete' action.id %}">
-              {% csrf_token %}
-              {% if action.complete %}
-                <input type="hidden" name="complete" value="false" />
-                <button type="submit" class="btn btn-outline-secondary">Mark pending</button>
-              {% else %}
-                <input type="hidden" name="complete" value="true" />
-                <button type="submit" class="btn btn-outline-success">Mark complete</button>
-              {% endif %}
-            </form>
-            <a class="btn btn-link text-slate-300" href="{% url 'showcontact-page' %}?contact={{ action.contact.id }}">Back to contact</a>
-          </div>
-        </div>
+  <div class="max-w-3xl mx-auto rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md p-5">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h2 class="text-xl font-semibold mb-2 text-slate-900">{{ action.name }}</h2>
+        <p class="text-slate-600 mb-1">Linked contact:
+          <a class="text-indigo underline" href="{% url 'showcontact-page' %}?contact={{ action.contact.id }}">
+            {{ action.contact.topic }}
+          </a>
+        </p>
+        <span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-sm font-medium {% if action.complete %}bg-emerald-50 text-emerald-700 border border-emerald-300{% else %}bg-amber-50 text-amber-800 border border-amber-300{% endif %}">
+          {% if action.complete %}Completed{% else %}Pending{% endif %}
+        </span>
       </div>
+      <div class="text-right">
+        <small class="block text-slate-600">Created {{ action.created_at|date:"M d, Y" }}</small>
+        <small class="text-slate-600">Updated {{ action.updated_at|date:"M d, Y H:i" }}</small>
+      </div>
+    </div>
+    <div class="my-4 border-t border-peach-300/60"></div>
+    <h3 class="text-lg font-semibold text-slate-900">Details</h3>
+    <p class="mb-4 text-slate-700">{{ action.detail|default:"No additional details provided." }}</p>
+    <div class="flex flex-wrap gap-2">
+      <a class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo text-white hover:opacity-90 shadow" href="{% url 'action-update' action.id %}">Edit action</a>
+      <a class="inline-flex items-center justify-center px-3 py-2 rounded-md border border-red-300 text-red-700 hover:bg-red-50" href="{% url 'action-delete' action.id %}">Delete action</a>
+      <form method="post" action="{% url 'action-toggle-complete' action.id %}">
+        {% csrf_token %}
+        {% if action.complete %}
+          <input type="hidden" name="complete" value="false" />
+          <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50">Mark pending</button>
+        {% else %}
+          <input type="hidden" name="complete" value="true" />
+          <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md border border-emerald-300 text-emerald-700 hover:bg-emerald-50">Mark complete</button>
+        {% endif %}
+      </form>
+      <a class="inline-flex items-center justify-center px-3 py-2 rounded-md text-indigo hover:underline" href="{% url 'showcontact-page' %}?contact={{ action.contact.id }}">Back to contact</a>
     </div>
   </div>
 </div>

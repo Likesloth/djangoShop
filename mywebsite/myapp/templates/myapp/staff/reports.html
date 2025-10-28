@@ -2,62 +2,50 @@
 
 {% block content %}
 <div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">Reports Dashboard</h2>
-    <div class="d-flex gap-2">
-      <a class="btn btn-outline-primary" href="{% url 'report-overdues-csv' %}">Overdues CSV</a>
-      <a class="btn btn-outline-primary" href="{% url 'report-top-borrowed-csv' %}">Top Borrowed CSV</a>
-      <a class="btn btn-outline-primary" href="{% url 'report-fines-summary-csv' %}">Fines Summary CSV</a>
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl font-semibold text-slate-900">Reports Dashboard</h2>
+    <div class="flex gap-2">
+      <a class="inline-flex items-center px-3 py-2 rounded-md border border-indigo-300/60 text-indigo-700 hover:bg-indigo-100 transition" href="{% url 'report-overdues-csv' %}">Overdues CSV</a>
+      <a class="inline-flex items-center px-3 py-2 rounded-md border border-indigo-300/60 text-indigo-700 hover:bg-indigo-100 transition" href="{% url 'report-top-borrowed-csv' %}">Top Borrowed CSV</a>
+      <a class="inline-flex items-center px-3 py-2 rounded-md border border-indigo-300/60 text-indigo-700 hover:bg-indigo-100 transition" href="{% url 'report-fines-summary-csv' %}">Fines Summary CSV</a>
     </div>
   </div>
 
-  <div class="row g-4 mb-4">
-    <div class="col-md-4">
-      <div class="card glass-card">
-        <div class="card-body">
-          <div class="fw-semibold text-muted">Overdue Loans</div>
-          <div class="display-6">{{ overdue_count }}</div>
-          <a class="btn btn-sm btn-outline-light mt-2" href="{% url 'staff-overdues' %}">View overdues</a>
-        </div>
-      </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+    <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md p-4">
+      <div class="text-sm font-semibold text-slate-600">Overdue Loans</div>
+      <div class="text-4xl font-extrabold text-slate-900">{{ overdue_count }}</div>
+      <a class="inline-flex items-center px-2.5 py-1.5 rounded-md bg-indigo text-white text-sm hover:opacity-90 mt-2" href="{% url 'staff-overdues' %}">View overdues</a>
     </div>
-    <div class="col-md-4">
-      <div class="card glass-card">
-        <div class="card-body">
-          <div class="fw-semibold text-muted">Unpaid Fines</div>
-          <div class="display-6">{{ fines_unpaid }}</div>
-          <a class="btn btn-sm btn-outline-light mt-2" href="{% url 'staff-fines' %}">Open fines ledger</a>
-        </div>
-      </div>
+    <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md p-4">
+      <div class="text-sm font-semibold text-slate-600">Unpaid Fines</div>
+      <div class="text-4xl font-extrabold text-slate-900">{{ fines_unpaid }}</div>
+      <a class="inline-flex items-center px-2.5 py-1.5 rounded-md bg-indigo text-white text-sm hover:opacity-90 mt-2" href="{% url 'staff-fines' %}">Open fines ledger</a>
     </div>
-    <div class="col-md-4">
-      <div class="card glass-card">
-        <div class="card-body">
-          <div class="fw-semibold text-muted">Total Fines</div>
-          <div class="display-6">{{ fines_total }}</div>
-        </div>
-      </div>
+    <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md p-4">
+      <div class="text-sm font-semibold text-slate-600">Total Fines</div>
+      <div class="text-4xl font-extrabold text-slate-900">{{ fines_total }}</div>
     </div>
   </div>
 
-  <div class="card glass-card">
-    <div class="card-header bg-light">Top Borrowed (Top 10)</div>
-    <div class="table-responsive">
-      <table class="table table-sm table-striped align-middle mb-0">
-        <thead>
+  <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md overflow-hidden">
+    <div class="px-4 py-2 bg-lavender/40 text-slate-800 font-semibold">Top Borrowed (Top 10)</div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full">
+        <thead class="bg-lavender/40 text-slate-700 text-sm">
           <tr>
-            <th>Title</th>
-            <th>Loans</th>
+            <th class="text-left px-4 py-2">Title</th>
+            <th class="text-left px-4 py-2">Loans</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-peach-300/60">
           {% for row in top_borrowed %}
             <tr>
-              <td>{{ row.copy__book__title }}</td>
-              <td>{{ row.count }}</td>
+              <td class="px-4 py-2">{{ row.copy__book__title }}</td>
+              <td class="px-4 py-2">{{ row.count }}</td>
             </tr>
           {% empty %}
-            <tr><td colspan="2" class="text-muted">No data yet.</td></tr>
+            <tr><td colspan="2" class="px-4 py-3 text-slate-500">No data yet.</td></tr>
           {% endfor %}
         </tbody>
       </table>
