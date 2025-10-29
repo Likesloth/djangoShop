@@ -1,26 +1,28 @@
 {% extends 'myapp/layout/base.html' %}
 
 {% block myheader %}
-  <div class="hero-section">
-    <h1 class="display-6 fw-bold text-white mb-0">Edit Profile</h1>
+  <div class="bg-gradient-to-r from-lavender via-pink to-peach rounded-3xl p-8 mb-8 shadow-xl text-center">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Edit Profile</h1>
   </div>
 {% endblock myheader %}
 
 {% block content %}
-  <div class="container my-4">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-8 col-lg-6">
-        <form method="post" class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md p-4">
-          {% csrf_token %}
-          <label>First name</label><br/>
-          <input name="first_name" class="form-control" value="{{ request.user.first_name }}" /><br/>
-          <label>Last name</label><br/>
-          <input name="last_name" class="form-control" value="{{ request.user.last_name }}" /><br/>
-          <label>Email</label><br/>
-          <input name="email" type="email" class="form-control" value="{{ request.user.email }}" /><br/>
-          <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow mt-2">Save</button>
-        </form>
+  <div class="max-w-2xl mx-auto px-4">
+    <form method="post" class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl p-6">
+      {% csrf_token %}
+      <div class="mb-4">
+        <label class="block text-sm font-bold text-gray-700 mb-2">First name</label>
+        <input name="first_name" class="w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent" value="{{ request.user.first_name }}" />
       </div>
-    </div>
+      <div class="mb-4">
+        <label class="block text-sm font-bold text-gray-700 mb-2">Last name</label>
+        <input name="last_name" class="w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent" value="{{ request.user.last_name }}" />
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm font-bold text-gray-700 mb-2">Email</label>
+        <input name="email" type="email" class="w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent" value="{{ request.user.email }}" />
+      </div>
+      <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-indigo to-purple-500 text-white font-bold shadow-lg hover:shadow-xl transition-all">Save</button>
+    </form>
   </div>
 {% endblock %}

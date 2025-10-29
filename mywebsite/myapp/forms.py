@@ -43,10 +43,21 @@ class LoanCreateForm(forms.ModelForm):
         model = Loan
         fields = ["borrower", "copy", "due_at", "note"]
         widgets = {
-            "borrower": forms.Select(attrs={"class": "form-select"}),
-            "copy": forms.Select(attrs={"class": "form-select"}),
-            "due_at": forms.DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}),
-            "note": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Optional notes"}),
+            "borrower": forms.Select(attrs={
+                "class": "w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent"
+            }),
+            "copy": forms.Select(attrs={
+                "class": "w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent"
+            }),
+            "due_at": forms.DateTimeInput(attrs={
+                "type": "datetime-local",
+                "class": "w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent"
+            }),
+            "note": forms.Textarea(attrs={
+                "class": "w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent",
+                "rows": 3,
+                "placeholder": "Optional notes",
+            }),
         }
 
     def clean(self):
@@ -69,10 +80,21 @@ class LoanUpdateForm(forms.ModelForm):
         model = Loan
         fields = ["due_at", "returned_at", "renew_count", "note"]
         widgets = {
-            "due_at": forms.DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}),
-            "returned_at": forms.DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}),
-            "renew_count": forms.NumberInput(attrs={"class": "form-control"}),
-            "note": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "due_at": forms.DateTimeInput(attrs={
+                "type": "datetime-local",
+                "class": "w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent",
+            }),
+            "returned_at": forms.DateTimeInput(attrs={
+                "type": "datetime-local",
+                "class": "w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent",
+            }),
+            "renew_count": forms.NumberInput(attrs={
+                "class": "w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent",
+            }),
+            "note": forms.Textarea(attrs={
+                "class": "w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent",
+                "rows": 3,
+            }),
         }
 
 
@@ -86,6 +108,12 @@ class LoanQuickCreateForm(forms.ModelForm):
         model = Loan
         fields = ["due_at", "note"]
         widgets = {
-            "due_at": forms.DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}),
-            "note": forms.Textarea(attrs={"class": "form-control", "rows": 2}),
+            "due_at": forms.DateTimeInput(attrs={
+                "type": "datetime-local",
+                "class": "w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent",
+            }),
+            "note": forms.Textarea(attrs={
+                "class": "w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent",
+                "rows": 2,
+            }),
         }

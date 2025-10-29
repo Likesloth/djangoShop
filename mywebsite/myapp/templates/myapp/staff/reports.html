@@ -1,51 +1,54 @@
 {% extends 'myapp/layout/base.html' %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-xl font-semibold text-slate-900">Reports Dashboard</h2>
+<div class="max-w-7xl mx-auto px-4 py-6">
+  <!-- Header -->
+  <div class="mb-6 flex items-center justify-between">
+    <h2 class="text-3xl font-bold text-gray-800">Reports Dashboard</h2>
     <div class="flex gap-2">
-      <a class="inline-flex items-center px-3 py-2 rounded-md border border-indigo-300/60 text-indigo-700 hover:bg-indigo-100 transition" href="{% url 'report-overdues-csv' %}">Overdues CSV</a>
-      <a class="inline-flex items-center px-3 py-2 rounded-md border border-indigo-300/60 text-indigo-700 hover:bg-indigo-100 transition" href="{% url 'report-top-borrowed-csv' %}">Top Borrowed CSV</a>
-      <a class="inline-flex items-center px-3 py-2 rounded-md border border-indigo-300/60 text-indigo-700 hover:bg-indigo-100 transition" href="{% url 'report-fines-summary-csv' %}">Fines Summary CSV</a>
+      <a class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold transition-all hover:scale-105" href="{% url 'report-overdues-csv' %}">Overdues CSV</a>
+      <a class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold transition-all hover:scale-105" href="{% url 'report-top-borrowed-csv' %}">Top Borrowed CSV</a>
+      <a class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold transition-all hover:scale-105" href="{% url 'report-fines-summary-csv' %}">Fines Summary CSV</a>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-    <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md p-4">
-      <div class="text-sm font-semibold text-slate-600">Overdue Loans</div>
-      <div class="text-4xl font-extrabold text-slate-900">{{ overdue_count }}</div>
-      <a class="inline-flex items-center px-2.5 py-1.5 rounded-md bg-indigo text-white text-sm hover:opacity-90 mt-2" href="{% url 'staff-overdues' %}">View overdues</a>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 p-6 shadow-xl">
+      <div class="text-sm font-semibold text-gray-600">Overdue Loans</div>
+      <div class="text-4xl font-extrabold text-gray-800">{{ overdue_count }}</div>
+      <a class="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-indigo to-purple-500 text-white text-sm font-semibold shadow-md hover:shadow-lg mt-3" href="{% url 'staff-overdues' %}">View Overdues</a>
     </div>
-    <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md p-4">
-      <div class="text-sm font-semibold text-slate-600">Unpaid Fines</div>
-      <div class="text-4xl font-extrabold text-slate-900">{{ fines_unpaid }}</div>
-      <a class="inline-flex items-center px-2.5 py-1.5 rounded-md bg-indigo text-white text-sm hover:opacity-90 mt-2" href="{% url 'staff-fines' %}">Open fines ledger</a>
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 p-6 shadow-xl">
+      <div class="text-sm font-semibold text-gray-600">Unpaid Fines</div>
+      <div class="text-4xl font-extrabold text-gray-800">{{ fines_unpaid }}</div>
+      <a class="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-indigo to-purple-500 text-white text-sm font-semibold shadow-md hover:shadow-lg mt-3" href="{% url 'staff-fines' %}">Open Fines Ledger</a>
     </div>
-    <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md p-4">
-      <div class="text-sm font-semibold text-slate-600">Total Fines</div>
-      <div class="text-4xl font-extrabold text-slate-900">{{ fines_total }}</div>
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 p-6 shadow-xl">
+      <div class="text-sm font-semibold text-gray-600">Total Fines</div>
+      <div class="text-4xl font-extrabold text-gray-800">{{ fines_total }}</div>
     </div>
   </div>
 
-  <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md overflow-hidden">
-    <div class="px-4 py-2 bg-lavender/40 text-slate-800 font-semibold">Top Borrowed (Top 10)</div>
+  <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden">
+    <div class="px-6 py-4 bg-gradient-to-r from-indigo/10 via-purple-500/10 to-pink/10 border-b-2 border-gray-100">
+      <h3 class="text-lg font-bold text-gray-800">Top Borrowed (Top 10)</h3>
+    </div>
     <div class="overflow-x-auto">
       <table class="min-w-full">
-        <thead class="bg-lavender/40 text-slate-700 text-sm">
-          <tr>
-            <th class="text-left px-4 py-2">Title</th>
-            <th class="text-left px-4 py-2">Loans</th>
+        <thead>
+          <tr class="bg-gray-50 border-b-2 border-gray-200">
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Title</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Loans</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-peach-300/60">
+        <tbody class="divide-y divide-gray-100">
           {% for row in top_borrowed %}
-            <tr>
-              <td class="px-4 py-2">{{ row.copy__book__title }}</td>
-              <td class="px-4 py-2">{{ row.count }}</td>
+            <tr class="hover:bg-indigo/5">
+              <td class="px-6 py-3 text-gray-800 font-medium">{{ row.copy__book__title }}</td>
+              <td class="px-6 py-3 text-gray-700">{{ row.count }}</td>
             </tr>
           {% empty %}
-            <tr><td colspan="2" class="px-4 py-3 text-slate-500">No data yet.</td></tr>
+            <tr><td colspan="2" class="px-6 py-10 text-center text-gray-500">No data yet.</td></tr>
           {% endfor %}
         </tbody>
       </table>

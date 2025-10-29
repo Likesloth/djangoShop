@@ -1,32 +1,46 @@
 {% extends 'myapp/layout/base.html' %}
 {% block content %}
-<div class="container py-4">
-  <h2 class="text-xl font-semibold text-slate-900 mb-3">Pickup Requests Queue</h2>
-  <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">Pickup Requests Queue</h2>
+  </div>
+
+  <!-- Table Card -->
+  <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden">
+    <div class="px-6 py-4 bg-gradient-to-r from-indigo/10 via-purple-500/10 to-pink/10 border-b-2 border-gray-100">
+      <h3 class="text-lg font-bold text-gray-800">Requests</h3>
+    </div>
     <div class="overflow-x-auto">
       <table class="min-w-full align-middle">
-        <thead class="bg-lavender/40 text-slate-700 text-sm">
-          <tr>
-            <th class="text-left px-4 py-2">ID</th>
-            <th class="text-left px-4 py-2">Requester</th>
-            <th class="text-left px-4 py-2">Status</th>
-            <th class="text-left px-4 py-2">Requested</th>
-            <th class="text-left px-4 py-2">Pickup By</th>
-            <th class="text-left px-4 py-2"></th>
+        <thead>
+          <tr class="bg-gray-50 border-b-2 border-gray-200">
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">ID</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Requester</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Requested</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Pickup By</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider"></th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-peach-300/60">
+        <tbody class="divide-y divide-gray-100">
           {% for r in requests %}
-            <tr>
-              <td class="px-4 py-2">#{{ r.id }}</td>
-              <td class="px-4 py-2">{{ r.requester.username }}</td>
-              <td class="px-4 py-2">{{ r.get_status_display }}</td>
-              <td class="px-4 py-2">{{ r.requested_at|date:'Y-m-d H:i' }}</td>
-              <td class="px-4 py-2">{{ r.pickup_by|date:'Y-m-d' }}</td>
-              <td class="px-4 py-2"><a href="{% url 'staff-request-detail' r.id %}" class="inline-flex items-center px-2.5 py-1.5 rounded-md border border-indigo text-indigo hover:bg-indigo/10 text-sm">Open</a></td>
+            <tr class="hover:bg-indigo/5">
+              <td class="px-6 py-3 text-gray-700">#{{ r.id }}</td>
+              <td class="px-6 py-3 text-gray-800 font-medium">{{ r.requester.username }}</td>
+              <td class="px-6 py-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold border-2 {% if r.status == 'PENDING' %}border-amber-300 text-amber-700 bg-amber-50{% elif r.status == 'READY' %}border-emerald-300 text-emerald-700 bg-emerald-50{% elif r.status == 'PICKED_UP' %}border-blue-300 text-blue-700 bg-blue-50{% else %}border-gray-300 text-gray-700 bg-white{% endif %}">
+                  {{ r.get_status_display }}
+                </span>
+              </td>
+              <td class="px-6 py-3 text-gray-700">{{ r.requested_at|date:'Y-m-d H:i' }}</td>
+              <td class="px-6 py-3 text-gray-700">{{ r.pickup_by|date:'Y-m-d' }}</td>
+              <td class="px-6 py-3">
+                <a href="{% url 'staff-request-detail' r.id %}" class="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 text-sm font-semibold transition-all">Open</a>
+              </td>
             </tr>
           {% empty %}
-            <tr><td colspan="6" class="px-4 py-3 text-slate-600">No pending requests.</td></tr>
+            <tr><td colspan="6" class="px-6 py-10 text-center text-gray-500">No pending requests.</td></tr>
           {% endfor %}
         </tbody>
       </table>

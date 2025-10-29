@@ -2,15 +2,33 @@
 {% load static %}
 
 {% block myheader %}
-  <div class="hero-section">
-    <h1 class="display-6 fw-bold text-white mb-0">About Us</h1>
+  <div class="bg-gradient-to-r from-lavender via-pink to-peach rounded-3xl p-8 mb-8 shadow-xl">
+    <div class="flex items-center justify-center gap-3">
+      <div class="w-12 h-12 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-7 h-7 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-800">About Us</h1>
+    </div>
   </div>
 {% endblock myheader %}
 
 {% block content %}
-  <div class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md p-4">
-    <h3 class="mb-2">About us</h3>
-    <p class="mb-0 text-slate-300">This is the about us webpage.</p>
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl p-8">
+      <h3 class="text-2xl font-bold text-gray-800 mb-3">Our Mission</h3>
+      <p class="text-gray-700 leading-relaxed mb-6">
+        We provide an easy, delightful way to discover, borrow, and manage books across our library network.
+      </p>
+
+      <h3 class="text-2xl font-bold text-gray-800 mb-3">What We Offer</h3>
+      <ul class="list-disc pl-6 text-gray-700 space-y-1">
+        <li>Modern catalog search with filters and tags</li>
+        <li>Quick pickup requests and notifications</li>
+        <li>Clear tracking for loans, overdues, and fines</li>
+      </ul>
+    </div>
   </div>
 {% endblock content %}
 

@@ -1,28 +1,28 @@
 {% for action in actions %}
-  <div class="flex items-start justify-between border-b border-peach-300/60 py-2 action-item" data-status="{% if action.complete %}done{% else %}pending{% endif %}">
+  <div class="flex items-start justify-between border-b border-gray-200 py-2 action-item" data-status="{% if action.complete %}done{% else %}pending{% endif %}">
     <div>
-      <a class="font-semibold text-indigo hover:underline" href="{% url 'action-detail' action.id %}">{{ action.name }}</a>
+      <a class="font-bold text-gray-800 hover:text-indigo transition-colors" href="{% url 'action-detail' action.id %}">{{ action.name }}</a>
       {% if action.note %}
-        <div class="text-sm text-slate-600">{{ action.note }}</div>
+        <div class="text-sm text-gray-600">{{ action.note }}</div>
       {% endif %}
-      <div class="text-sm text-slate-600">Updated: {{ action.updated_at|date:'Y-m-d H:i' }}</div>
+      <div class="text-sm text-gray-500">Updated: {{ action.updated_at|date:'Y-m-d H:i' }}</div>
     </div>
     <div class="flex items-center gap-2">
       <form method="post" action="{% url 'action-toggle-complete' action.id %}" class="inline">
         {% csrf_token %}
         {% if action.complete %}
           <input type="hidden" name="complete" value="false">
-          <button type="submit" class="inline-flex items-center px-2 py-1 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50 text-sm">Mark pending</button>
+          <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 text-xs font-semibold">Mark pending</button>
         {% else %}
           <input type="hidden" name="complete" value="true">
-          <button type="submit" class="inline-flex items-center px-2 py-1 rounded-md border border-emerald-300 text-emerald-700 hover:bg-emerald-50 text-sm">Mark done</button>
+          <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-xl border-2 border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs font-semibold">Mark done</button>
         {% endif %}
       </form>
-      <a class="inline-flex items-center px-2 py-1 rounded-md border border-indigo text-indigo hover:bg-indigo/10 text-sm" href="{% url 'action-update' action.id %}">Edit</a>
-      <a class="inline-flex items-center px-2 py-1 rounded-md border border-red-300 text-red-700 hover:bg-red-50 text-sm" href="{% url 'action-delete' action.id %}">Delete</a>
+      <a class="inline-flex items-center px-3 py-1.5 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 text-xs font-semibold" href="{% url 'action-update' action.id %}">Edit</a>
+      <a class="inline-flex items-center px-3 py-1.5 rounded-xl border-2 border-red-300 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-semibold" href="{% url 'action-delete' action.id %}">Delete</a>
     </div>
   </div>
 {% empty %}
-  <p class="text-slate-600 mb-0">No actions yet.</p>
+  <p class="text-gray-600 mb-0">No actions yet.</p>
 {% endfor %}
 

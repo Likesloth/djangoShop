@@ -1,45 +1,41 @@
 {% extends 'myapp/layout/base.html' %}
 
 {% block myheader %}
-<div class="hero-section">
-  <h1 class="display-6 fw-bold text-white mb-0">Contact Us</h1>
-</div>
+  <div class="bg-gradient-to-r from-lavender via-pink to-peach rounded-3xl p-8 mb-8 shadow-xl">
+    <div class="flex items-center justify-center gap-3">
+      <div class="w-12 h-12 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-7 h-7 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Contact Us</h1>
+    </div>
+  </div>
 {% endblock myheader %}
 
 {% block content %}
-  <div class="container my-4">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-8 col-lg-6">
-        {% if message %}
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        {% endif %}
-
-        <form method="POST" action="" class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md p-4">
-          {% csrf_token %} <!-- Cross-site request forgery -->
-
-          <div class="mb-3">
-            <label for="topic" class="form-label">Topic</label>
-            <input type="text" class="form-control" id="topic" name="topic">
-          </div>
-
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email">
-          </div>
-
-          <div class="mb-3">
-            <label for="detail" class="form-label">Detail</label>
-            <textarea class="form-control" rows="5" id="detail" name="detail"></textarea>
-          </div>
-
-          <div class="d-grid">
-            <button type="submit" class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow">Submit</button>
-          </div>
-        </form>
+  <div class="max-w-2xl mx-auto">
+    {% if message %}
+      <div class="rounded-2xl border-2 border-emerald-300 bg-emerald-50 text-emerald-700 px-5 py-4 font-medium shadow-sm mb-6">
+        {{ message }}
       </div>
-    </div>
+    {% endif %}
+
+    <form method="POST" action="" class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl p-6">
+      {% csrf_token %}
+      <div class="mb-4">
+        <label for="topic" class="block text-sm font-bold text-gray-700 mb-2">Topic</label>
+        <input type="text" id="topic" name="topic" class="w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent" />
+      </div>
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-bold text-gray-700 mb-2">Email</label>
+        <input type="email" id="email" name="email" class="w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent" />
+      </div>
+      <div class="mb-6">
+        <label for="detail" class="block text-sm font-bold text-gray-700 mb-2">Detail</label>
+        <textarea id="detail" name="detail" rows="5" class="w-full rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent"></textarea>
+      </div>
+      <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-indigo to-purple-500 text-white font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all">Submit</button>
+    </form>
   </div>
 {% endblock content %}

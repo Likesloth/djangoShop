@@ -1,66 +1,74 @@
 {% extends 'myapp/layout/base.html' %}
 {% block content %}
-<div class="container py-4">
-  <h2 class="text-xl font-semibold text-slate-900 mb-3">Active Loans by User</h2>
+<div class="max-w-7xl mx-auto px-4 py-6">
+  <!-- Header -->
+  <div class="mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">Active Loans by User</h2>
+  </div>
 
-  <form method="get" class="flex flex-wrap items-center gap-2 mb-3">
+  <!-- Search -->
+  <form method="get" class="flex flex-wrap items-center gap-3 mb-6">
     <div class="w-full sm:w-auto sm:flex-1 max-w-md">
-      <input type="text" name="q" value="{{ q }}" class="w-full px-3 py-2 rounded-md border-2 border-peach-400/70 bg-white/80 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent" placeholder="Search by username or email" />
+      <input type="text" name="q" value="{{ q }}" class="w-full rounded-xl bg-white border-2 border-gray-200 px-4 py-3 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-indigo transition-all" placeholder="Search by username or email" />
     </div>
     <div>
-      <button class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo text-white hover:opacity-90 shadow" type="submit">Search</button>
+      <button class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo to-purple-500 text-white font-semibold shadow-md hover:shadow-lg transition-all hover:scale-105" type="submit">Search</button>
     </div>
     {% if q %}
       <div>
-        <a class="inline-flex items-center justify-center px-3 py-2 rounded-md border border-gray-300 text-slate-700 hover:bg-gray-50" href="{% url 'staff-loans-by-user' %}">Clear</a>
+        <a class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold transition-all" href="{% url 'staff-loans-by-user' %}">Clear</a>
       </div>
     {% endif %}
   </form>
 
   {% if borrower %}
-    <div class="mb-2">Showing loans for: <strong>{{ borrower.username }}</strong> ({{ borrower.email }})</div>
+    <div class="mb-3 text-gray-700">Showing loans for: <strong>{{ borrower.username }}</strong> ({{ borrower.email }})</div>
   {% elif q %}
-    <div class="text-slate-600 mb-2">No user found matching "{{ q }}". Showing all active loans.</div>
+    <div class="mb-3 text-gray-500">No user found matching "{{ q }}". Showing all active loans.</div>
   {% endif %}
 
-  <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md overflow-hidden">
+  <!-- Table Card -->
+  <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden">
+    <div class="px-6 py-4 bg-gradient-to-r from-indigo/10 via-purple-500/10 to-pink/10 border-b-2 border-gray-100">
+      <h3 class="text-lg font-bold text-gray-800">Loans</h3>
+    </div>
     <div class="overflow-x-auto">
       <table class="min-w-full align-middle">
-        <thead class="bg-lavender/40 text-slate-700 text-sm">
-          <tr>
-            <th class="text-left px-4 py-2">Borrower</th>
-            <th class="text-left px-4 py-2">Title</th>
-            <th class="text-left px-4 py-2">Barcode</th>
-            <th class="text-left px-4 py-2">Checked Out</th>
-            <th class="text-left px-4 py-2">Due</th>
-            <th class="text-left px-4 py-2">Overdue</th>
-            <th class="text-left px-4 py-2">Action</th>
+        <thead>
+          <tr class="bg-gray-50 border-b-2 border-gray-200">
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Borrower</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Title</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Barcode</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Checked Out</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Due</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Overdue</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Action</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-peach-300/60">
+        <tbody class="divide-y divide-gray-100">
           {% for loan in loans %}
-            <tr class="{% if loan.due_at and loan.due_at|date:'U' < now|date:'U' %}bg-amber-50{% endif %}">
-              <td class="px-4 py-2">{{ loan.borrower.username }}</td>
-              <td class="px-4 py-2">{{ loan.copy.book.title }}</td>
-              <td class="px-4 py-2">{{ loan.copy.barcode }}</td>
-              <td class="px-4 py-2">{{ loan.checked_out_at|date:'Y-m-d H:i' }}</td>
-              <td class="px-4 py-2">{{ loan.due_at|date:'Y-m-d H:i' }}</td>
-              <td class="px-4 py-2">
+            <tr class="{% if loan.due_at and loan.due_at|date:'U' < now|date:'U' %}bg-amber-50{% else %}hover:bg-indigo/5{% endif %}">
+              <td class="px-6 py-3 text-gray-700">{{ loan.borrower.username }}</td>
+              <td class="px-6 py-3 text-gray-800 font-medium">{{ loan.copy.book.title }}</td>
+              <td class="px-6 py-3"><span class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 border border-gray-200 rounded-lg text-sm font-mono text-gray-700">{{ loan.copy.barcode }}</span></td>
+              <td class="px-6 py-3 text-gray-700">{{ loan.checked_out_at|date:'Y-m-d H:i' }}</td>
+              <td class="px-6 py-3 text-gray-700">{{ loan.due_at|date:'Y-m-d H:i' }}</td>
+              <td class="px-6 py-3">
                 {% if loan.due_at and loan.due_at|date:'U' < now|date:'U' %}
-                  <span class="inline-flex items-center px-2 py-1 rounded-md border border-amber-300 text-amber-700 bg-amber-50 text-xs font-medium">Overdue</span>
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border-2 border-amber-300 text-amber-700 bg-amber-50 text-xs font-bold">Overdue</span>
                 {% endif %}
               </td>
-              <td class="px-4 py-2">
+              <td class="px-6 py-3">
                 <form method="post" action="" class="inline">
                   {% csrf_token %}
                   <input type="hidden" name="action" value="return" />
                   <input type="hidden" name="loan_id" value="{{ loan.id }}" />
-                  <button class="inline-flex items-center px-2.5 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white text-sm shadow" type="submit">Mark Returned</button>
+                  <button class="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold shadow" type="submit">Mark Returned</button>
                 </form>
               </td>
             </tr>
           {% empty %}
-            <tr><td colspan="7" class="px-4 py-3 text-slate-600">No active loans.</td></tr>
+            <tr><td colspan="7" class="px-6 py-10 text-center text-gray-500">No active loans.</td></tr>
           {% endfor %}
         </tbody>
       </table>

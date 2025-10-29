@@ -4,97 +4,75 @@
 {% block head_extra %}{% endblock head_extra %}
 
 {% block myheader %}
-    <div class="hero-section position-relative">
-        <h1 class="display-5 fw-bold text-center text-white mb-2" style="position: relative; z-index: 1;">
-            CoC Gaming Shop
-        </h1>
-        {% if user.is_authenticated %}
-          {% with t=user.profile.usertype|default:"" %}
-            {% if t|lower == 'vvip' %}
-              <div class="text-center" style="position: relative; z-index: 1;">
-                <span class="discount-badge">â­ 15% VVIP Discount Active</span>
-              </div>
-            {% elif t|lower == 'vip' %}
-              <div class="text-center" style="position: relative; z-index: 1;">
-                <span class="discount-badge">10% VIP Discount Active</span>
-              </div>
-            {% elif t|lower == 'member' %}
-              <div class="text-center" style="position: relative; z-index: 1;">
-                <span class="discount-badge">5% Member Discount Active</span>
-              </div>
-            {% endif %}
-          {% endwith %}
-        {% endif %}
+  <div class="bg-gradient-to-r from-lavender via-pink to-peach rounded-3xl p-8 mb-8 shadow-xl">
+    <div class="text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Welcome</h1>
+      <p class="text-gray-700 mt-1">Explore featured items</p>
     </div>
+  </div>
 {% endblock myheader %}
 
 {% block content %}
-<div class="container py-5">
-  <div class="row g-4">
+<div class="max-w-7xl mx-auto px-4 py-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for product in allproduct %}
-      <div class="col-12 col-sm-6 col-lg-4">
-        <div class="product-card">
-          {% if product.picture %}
-            <div style="overflow: hidden;">
-              <img src="{{ product.picture.url }}" alt="{{ product.title }}" class="product-image w-100">
-            </div>
-          {% endif %}
-          <div class="p-4">
-            <h5 class="text-xl fw-bold text-white mb-2">{{ product.title }}</h5>
-            <p class="text-slate-300 mb-3">{{ product.description }}</p>
-            
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <p class="text-2xl fw-bold text-white mb-0">${{ product.price }}</p>
-              <span class="px-2 py-1 rounded border border-indigo-300/40 bg-indigo-900/30 text-slate-300 text-sm">
-                Stock: {{ product.quantity }}
-              </span>
-            </div>
-            
-            {% if product.specfile %}
-              <a href="{{ product.specfile.url }}" class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow text-white w-100" download>
-                View Details
-              </a>
-            {% else %}
-              <button class="btn w-100 text-slate-400" style="background: rgba(60, 70, 123, 0.2); border: 1px solid rgba(110, 140, 251, 0.2); cursor: not-allowed;" disabled>
-                No Details Available
-              </button>
-            {% endif %}
+      <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl overflow-hidden">
+        {% if product.picture %}
+          <img src="{{ product.picture.url }}" alt="{{ product.title }}" class="w-full h-48 object-cover" />
+        {% endif %}
+        <div class="p-5">
+          <h5 class="text-lg font-bold text-gray-800 mb-1">{{ product.title }}</h5>
+          <p class="text-gray-600 mb-3 line-clamp-3">{{ product.description }}</p>
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xl font-extrabold text-gray-800">${{ product.price }}</span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 border border-gray-200 rounded-lg text-sm text-gray-700">Stock: {{ product.quantity }}</span>
           </div>
+          {% if product.specfile %}
+            <a href="{{ product.specfile.url }}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo to-purple-500 text-white font-bold shadow-md hover:shadow-lg hover:scale-105 transition-all" download>
+              View Details
+            </a>
+          {% else %}
+            <button class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-400 cursor-not-allowed" disabled>No Details Available</button>
+          {% endif %}
         </div>
       </div>
     {% empty %}
-      <div class="col-12 text-center">
-        <div class="p-5" style="background: rgba(60, 70, 123, 0.2); border-radius: 16px; border: 1px solid rgba(110, 140, 251, 0.3);">
-          <p class="text-slate-300 text-lg mb-0">No products available at the moment</p>
+      <div class="col-span-full">
+        <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl p-10 text-center">
+          <p class="text-gray-600 text-lg mb-0">No items available at the moment</p>
         </div>
       </div>
     {% endfor %}
   </div>
 
-  <nav aria-label="Product pagination" class="mt-5">
-    <ul class="flex justify-center flex-wrap gap-2">
-      <li class="page-item {% if not allproduct.has_previous %}disabled{% endif %}">
-        <a class="page-link" href="{% if allproduct.has_previous %}?page={{ allproduct.previous_page_number }}{% else %}#{% endif %}" tabindex="{% if allproduct.has_previous %}0{% else %}-1{% endif %}">
-          â† Previous
-        </a>
-      </li>
-
-      {% for num in allproduct.paginator.page_range %}
-        <li class="page-item {% if allproduct.number == num %}active{% endif %}">
-          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-        </li>
-      {% endfor %}
-
-      <li class="page-item {% if not allproduct.has_next %}disabled{% endif %}">
-        <a class="page-link" href="{% if allproduct.has_next %}?page={{ allproduct.next_page_number }}{% else %}#{% endif %}" tabindex="{% if allproduct.has_next %}0{% else %}-1{% endif %}">
-          Next â†’
-        </a>
-      </li>
-    </ul>
-    <div class="text-center text-slate-400 small mt-3">
-      Page {{ allproduct.number }} of {{ allproduct.paginator.num_pages }}
-    </div>
-  </nav>
+  {% if allproduct.paginator %}
+    <nav aria-label="Product pagination" class="mt-8">
+      <div class="bg-white/90 backdrop-blur-xl rounded-2xl border-2 border-gray-200 p-4 shadow-lg">
+        <ul class="flex justify-center flex-wrap gap-2">
+          <li>
+            <a class="inline-flex items-center gap-2 px-5 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-semibold {% if allproduct.has_previous %}hover:bg-indigo hover:text-white hover:border-indigo{% else %}cursor-not-allowed opacity-50{% endif %} transition-all"
+               href="{% if allproduct.has_previous %}?page={{ allproduct.previous_page_number }}{% else %}#{% endif %}">
+              Previous
+            </a>
+          </li>
+          {% for num in allproduct.paginator.page_range %}
+            <li>
+              <a class="px-5 py-3 border-2 rounded-xl font-semibold {% if allproduct.number == num %}bg-indigo border-indigo text-white shadow-md{% else %}bg-white border-gray-200 text-gray-700 hover:bg-indigo hover:text-white hover:border-indigo{% endif %} transition-all" href="?page={{ num }}">{{ num }}</a>
+            </li>
+          {% endfor %}
+          <li>
+            <a class="inline-flex items-center gap-2 px-5 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-semibold {% if allproduct.has_next %}hover:bg-indigo hover:text-white hover:border-indigo{% else %}cursor-not-allowed opacity-50{% endif %} transition-all"
+               href="{% if allproduct.has_next %}?page={{ allproduct.next_page_number }}{% else %}#{% endif %}">
+              Next
+            </a>
+          </li>
+        </ul>
+        <div class="text-center text-gray-600 text-sm mt-4 font-medium">
+          Page <span class="text-indigo font-bold">{{ allproduct.number }}</span> of <span class="font-bold">{{ allproduct.paginator.num_pages }}</span>
+        </div>
+      </div>
+    </nav>
+  {% endif %}
 </div>
 {% endblock content %}
 

@@ -1,29 +1,23 @@
 {% extends "myapp/layout/base.html" %}
 
 {% block myheader %}
-  <div class="hero-section text-center">
-    <h1 class="display-6 fw-bold text-white mb-1">Delete Contact</h1>
-    <p class="mb-0 lead-muted">Removing this contact will also delete associated actions.</p>
+  <div class="bg-gradient-to-r from-lavender via-pink to-peach rounded-3xl p-8 mb-8 shadow-xl text-center">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Delete Contact</h1>
+    <p class="text-gray-700">Removing this contact will also delete associated actions.</p>
   </div>
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-lg-6">
-      <div class="card rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md border-danger">
-        <div class="card-body">
-          <p>Are you sure you want to remove the contact <strong>{{ contact.topic }}</strong> ({{ contact.email }})?</p>
-          <form method="post">
-            {% csrf_token %}
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-danger">Yes, delete</button>
-              <a href="{% url 'showcontact-page' %}?contact={{ contact.id }}" class="btn btn-outline-secondary">Cancel</a>
-            </div>
-          </form>
-        </div>
+<div class="max-w-xl mx-auto px-4 pb-8">
+  <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl p-6">
+    <p class="text-gray-800">Are you sure you want to remove the contact <strong>{{ contact.topic }}</strong> ({{ contact.email }})?</p>
+    <form method="post" class="mt-4">
+      {% csrf_token %}
+      <div class="flex gap-3">
+        <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold shadow">Yes, delete</button>
+        <a href="{% url 'showcontact-page' %}?contact={{ contact.id }}" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold">Cancel</a>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 {% endblock %}
