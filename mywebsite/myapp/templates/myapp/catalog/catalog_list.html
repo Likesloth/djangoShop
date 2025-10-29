@@ -2,77 +2,309 @@
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 py-6">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-2xl font-semibold text-white">Catalog</h2>
+  <!-- Page Header -->
+  <div class="bg-gradient-to-r from-lavender via-pink to-peach rounded-3xl p-8 mb-8 shadow-xl">
+    <div class="flex items-center justify-center gap-3 mb-3">
+      <div class="w-12 h-12 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-7 h-7 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+      </div>
+      <h2 class="text-4xl md:text-5xl font-bold text-gray-800">
+        Library Catalog
+      </h2>
+    </div>
+    <div class="text-center">
+      <span class="inline-flex items-center gap-2 px-6 py-2 bg-white/80 backdrop-blur-sm rounded-full text-indigo font-semibold shadow-md">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+        </svg>
+        Browse our complete collection
+      </span>
+    </div>
   </div>
 
-  <form method="get" class="flex flex-wrap gap-2 mb-4 items-center">
-    <input type="text" name="q" value="{{ search_query }}" class="flex-1 min-w-[220px] rounded-md bg-black/30 border border-indigo-300/35 px-3 py-2 text-slate-100 placeholder:text-slate-400" placeholder="Search title/ISBN/author/tag" />
-    <button class="inline-flex items-center justify-center px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white shadow" type="submit">Search</button>
+  <!-- Search Bar -->
+  <form method="get" class="mb-8">
+    <div class="flex flex-col sm:flex-row gap-3">
+      <div class="flex-1 relative">
+        <div class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+        <input type="text"
+               name="q"
+               value="{{ search_query }}"
+               class="w-full pl-14 pr-12 py-4 bg-white/90 backdrop-blur-xl border-2 border-gray-200 rounded-2xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent shadow-lg transition-all"
+               placeholder="Search by title, ISBN, author, or tag..." />
+        {% if search_query %}
+          <a href="?" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </a>
+        {% endif %}
+      </div>
+      <button class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo to-purple-500 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all hover:scale-105"
+              type="submit">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        Search
+      </button>
+    </div>
   </form>
 
-  {% if top_categories %}
-    <div class="mb-3 flex flex-wrap items-center gap-2">
-      <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}" class="px-3 py-2 rounded-md border border-indigo-300/35 text-slate-200 bg-transparent hover:bg-indigo-800/20 {% if not selected_category %}ring-1 ring-indigo-400/50{% endif %}">All</a>
-      {% for c in top_categories %}
-        {% if forloop.counter <= 8 %}
-          <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}" class="px-3 py-2 rounded-md border border-indigo-300/35 text-slate-200 bg-transparent hover:bg-indigo-800/20 {% if selected_category and selected_category.id == c.id %}active{% endif %}">{{ c.name }}</a>
-        {% endif %}
-      {% endfor %}
-      {% if top_categories|length > 8 %}
-        <details class="relative">
-          <summary class="px-3 py-2 rounded-md border border-indigo-300/35 text-slate-200 bg-transparent hover:bg-indigo-800/20 cursor-pointer list-none">More</summary>
-          <div class="absolute mt-2 w-56 rounded-md border border-indigo-300/25 bg-slate-900/90 backdrop-blur-md p-2 z-40">
-            {% for c in top_categories %}
-              {% if forloop.counter > 8 %}
-                <a class="block px-3 py-2 rounded text-slate-200 hover:bg-white/10" href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}">{{ c.name }}</a>
-              {% endif %}
-            {% endfor %}
-          </div>
-        </details>
-      {% endif %}
-    </div>
-  {% endif %}
-
-  {% if popular_tags %}
-    <div class="mb-2 flex flex-wrap gap-2 items-center">
-      {% for tag_item in popular_tags %}
-        {% if forloop.counter <= 12 %}
-          <a class="inline-block rounded bg-slate-600/60 text-white text-xs px-2 py-0.5 no-underline" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
-        {% endif %}
-      {% endfor %}
-      {% if popular_tags|length > 12 %}
-        <details>
-          <summary class="cursor-pointer text-sm text-slate-300">More tags</summary>
-          <div class="mt-2 flex flex-wrap gap-2">
-            {% for tag_item in popular_tags %}
-              {% if forloop.counter > 12 %}
-                <a class="inline-block rounded bg-slate-600/60 text-white text-xs px-2 py-0.5 no-underline" href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">{{ tag_item.name }}</a>
-              {% endif %}
-            {% endfor %}
-          </div>
-        </details>
-      {% endif %}
-    </div>
-  {% endif %}
-
-  <div class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md divide-y divide-white/10">
-    {% for book in books %}
-      <a class=\"flex justify-between items-center px-3 py-3 hover:bg-white/5\" href="{% url 'catalog-detail' book.id %}">
-        <div class=\"flex items-center\">
-          {% if book.cover %}<img src="{{ book.cover.url }}" alt="{{ book.title }} cover" class=\"mr-3 rounded\" style="width:48px;height:64px;object-fit:contain;object-position:center;background:rgba(0,0,0,0.15);display:block;" />{% endif %}
-          <div>
-            <div class=\"font-semibold\">{{ book.title }}</div>
-          <div class=\"text-slate-300 text-sm\">ISBN: {{ book.isbn13 }} • {{ book.language }} • {{ book.publish_year }}</div>
-          {% if book.category %}
-            <div class=\"text-slate-300 text-sm\">Category: {{ book.category.name }}</div>
+  <!-- Active Filters Display -->
+  {% if search_query or selected_category or selected_tag %}
+    <div class="mb-6 bg-white/90 backdrop-blur-xl rounded-2xl border-2 border-gray-200 p-4 shadow-lg">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-sm font-bold text-gray-700">Active Filters:</span>
+          
+          {% if search_query %}
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo/10 border border-indigo/30 text-indigo rounded-lg text-sm font-semibold">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              "{{ search_query }}"
+            </span>
           {% endif %}
-          </div>
+
+          {% if selected_category %}
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-purple-50 border border-purple-300 text-purple-700 rounded-lg text-sm font-semibold">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+              </svg>
+              {{ selected_category.name }}
+            </span>
+          {% endif %}
+
+          {% if selected_tag %}
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-pink-50 border border-pink-300 text-pink-700 rounded-lg text-sm font-semibold">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+              </svg>
+              {{ selected_tag.name }}
+            </span>
+          {% endif %}
         </div>
-        <span class=\"inline-block rounded bg-emerald-600/80 text-white text-xs px-2 py-0.5\">Available: {{ book.available_count }}</span>
+
+        <a href="?" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border-2 border-red-300 bg-red-50 text-red-600 text-sm font-semibold hover:bg-red-100 hover:border-red-400 transition-all hover:scale-105">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+          Clear All
+        </a>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Category Filters -->
+  {% if top_categories %}
+    <div class="mb-6 bg-white/90 backdrop-blur-xl rounded-2xl border-2 border-gray-200 p-5 shadow-lg">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="w-5 h-5 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+        </svg>
+        <h3 class="text-lg font-bold text-gray-800">Browse by Category</h3>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}"
+           class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 {% if not selected_category %}border-indigo bg-indigo text-white font-semibold shadow-md{% else %}border-gray-300 bg-white text-gray-700 hover:border-indigo hover:bg-indigo/10{% endif %} transition-all hover:scale-105">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+          </svg>
+          All Categories
+        </a>
+        {% for c in top_categories %}
+          {% if forloop.counter <= 8 %}
+            <a href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}"
+               class="px-4 py-2.5 rounded-xl border-2 {% if selected_category and selected_category.id == c.id %}border-indigo bg-indigo text-white font-semibold shadow-md{% else %}border-gray-300 bg-white text-gray-700 hover:border-indigo hover:bg-indigo/10{% endif %} transition-all hover:scale-105">
+              {{ c.name }}
+            </a>
+          {% endif %}
+        {% endfor %}
+
+        {% if top_categories|length > 8 %}
+          <details class="relative inline-block">
+            <summary class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:border-indigo hover:bg-indigo/10 transition-all hover:scale-105 cursor-pointer select-none list-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+              More Categories
+            </summary>
+            <ul class="absolute left-0 mt-2 w-64 rounded-2xl border-2 border-gray-200 bg-white/95 backdrop-blur-xl shadow-xl p-2 z-50 max-h-80 overflow-y-auto">
+              {% for c in top_categories %}
+                {% if forloop.counter > 8 %}
+                  <li>
+                    <a class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all" href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}category={{ c.slug }}">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                      </svg>
+                      {{ c.name }}
+                    </a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </details>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Popular Tags -->
+  {% if popular_tags %}
+    <div class="mb-8 bg-white/90 backdrop-blur-xl rounded-2xl border-2 border-gray-200 p-5 shadow-lg">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+        </svg>
+        <h3 class="text-lg font-bold text-gray-800">Popular Tags</h3>
+      </div>
+      <div class="flex flex-wrap gap-2 items-center">
+        {% for tag_item in popular_tags %}
+          {% if forloop.counter <= 15 %}
+            <a class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-pink/30 to-lavender/30 border border-purple-300 text-gray-700 rounded-full text-sm font-medium hover:from-pink/50 hover:to-lavender/50 hover:shadow-md transition-all hover:scale-105"
+               href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+              </svg>
+              {{ tag_item.name }}
+            </a>
+          {% endif %}
+        {% endfor %}
+
+        {% if popular_tags|length > 15 %}
+          <details class="inline-block">
+            <summary class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-indigo font-semibold hover:underline cursor-pointer select-none list-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Show More
+            </summary>
+            <div class="mt-3 flex flex-wrap gap-2">
+              {% for tag_item in popular_tags %}
+                {% if forloop.counter > 15 %}
+                  <a class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-pink/30 to-lavender/30 border border-purple-300 text-gray-700 rounded-full text-sm font-medium hover:from-pink/50 hover:to-lavender/50 hover:shadow-md transition-all hover:scale-105"
+                     href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    {{ tag_item.name }}
+                  </a>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </details>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Results Count -->
+  {% if books %}
+    <div class="mb-4 flex items-center justify-between">
+      <p class="text-gray-600 font-medium">
+        <span class="text-indigo font-bold">{{ books|length }}</span> book{{ books|length|pluralize }} found
+      </p>
+    </div>
+  {% endif %}
+
+  <!-- Books List -->
+  <div class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-200 shadow-xl overflow-hidden divide-y divide-gray-100">
+    {% for book in books %}
+      <a class="flex flex-col sm:flex-row gap-4 px-5 py-5 hover:bg-indigo/5 transition-all group" href="{% url 'catalog-detail' book.id %}">
+        <!-- Book Cover -->
+        <div class="flex-shrink-0">
+          {% if book.cover %}
+            <img src="{{ book.cover.url }}" 
+                 alt="{{ book.title }}" 
+                 class="w-full sm:w-20 h-32 sm:h-28 object-contain rounded-xl border-2 border-gray-200 bg-gradient-to-br from-lavender/10 to-pink/10 group-hover:border-indigo/30 transition-all" />
+          {% else %}
+            <div class="w-full sm:w-20 h-32 sm:h-28 bg-gradient-to-br from-lavender/20 to-pink/20 rounded-xl border-2 border-gray-200 flex items-center justify-center group-hover:border-indigo/30 transition-all">
+              <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Book Details -->
+        <div class="flex-1 min-w-0">
+          <h5 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo transition-colors">
+            {{ book.title }}
+          </h5>
+          
+          <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 mb-3">
+            {% if book.isbn13 %}
+              <span class="inline-flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                </svg>
+                ISBN: {{ book.isbn13 }}
+              </span>
+            {% endif %}
+            
+            {% if book.language %}
+              <span class="inline-flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                </svg>
+                {{ book.language }}
+              </span>
+            {% endif %}
+            
+            {% if book.publish_year %}
+              <span class="inline-flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                {{ book.publish_year }}
+              </span>
+            {% endif %}
+          </div>
+
+          {% if book.category %}
+            <div class="mb-2">
+              <span class="inline-flex items-center gap-1 px-3 py-1 bg-purple-50 border border-purple-300 text-purple-700 rounded-lg text-xs font-semibold">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
+                {{ book.category.name }}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Availability Badge -->
+        <div class="flex-shrink-0 flex items-center">
+          <span class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border-2 border-emerald-300 text-emerald-700 rounded-xl font-bold shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span class="text-sm">{{ book.available_count }} Available</span>
+          </span>
+        </div>
       </a>
     {% empty %}
-      <div class="text-muted">No books found.</div>
+      <div class="px-5 py-16 text-center">
+        <div class="w-32 h-32 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <svg class="w-16 h-16 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-800 mb-3">No Books Found</h3>
+        <p class="text-gray-600 mb-6 max-w-md mx-auto">We couldn't find any books matching your search criteria. Try adjusting your filters or search terms.</p>
+        <a href="?" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Reset Filters
+        </a>
+      </div>
     {% endfor %}
   </div>
 </div>
