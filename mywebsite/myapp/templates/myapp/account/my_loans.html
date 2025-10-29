@@ -1,72 +1,240 @@
 {% extends 'myapp/layout/base.html' %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 py-6">
-  <h2 class="text-2xl font-semibold text-white mb-3">My Loans</h2>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">My Loans</h2>
+        <p class="text-gray-600">Manage your borrowed books and view history</p>
+      </div>
+      
+      <!-- Summary Badge -->
+      {% if active_loans %}
+      <div class="bg-gradient-to-br from-indigo to-purple-500 text-white px-6 py-3 rounded-2xl shadow-lg">
+        <div class="text-sm font-semibold opacity-90">Active Loans</div>
+        <div class="text-2xl font-bold">{{ active_loans|length }} Book{{ active_loans|length|pluralize }}</div>
+      </div>
+      {% else %}
+      <div class="bg-gradient-to-br from-gray-400 to-gray-500 text-white px-6 py-3 rounded-2xl shadow-lg">
+        <div class="text-sm font-semibold opacity-90">No Active Loans</div>
+        <div class="text-2xl font-bold">All Returned</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
 
-  <div class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md mb-4 overflow-hidden">
-    <div class="px-3 py-2 bg-white/5 text-slate-200 font-semibold">Active Loans</div>
+  <!-- Active Loans Section -->
+  <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden mb-6">
+    <!-- Section Header -->
+    <div class="bg-gradient-to-r from-indigo/20 via-purple-500/20 to-pink/20 px-6 py-4 border-b-2 border-gray-100">
+      <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+        <svg class="w-5 h-5 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+        Active Loans
+        {% if active_loans %}
+          <span class="ml-auto bg-indigo/10 text-indigo border border-indigo/30 px-3 py-1 rounded-full text-sm font-bold">
+            {{ active_loans|length }}
+          </span>
+        {% endif %}
+      </h3>
+    </div>
+
+    <!-- Table -->
     <div class="overflow-x-auto">
-      <table class="min-w-full text-slate-200">
+      <table class="min-w-full">
         <thead>
-          <tr class="bg-white/5">
-            <th class="text-left px-3 py-2 text-sm font-semibold">Title</th>
-            <th class="text-left px-3 py-2 text-sm font-semibold">Barcode</th>
-            <th class="text-left px-3 py-2 text-sm font-semibold">Due</th>
-            <th class="text-left px-3 py-2 text-sm font-semibold">Renews</th>
-            <th class="text-left px-3 py-2 text-sm font-semibold">Actions</th>
+          <tr class="bg-gray-50 border-b-2 border-gray-100">
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+              Title
+            </th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+              </svg>
+              Barcode
+            </th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              Due Date
+            </th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+              Renewals
+            </th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+              </svg>
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-white/10">
+        <tbody class="divide-y divide-gray-100">
           {% for loan in active_loans %}
-            <tr>
-              <td class="px-3 py-2">{{ loan.copy.book.title }}</td>
-              <td class="px-3 py-2">{{ loan.copy.barcode }}</td>
-              <td class="px-3 py-2">{{ loan.due_at|date:'Y-m-d H:i' }}</td>
-              <td class="px-3 py-2">{{ loan.renew_count }}</td>
-              <td class="px-3 py-2">
+            <tr class="hover:bg-gradient-to-r hover:from-indigo/5 hover:to-purple-500/5 transition-colors">
+              <td class="px-6 py-4 text-gray-800 font-medium">{{ loan.copy.book.title }}</td>
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 border border-gray-200 rounded-lg text-sm font-mono text-gray-700">
+                  {{ loan.copy.barcode }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-gray-700 font-medium">{{ loan.due_at|date:'M d, Y' }}</span>
+                  <span class="text-xs text-gray-500">{{ loan.due_at|date:'H:i' }}</span>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 {% if loan.renew_count >= 2 %}bg-red-100 text-red-700 border border-red-200{% else %}bg-blue-100 text-blue-700 border border-blue-200{% endif %} rounded-lg text-sm font-semibold">
+                  {{ loan.renew_count }}/2
+                </span>
+              </td>
+              <td class="px-6 py-4">
                 {% if loan.renew_count < 2 %}
-                  <form method="post">
+                  <form method="post" class="inline-block">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="renew">
                     <input type="hidden" name="loan_id" value="{{ loan.id }}">
-                    <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 rounded-md bg-amber-600 hover:bg-amber-500 text-white text-sm">Renew</button>
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold text-sm shadow-lg hover:shadow-xl hover:scale-105 transition-all group">
+                      <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                      </svg>
+                      Renew
+                    </button>
                   </form>
                 {% else %}
-                  <span class="text-slate-400 text-sm">Max renewals reached</span>
+                  <span class="inline-flex items-center gap-1.5 text-sm text-gray-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                    </svg>
+                    Max renewals
+                  </span>
                 {% endif %}
               </td>
             </tr>
           {% empty %}
-            <tr><td colspan="5" class="px-3 py-3 text-slate-400">No active loans.</td></tr>
+            <tr>
+              <td colspan="5" class="px-6 py-12 text-center">
+                <div class="max-w-sm mx-auto">
+                  <div class="w-16 h-16 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                  </div>
+                  <h4 class="text-lg font-bold text-gray-800 mb-2">No Active Loans</h4>
+                  <p class="text-gray-600 mb-4">You don't have any books checked out right now.</p>
+                  <a href="{% url 'catalog-list' %}" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo to-purple-500 text-white font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    Browse Catalog
+                  </a>
+                </div>
+              </td>
+            </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
 
-  <div class="rounded-2xl border border-indigo-300/25 bg-indigo-900/20 backdrop-blur-md overflow-hidden">
-    <div class="px-3 py-2 bg-white/5 text-slate-200 font-semibold">Loan History</div>
+  <!-- Loan History Section -->
+  <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden">
+    <!-- Section Header -->
+    <div class="bg-gradient-to-r from-emerald-500/20 via-green-500/20 to-teal-500/20 px-6 py-4 border-b-2 border-gray-100">
+      <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Loan History
+        {% if past_loans %}
+          <span class="ml-auto bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-sm font-bold">
+            {{ past_loans|length }}
+          </span>
+        {% endif %}
+      </h3>
+    </div>
+
+    <!-- Table -->
     <div class="overflow-x-auto">
-      <table class="min-w-full text-slate-200">
+      <table class="min-w-full">
         <thead>
-          <tr class="bg-white/5">
-            <th class="text-left px-3 py-2 text-sm font-semibold">Title</th>
-            <th class="text-left px-3 py-2 text-sm font-semibold">Barcode</th>
-            <th class="text-left px-3 py-2 text-sm font-semibold">Checked out</th>
-            <th class="text-left px-3 py-2 text-sm font-semibold">Returned at</th>
+          <tr class="bg-gray-50 border-b-2 border-gray-100">
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+              Title
+            </th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+              </svg>
+              Barcode
+            </th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              Checked Out
+            </th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Returned At
+            </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-white/10">
+        <tbody class="divide-y divide-gray-100">
           {% for loan in past_loans %}
-            <tr>
-              <td class="px-3 py-2">{{ loan.copy.book.title }}</td>
-              <td class="px-3 py-2">{{ loan.copy.barcode }}</td>
-              <td class="px-3 py-2">{{ loan.checked_out_at|date:'Y-m-d H:i' }}</td>
-              <td class="px-3 py-2">{{ loan.returned_at|date:'Y-m-d H:i' }}</td>
+            <tr class="hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-green-50/50 transition-colors">
+              <td class="px-6 py-4 text-gray-800 font-medium">{{ loan.copy.book.title }}</td>
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 border border-gray-200 rounded-lg text-sm font-mono text-gray-700">
+                  {{ loan.copy.barcode }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-gray-700">{{ loan.checked_out_at|date:'M d, Y' }}</span>
+                  <span class="text-xs text-gray-500">{{ loan.checked_out_at|date:'H:i' }}</span>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span class="text-gray-700">{{ loan.returned_at|date:'M d, Y' }}</span>
+                  <span class="text-xs text-gray-500">{{ loan.returned_at|date:'H:i' }}</span>
+                </div>
+              </td>
             </tr>
           {% empty %}
-            <tr><td colspan="4" class="px-3 py-3 text-slate-400">No past loans.</td></tr>
+            <tr>
+              <td colspan="4" class="px-6 py-12 text-center">
+                <div class="max-w-sm mx-auto">
+                  <div class="w-16 h-16 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                  <h4 class="text-lg font-bold text-gray-800 mb-2">No Loan History</h4>
+                  <p class="text-gray-600">You haven't borrowed any books yet.</p>
+                </div>
+              </td>
+            </tr>
           {% endfor %}
         </tbody>
       </table>
@@ -74,4 +242,3 @@
   </div>
 </div>
 {% endblock content %}
-

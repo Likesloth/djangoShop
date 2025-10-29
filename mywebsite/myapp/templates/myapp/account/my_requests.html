@@ -1,27 +1,200 @@
 {% extends 'myapp/layout/base.html' %}
+
 {% block content %}
-<div class="container py-4">
-  <h2 class="text-xl font-semibold text-slate-900 mb-3">My Pickup Requests</h2>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">My Pickup Requests</h2>
+        <p class="text-gray-600">Track your book pickup requests and their status</p>
+      </div>
+      
+      <!-- Summary Badge -->
+      {% if requests %}
+      <div class="bg-gradient-to-br from-indigo to-purple-500 text-white px-6 py-3 rounded-2xl shadow-lg">
+        <div class="text-sm font-semibold opacity-90">Total Requests</div>
+        <div class="text-2xl font-bold">{{ requests|length }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
   {% if requests %}
-    <div class="rounded-2xl border border-peach-400/70 bg-white/70 backdrop-blur-md divide-y divide-peach-300/60">
+    <!-- Requests List -->
+    <div class="space-y-6">
       {% for r in requests %}
-        <div class="p-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-slate-900">Request #{{ r.id }} — {{ r.get_status_display }}</h3>
-            <small class="text-slate-600">Requested {{ r.requested_at|date:'Y-m-d H:i' }}</small>
+        <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-shadow duration-300">
+          <!-- Request Header -->
+          <div class="bg-gradient-to-r {% if r.status == 'PENDING' %}from-amber-500/20 via-orange-500/20 to-yellow-500/20{% elif r.status == 'READY' %}from-emerald-500/20 via-green-500/20 to-teal-500/20{% elif r.status == 'PICKED_UP' %}from-blue-500/20 via-indigo-500/20 to-purple-500/20{% else %}from-gray-300/20 via-gray-400/20 to-gray-500/20{% endif %} px-6 py-4 border-b-2 border-gray-100">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 {% if r.status == 'PENDING' %}bg-gradient-to-br from-amber-500 to-orange-500{% elif r.status == 'READY' %}bg-gradient-to-br from-emerald-500 to-green-500{% elif r.status == 'PICKED_UP' %}bg-gradient-to-br from-blue-500 to-indigo-500{% else %}bg-gradient-to-br from-gray-400 to-gray-500{% endif %} rounded-2xl flex items-center justify-center shadow-lg">
+                  {% if r.status == 'PENDING' %}
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  {% elif r.status == 'READY' %}
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  {% elif r.status == 'PICKED_UP' %}
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  {% else %}
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  {% endif %}
+                </div>
+                
+                <div>
+                  <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    Request #{{ r.id }}
+                  </h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 {% if r.status == 'PENDING' %}bg-amber-100 text-amber-700 border border-amber-300{% elif r.status == 'READY' %}bg-emerald-100 text-emerald-700 border border-emerald-300{% elif r.status == 'PICKED_UP' %}bg-blue-100 text-blue-700 border border-blue-300{% else %}bg-gray-100 text-gray-700 border border-gray-300{% endif %} rounded-lg text-sm font-bold">
+                      {{ r.get_status_display }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="text-right">
+                <div class="flex items-center gap-1.5 text-sm text-gray-600">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  <span class="font-medium">Requested:</span>
+                  {{ r.requested_at|date:'M d, Y' }}
+                </div>
+                <div class="text-xs text-gray-500 mt-0.5">
+                  {{ r.requested_at|date:'H:i' }}
+                </div>
+              </div>
+            </div>
           </div>
-          <p class="text-slate-700 mt-1">Pickup location: {{ r.pickup_location|default:'Main Desk' }}{% if r.pickup_by %} — Pickup by: {{ r.pickup_by|date:'Y-m-d' }}{% endif %}</p>
-          <ul class="list-disc pl-5 text-slate-800 mt-2">
-            {% for item in r.items.all %}
-              <li>{{ item.book.title }}{% if item.assigned_copy %} — reserved: {{ item.assigned_copy.barcode }}{% endif %}</li>
-            {% endfor %}
-          </ul>
+
+          <!-- Request Details -->
+          <div class="p-6">
+            <!-- Pickup Information -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div class="flex items-start gap-3 bg-gradient-to-br from-lavender/20 to-pink/20 rounded-2xl p-4 border border-indigo/10">
+                <div class="w-10 h-10 bg-gradient-to-br from-indigo to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs font-bold text-gray-600 uppercase tracking-wider mb-1">Pickup Location</div>
+                  <div class="text-lg font-bold text-gray-800">{{ r.pickup_location|default:'Main Desk' }}</div>
+                </div>
+              </div>
+
+              {% if r.pickup_by %}
+              <div class="flex items-start gap-3 bg-gradient-to-br from-peach/20 to-pink/20 rounded-2xl p-4 border border-orange-500/10">
+                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs font-bold text-gray-600 uppercase tracking-wider mb-1">Pickup By</div>
+                  <div class="text-lg font-bold text-gray-800">{{ r.pickup_by|date:'M d, Y' }}</div>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Books List -->
+            <div>
+              <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                Requested Books ({{ r.items.all|length }})
+              </h4>
+              
+              <div class="space-y-3">
+                {% for item in r.items.all %}
+                  <div class="flex items-start gap-3 bg-gray-50 rounded-2xl p-4 border-2 border-gray-100 hover:border-indigo/30 hover:bg-white transition-all">
+                    <div class="w-8 h-8 bg-gradient-to-br from-indigo/20 to-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <svg class="w-4 h-4 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                      </svg>
+                    </div>
+                    
+                    <div class="flex-1 min-w-0">
+                      <div class="text-base font-bold text-gray-800 mb-1">{{ item.book.title }}</div>
+                      {% if item.assigned_copy %}
+                        <div class="flex items-center gap-2">
+                          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          </svg>
+                          <span class="text-sm text-emerald-700 font-semibold">Reserved:</span>
+                          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-100 border border-emerald-200 rounded-lg text-xs font-mono text-emerald-800">
+                            {{ item.assigned_copy.barcode }}
+                          </span>
+                        </div>
+                      {% else %}
+                        <div class="flex items-center gap-2">
+                          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          </svg>
+                          <span class="text-sm text-gray-500 italic">Awaiting assignment</span>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Status Footer (conditional based on status) -->
+          {% if r.status == 'READY' %}
+          <div class="bg-gradient-to-r from-emerald-500/10 to-green-500/10 px-6 py-4 border-t-2 border-emerald-200">
+            <div class="flex items-center gap-3 text-emerald-700">
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span class="font-semibold">Your books are ready for pickup at {{ r.pickup_location|default:'Main Desk' }}!</span>
+            </div>
+          </div>
+          {% elif r.status == 'PICKED_UP' %}
+          <div class="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 px-6 py-4 border-t-2 border-blue-200">
+            <div class="flex items-center gap-3 text-blue-700">
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span class="font-semibold">This request has been completed. Enjoy your books!</span>
+            </div>
+          </div>
+          {% endif %}
         </div>
       {% endfor %}
     </div>
   {% else %}
-    <p class="text-slate-600">No requests yet.</p>
+    <!-- Empty State -->
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border-2 border-gray-100 p-12 text-center">
+      <div class="max-w-md mx-auto">
+        <div class="w-24 h-24 bg-gradient-to-br from-lavender to-pink rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <svg class="w-12 h-12 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-3">No Pickup Requests Yet</h3>
+        <p class="text-gray-600 text-lg mb-6">You haven't created any pickup requests. Add books to your cart and place a request to get started!</p>
+        <a href="{% url 'catalog-list' %}" class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-indigo to-purple-500 text-white font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          Browse Catalog
+        </a>
+      </div>
+    </div>
   {% endif %}
 </div>
 {% endblock %}
-
