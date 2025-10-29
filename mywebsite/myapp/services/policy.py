@@ -1,18 +1,17 @@
 from datetime import timedelta
-from decimal import Decimal
 
 try:
     # Import lazily to avoid issues during migrations
     from ..models import Policy
-except Exception:
+except Exception:  # pragma: no cover
     Policy = None
 
 
-# Simple, configurable policy values
+# Default policy values (used if Policy table not available)
 LOAN_PERIODS = {
-    "student": 14,
-    "member": 14,
-    "lecturer": 28,
+    "student": 7,
+    "member": 7,
+    "lecturer": 14,
     "default": 14,
 }
 
@@ -28,7 +27,7 @@ LIMITS = {
 
 
 def loan_period_days(user) -> int:
-    # If Policy table exists, prefer dynamic settings
+    # Prefer dynamic settings if Policy exists
     if Policy is not None:
         try:
             cfg = Policy.current()
@@ -50,7 +49,7 @@ def calculate_due_at(now, user):
 
 
 def can_renew(loan) -> bool:
-    # MVP: limit by count only. Add hold checks later.
+    # Limit by count only (no holds logic in MVP)
     return (loan.returned_at is None) and (loan.renew_count < MAX_RENEWALS)
 
 
@@ -78,3 +77,4 @@ def active_loan_limit(user) -> int:
 
 def can_borrow(user, current_active_count: int) -> bool:
     return current_active_count < active_loan_limit(user)
+

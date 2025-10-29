@@ -1,16 +1,9 @@
-from datetime import timedelta
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
-from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
 
-from ..forms import LoanCreateForm, LoanUpdateForm, LoanQuickCreateForm
+from ..forms import LoanCreateForm, LoanUpdateForm
 from ..models import Loan, BookCopy
-from ..services.policy import calculate_due_at, can_renew, compute_renew_due_at, can_borrow, FINE_RATE_PER_DAY
-from ..models import Book, Fine
 
 
 @login_required(login_url='login')
@@ -48,3 +41,4 @@ def loan_update(request, loan_id):
 
 
 # Quick circulation desk (barcode-based) removed in favor of cart + pickup workflow and loans-by-user returns.
+

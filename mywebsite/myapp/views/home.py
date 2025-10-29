@@ -1,10 +1,6 @@
-from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-
 from django.db.models import Q, Count
 
 from ..models import Product, Book, BookCopy, Category, Tag
@@ -64,7 +60,6 @@ def library_home(request):
         if selected_tag:
             books_qs = books_qs.filter(tags=selected_tag)
 
-    # Show 8 books per page to fit two rows of four cards
     paginator = Paginator(books_qs, 8)
     page_number = request.GET.get('page')
     books = paginator.get_page(page_number)

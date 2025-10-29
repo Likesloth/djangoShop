@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import *
-from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', library_home, name="home-page"),
@@ -19,17 +18,16 @@ urlpatterns = [
     path('contacts/<int:contact_id>/toggle-complete/', contact_toggle_complete, name="contact-toggle-complete"),
     path('contacts/<int:contact_id>/delete/', delete_contact, name="contact-delete"),
     path('contacts/<int:contact_id>/actions-fragment/', contact_actions_fragment, name="contact-actions-fragment"),
-    # Use function-based login view and redirect by route name
+    # Auth and profile
     path('login/', userLogin, name="login"),
     path('logout/', userLogout, name="logout"),
-    path('addproduct/', addProduct, name="add-product"),
-    # Register and profile flows
     path('register/', userRegist, name="register"),
     path('profile/', userProfile, name="profile"),
     path('profile/edit/', editProfile, name="edit_profile"),
     path('settings/', settings_view, name="settings"),
-    # Redirect to home after logout for a smooth UX
-    # Catalog (Library)
+    # Products
+    path('addproduct/', addProduct, name="add-product"),
+    # Catalog
     path('catalog/', catalog_list, name="catalog-list"),
     path('catalog/book/<int:book_id>/', book_detail, name="catalog-detail"),
     # Cart + Requests
@@ -38,7 +36,7 @@ urlpatterns = [
     path('cart/remove/<int:book_id>/', cart_remove, name='cart-remove'),
     path('cart/place-request/', cart_place_request, name='cart-place-request'),
     path('requests/mine/', my_requests, name='my-requests'),
-    # Circulation (Library)
+    # Circulation
     path('circulation/loan/create/', loan_create, name="loan-create"),
     path('circulation/loan/<int:loan_id>/edit/', loan_update, name="loan-update"),
     path('loans/mine/', my_loans, name="my-loans"),

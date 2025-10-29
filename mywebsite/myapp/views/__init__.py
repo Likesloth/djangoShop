@@ -62,3 +62,4 @@ __all__ = [
     "copy_status_update", "overdues_list", "fines_ledger", "fine_mark_paid", "book_create_manual", "reports_dashboard",
     "report_overdues_csv", "report_top_borrowed_csv", "report_fines_summary_csv", "loans_by_user",
 ]
+
