@@ -2,7 +2,8 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('', library_home, name="home-page"),
+    # Home now shows the shop landing page instead of the library grid
+    path('', home, name="home-page"),
     path('shop/', home, name="shop-home"),
     path('home2', home2, name="home2-page"),
     path('about/', aboutus, name="about-page"),

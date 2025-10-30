@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Q, Count
 import difflib
@@ -23,8 +24,12 @@ def catalog_list(request):
     query = (request.GET.get("q") or "").strip()
     cat_slug = (request.GET.get("category") or "").strip()
     tag_slug = (request.GET.get("tag") or "").strip()
+    # view mode toggle: 'list' (default) or 'grid'
+    view_mode = (request.GET.get("view") or "list").strip().lower()
+    if view_mode not in ("list", "grid"):
+        view_mode = "list"
 
-    books = (
+    books_qs = (
         Book.objects.all()
         .prefetch_related("authors", "tags")
         .select_related("category")
@@ -32,7 +37,7 @@ def catalog_list(request):
     )
     if query:
         alt_query = query.replace('/', ' ').replace('_', ' ')
-        books = books.filter(
+        books_qs = books_qs.filter(
             Q(title__icontains=query)
             | Q(isbn13__icontains=query)
             | Q(authors__full_name__icontains=query)
@@ -49,13 +54,13 @@ def catalog_list(request):
         selected_category = Category.objects.filter(slug=cat_slug).first()
         if selected_category:
             ids = _descendant_ids(selected_category)
-            books = books.filter(category_id__in=ids)
+            books_qs = books_qs.filter(category_id__in=ids)
 
     selected_tag = None
     if tag_slug:
         selected_tag = Tag.objects.filter(slug=tag_slug).first()
         if selected_tag:
-            books = books.filter(tags=selected_tag)
+            books_qs = books_qs.filter(tags=selected_tag)
 
     top_categories = (
         Category.objects.filter(Q(parent__isnull=True) | Q(books__isnull=False))
@@ -66,7 +71,7 @@ def catalog_list(request):
 
     # Fuzzy suggestions when no results
     did_you_mean = []
-    if query and not books.exists():
+    if query and not books_qs.exists():
         titles = list(Book.objects.values_list("title", flat=True))
         did_you_mean = difflib.get_close_matches(query, titles, n=5, cutoff=0.6)
 
@@ -74,8 +79,13 @@ def catalog_list(request):
     all_categories = Category.objects.order_by("name").only("name")
     sample_titles = Book.objects.order_by("-id").values_list("title", flat=True)[:50]
 
+    # Pagination (works for both grid and list views)
+    paginator = Paginator(books_qs.order_by("-id"), 12)
+    page_number = request.GET.get("page")
+    books_page = paginator.get_page(page_number)
+
     context = {
-        "books": books,
+        "books": books_page,
         "search_query": query,
         "top_categories": top_categories,
         "selected_category": selected_category,
@@ -84,6 +94,7 @@ def catalog_list(request):
         "all_categories": all_categories,
         "sample_titles": sample_titles,
         "did_you_mean": did_you_mean,
+        "view_mode": view_mode,
     }
     return render(request, "myapp/catalog/catalog_list.html", context)
 

@@ -348,8 +348,7 @@
   <!-- Pagination -->
   {% if books.paginator.num_pages > 1 %}
     <nav aria-label="Books pagination" class="mt-10">
-      <div class="bg-white/90 backdrop-blur-xl rounded-2xl border-2 border-gray-200 p-6 shadow-lg">
-        <ul class="flex justify-center flex-wrap gap-2 mb-4">
+        <ul class="flex justify-center flex-wrap gap-2 mb-2">
           <!-- Previous -->
           <li>
             <a class="inline-flex items-center gap-2 px-5 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all {% if not books.has_previous %}pointer-events-none opacity-50{% endif %}"
@@ -377,8 +376,7 @@
           </li>
         </ul>
         <p class="text-center text-sm text-gray-600">Page {{ books.number }} of {{ books.paginator.num_pages }}</p>
-      </div>
-    </nav>
+      </nav>
   {% endif %}
 
   {% if did_you_mean %}
