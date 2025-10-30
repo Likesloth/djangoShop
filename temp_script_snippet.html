@@ -1,0 +1,22 @@
+<script>
+(function(){
+  const input = document.querySelector('input[name="q"]');
+  const datalist = document.getElementById('library-suggestions');
+  if (!input || !datalist) return;
+  let ctrl;
+  input.addEventListener('input', async (e) => {
+    const q = (e.target.value || '').trim();
+    if (ctrl) ctrl.abort();
+    if (!q) { datalist.innerHTML=''; return; }
+    ctrl = new AbortController();
+    try {
+      const res = await fetch('" + "{% url \"suggest-titles\" %}" + "?q=' + encodeURIComponent(q), { signal: ctrl.signal });
+      if (!res.ok) return;
+      const data = await res.json();
+      const opts = (data.suggestions || []).map(s => <option value=""></option>).join('');
+      datalist.innerHTML = opts;
+    } catch (err) { /* ignore */ }
+  });
+})();
+</script>
+

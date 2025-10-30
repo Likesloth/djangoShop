@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.db.models import Q, Count
+import difflib
 
 from ..models import Product, Book, BookCopy, Category, Tag
 
@@ -40,12 +41,25 @@ def library_home(request):
         .order_by("-id")
     )
     if query:
+        # Also search by category name (and parent name) and be tolerant to separators like '/'
+        alt_query = query.replace('/', ' ').replace('_', ' ')
         books_qs = books_qs.filter(
             Q(title__icontains=query)
             | Q(isbn13__icontains=query)
             | Q(authors__full_name__icontains=query)
             | Q(tags__name__icontains=query)
+            | Q(category__name__icontains=query)
+            | Q(category__parent__name__icontains=query)
+            | Q(category__name__icontains=alt_query)
+            | Q(category__parent__name__icontains=alt_query)
+            | Q(tags__name__icontains=alt_query)
         ).distinct()
+
+    # Fuzzy suggestions when no results
+    did_you_mean = []
+    if query and not books_qs.exists():
+        titles = list(Book.objects.values_list("title", flat=True))
+        did_you_mean = difflib.get_close_matches(query, titles, n=5, cutoff=0.6)
 
     selected_category = None
     if cat_slug:
@@ -69,6 +83,9 @@ def library_home(request):
         .order_by("name")
     )
     popular_tags = Tag.objects.order_by("name")[:20]
+    # Suggestions for the search box (lightweight, no extra endpoint):
+    all_categories = Category.objects.order_by("name").only("name")
+    sample_titles = Book.objects.order_by("-id").values_list("title", flat=True)[:50]
     return render(request, "myapp/pages/library_home.html", {
         "books": books,
         "top_categories": top_categories,
@@ -76,6 +93,9 @@ def library_home(request):
         "selected_category": selected_category,
         "selected_tag": selected_tag,
         "search_query": query,
+        "all_categories": all_categories,
+        "sample_titles": sample_titles,
+        "did_you_mean": did_you_mean,
     })
 
 

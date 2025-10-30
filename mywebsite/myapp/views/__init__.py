@@ -13,7 +13,7 @@ from .contacts import (
     contact_detail,
     contact_actions_fragment,
 )
-from .catalog import catalog_list, book_detail
+from .catalog import catalog_list, book_detail, suggest_titles
 from .circulation import loan_create, loan_update
 from .account import my_loans, my_fines
 from .cart import cart_view, cart_add, cart_remove, cart_place_request
@@ -50,7 +50,7 @@ __all__ = [
     "action_quick_create", "action_toggle_complete", "contact_toggle_complete", "delete_contact", "contact_detail",
     "contact_actions_fragment",
     # catalog
-    "catalog_list", "book_detail",
+    "catalog_list", "book_detail", "suggest_titles",
     # circulation
     "loan_create", "loan_update",
     # account
@@ -62,4 +62,3 @@ __all__ = [
     "copy_status_update", "overdues_list", "fines_ledger", "fine_mark_paid", "book_create_manual", "reports_dashboard",
     "report_overdues_csv", "report_top_borrowed_csv", "report_fines_summary_csv", "loans_by_user",
 ]
-

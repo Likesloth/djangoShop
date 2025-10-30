@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
 from django.db.models import Q, Count
+import difflib
 
 from ..models import Book, BookCopy, Category, Tag
 
@@ -29,11 +31,17 @@ def catalog_list(request):
         .annotate(available_count=Count("copies", filter=Q(copies__status=BookCopy.STATUS_AVAILABLE)))
     )
     if query:
+        alt_query = query.replace('/', ' ').replace('_', ' ')
         books = books.filter(
             Q(title__icontains=query)
             | Q(isbn13__icontains=query)
             | Q(authors__full_name__icontains=query)
             | Q(tags__name__icontains=query)
+            | Q(category__name__icontains=query)
+            | Q(category__parent__name__icontains=query)
+            | Q(category__name__icontains=alt_query)
+            | Q(category__parent__name__icontains=alt_query)
+            | Q(tags__name__icontains=alt_query)
         ).distinct()
 
     selected_category = None
@@ -56,6 +64,16 @@ def catalog_list(request):
     )
     popular_tags = Tag.objects.order_by("name")[:20]
 
+    # Fuzzy suggestions when no results
+    did_you_mean = []
+    if query and not books.exists():
+        titles = list(Book.objects.values_list("title", flat=True))
+        did_you_mean = difflib.get_close_matches(query, titles, n=5, cutoff=0.6)
+
+    # Suggestions for the search box (no extra endpoint):
+    all_categories = Category.objects.order_by("name").only("name")
+    sample_titles = Book.objects.order_by("-id").values_list("title", flat=True)[:50]
+
     context = {
         "books": books,
         "search_query": query,
@@ -63,6 +81,9 @@ def catalog_list(request):
         "selected_category": selected_category,
         "selected_tag": selected_tag,
         "popular_tags": popular_tags,
+        "all_categories": all_categories,
+        "sample_titles": sample_titles,
+        "did_you_mean": did_you_mean,
     }
     return render(request, "myapp/catalog/catalog_list.html", context)
 
@@ -77,3 +98,30 @@ def book_detail(request, book_id):
         "available_count": available_count,
     }
     return render(request, "myapp/catalog/book_detail.html", context)
+
+
+def suggest_titles(request):
+    """Return up to 10 title suggestions for the given query (prefix then contains)."""
+    q = (request.GET.get("q") or "").strip()
+    suggestions = []
+    if q:
+        # Prefer prefix matches
+        prefix_qs = Book.objects.filter(title__istartswith=q).values_list("title", flat=True)[:10]
+        suggestions.extend(prefix_qs)
+        if len(suggestions) < 10:
+            extra = (
+                Book.objects.filter(title__icontains=q)
+                .exclude(title__in=suggestions)
+                .values_list("title", flat=True)[: (10 - len(suggestions))]
+            )
+            suggestions.extend(extra)
+        # If still small, add fuzzy close matches
+        if len(suggestions) < 10:
+            all_titles = list(Book.objects.values_list("title", flat=True))
+            fuzzy = difflib.get_close_matches(q, all_titles, n=10, cutoff=0.6)
+            for s in fuzzy:
+                if s not in suggestions:
+                    suggestions.append(s)
+                if len(suggestions) >= 10:
+                    break
+    return JsonResponse({"suggestions": list(suggestions)})

@@ -30,6 +30,7 @@ urlpatterns = [
     # Catalog
     path('catalog/', catalog_list, name="catalog-list"),
     path('catalog/book/<int:book_id>/', book_detail, name="catalog-detail"),
+    path('catalog/suggest-titles/', suggest_titles, name="suggest-titles"),
     # Cart + Requests
     path('cart/', cart_view, name='cart-view'),
     path('cart/add/<int:book_id>/', cart_add, name='cart-add'),
