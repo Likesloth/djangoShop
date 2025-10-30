@@ -6,19 +6,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Library System</title>
-    <link rel="stylesheet" href="{% static 'css/myCss.css' %}?v=20251030b">
+    <link rel="stylesheet" href="{% static 'css/myCss.css' %}?v=20251030c">
 
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+      // Tailwind CDN theme override: map existing color names
+      // used across templates to your new palette.
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              peach: '#FCD8CD',
-              pink: '#FEEBF6',
-              lavender: '#EBD6FB',
-              indigo: '#687FE5',
+              // Brand palette (your 4 colors)
+              primary: '#1A374D',   // dark blue
+              secondary: '#406882', // steel blue
+              accent: '#6998AB',    // muted teal-blue
+              muted: '#B1D0E0',     // light blue
+
+              // Backward-compat mappings to preserve existing classes
+              // e.g., text-indigo, from-indigo, to-purple-500, pink/20, etc.
+              indigo: '#1A374D',
+              'indigo-500': '#1A374D',
+              purple: { '500': '#406882' },
+              pink: '#6998AB',
+              lavender: '#B1D0E0',
+              peach: '#B1D0E0',
+              'peach-300': '#B1D0E0',
+              'peach-400': '#B1D0E0'
             }
           }
         }
@@ -27,10 +41,28 @@
 
     <style>
       body {
-        background: linear-gradient(135deg, #EBD6FB 0%, #FEEBF6 50%, #FCD8CD 100%);
+        /* Soft gradient using your palette (light → mid → secondary) */
+        background: linear-gradient(135deg, #B1D0E0 0%, #6998AB 50%, #406882 100%);
         background-attachment: fixed;
         min-height: 100vh;
       }
+
+      /* Lighten white surfaces to your light brand color */
+      .bg-white { background-color: #B1D0E0 !important; }
+      .bg-white\/95 { background-color: rgba(177, 208, 224, 0.95) !important; }
+      .bg-white\/90 { background-color: rgba(177, 208, 224, 0.90) !important; }
+      .bg-white\/80 { background-color: rgba(177, 208, 224, 0.80) !important; }
+      .bg-white\/70 { background-color: rgba(177, 208, 224, 0.70) !important; }
+      .bg-white\/60 { background-color: rgba(177, 208, 224, 0.60) !important; }
+
+      /* Hover variants used in a few lists */
+      .hover\:bg-white:hover { background-color: #B1D0E0 !important; }
+      .hover\:bg-white\/90:hover { background-color: rgba(177, 208, 224, 0.90) !important; }
+
+      /* Borders previously using white */
+      .border-white { border-color: #1A374D !important; }
+      .border-white\/50 { border-color: rgba(26, 55, 77, 0.5) !important; }
+      .border-white\/60 { border-color: rgba(26, 55, 77, 0.6) !important; }
     </style>
 
     {% block head_extra %}{% endblock %}
