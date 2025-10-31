@@ -167,7 +167,13 @@
               <details class="relative">
                 <summary class="list-none cursor-pointer">
                   <span class="sr-only">Open user menu</span>
-                  <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=64&h=64&q=80" alt="Profile" class="w-10 h-10 rounded-full border-2 border-indigo/30 hover:border-indigo transition-all object-cover" />
+                  {% with request.user.profile as prof %}
+                    {% if prof.avatar %}
+                      <img src="{{ prof.avatar.url }}" alt="Profile" class="w-10 h-10 rounded-full border-2 border-indigo/30 hover:border-indigo transition-all object-cover" />
+                    {% else %}
+                      <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=64&h=64&q=80" alt="Profile" class="w-10 h-10 rounded-full border-2 border-indigo/30 hover:border-indigo transition-all object-cover" />
+                    {% endif %}
+                  {% endwith %}
                 </summary>
                 <div class="absolute right-0 mt-2 w-56 rounded-2xl border-2 border-gray-200 bg-white/95 backdrop-blur-xl shadow-xl p-2 z-50">
                   <div class="px-4 py-2 text-xs uppercase text-gray-500 font-bold">Account</div>
@@ -280,45 +286,45 @@
     <footer class="mt-16 bg-white/60 backdrop-blur-xl border-t-2 border-gray-200">
       <div class="max-w-7xl mx-auto px-4 py-12">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <!-- Features -->
+          <!-- Catalog -->
           <div>
-            <h5 class="text-lg font-bold text-gray-800 mb-4">Features</h5>
+            <h5 class="text-lg font-bold text-gray-800 mb-4">Catalog</h5>
             <ul class="space-y-2">
-              <li><a href="{% url 'home-page' %}" class="text-gray-600 hover:text-indigo transition-colors">Cool stuff</a></li>
-              <li><a href="{% url 'home-page' %}" class="text-gray-600 hover:text-indigo transition-colors">Random feature</a></li>
-              <li><a href="{% url 'home-page' %}" class="text-gray-600 hover:text-indigo transition-colors">Team feature</a></li>
-              <li><a href="{% url 'home-page' %}" class="text-gray-600 hover:text-indigo transition-colors">Stuff for developers</a></li>
+              <li><a href="{% url 'catalog-list' %}" class="text-gray-600 hover:text-indigo transition-colors">Browse Books</a></li>
+              <li><a href="{% url 'catalog-list' %}?view=tags" class="text-gray-600 hover:text-indigo transition-colors">Popular Tags</a></li>
+              <li><a href="{% url 'catalog-list' %}?view=categories" class="text-gray-600 hover:text-indigo transition-colors">Categories</a></li>
             </ul>
           </div>
 
-          <!-- About -->
+          <!-- Library -->
           <div>
-            <h5 class="text-lg font-bold text-gray-800 mb-4">About</h5>
+            <h5 class="text-lg font-bold text-gray-800 mb-4">Library</h5>
             <ul class="space-y-2">
-              <li><a href="{% url 'about-page' %}" class="text-gray-600 hover:text-indigo transition-colors">About us</a></li>
+              <li><a href="{% url 'about-page' %}" class="text-gray-600 hover:text-indigo transition-colors">About</a></li>
               <li><a href="{% url 'contact-page' %}" class="text-gray-600 hover:text-indigo transition-colors">Contact</a></li>
             </ul>
           </div>
 
-          <!-- Resources -->
+          <!-- Account -->
           <div>
-            <h5 class="text-lg font-bold text-gray-800 mb-4">Resources</h5>
+            <h5 class="text-lg font-bold text-gray-800 mb-4">Account</h5>
             <ul class="space-y-2">
-              <li><a href="{% url 'home-page' %}" class="text-gray-600 hover:text-indigo transition-colors">Resource</a></li>
-              <li><a href="{% url 'home-page' %}" class="text-gray-600 hover:text-indigo transition-colors">Resource name</a></li>
-              <li><a href="{% url 'home-page' %}" class="text-gray-600 hover:text-indigo transition-colors">Another resource</a></li>
-              <li><a href="{% url 'home-page' %}" class="text-gray-600 hover:text-indigo transition-colors">Final resource</a></li>
+              <li><a href="{% url 'my-loans' %}" class="text-gray-600 hover:text-indigo transition-colors">My Loans</a></li>
+              <li><a href="{% url 'my-requests' %}" class="text-gray-600 hover:text-indigo transition-colors">My Requests</a></li>
+              <li><a href="{% url 'my-fines' %}" class="text-gray-600 hover:text-indigo transition-colors">My Fines</a></li>
+              <li><a href="{% url 'settings' %}" class="text-gray-600 hover:text-indigo transition-colors">Settings</a></li>
             </ul>
           </div>
 
-          <!-- Newsletter -->
+          <!-- Hours & Location -->
           <div>
-            <h5 class="text-lg font-bold text-gray-800 mb-4">Newsletter</h5>
-            <p class="text-sm text-gray-600 mb-4">Monthly digest of what's new and exciting from us.</p>
-            <div class="flex flex-col gap-2">
-              <input type="email" class="px-4 py-2.5 bg-white border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent" placeholder="Email address" />
-              <button class="px-4 py-2.5 bg-gradient-to-r from-indigo to-purple-500 hover:from-purple-500 hover:to-indigo text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-105" type="button">Subscribe</button>
-            </div>
+            <h5 class="text-lg font-bold text-gray-800 mb-4">Visit</h5>
+            <ul class="space-y-2 text-gray-600">
+              <li class="flex items-start gap-2"><span class="mt-1 inline-block w-2 h-2 rounded-full bg-indigo/60"></span>Mon–Fri: 8:00–18:00</li>
+              <li class="flex items-start gap-2"><span class="mt-1 inline-block w-2 h-2 rounded-full bg-indigo/60"></span>Sat: 9:00–14:00</li>
+              <li class="flex items-start gap-2"><span class="mt-1 inline-block w-2 h-2 rounded-full bg-indigo/60"></span>Location: Main Campus Library</li>
+              <li><a href="{% url 'contact-page' %}" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-indigo transition">Get in touch</a></li>
+            </ul>
           </div>
         </div>
 

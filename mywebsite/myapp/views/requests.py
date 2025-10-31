@@ -51,6 +51,32 @@ def request_detail(request, request_id):
 
 @login_required(login_url='login')
 @user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
+def set_pickup_by(request, request_id):
+    pr = get_object_or_404(PickupRequest, pk=request_id)
+    if request.method != 'POST':
+        return redirect('staff-request-detail', request_id=pr.id)
+    raw = (request.POST.get('pickup_by') or '').strip()
+    if not raw:
+        pr.pickup_by = None
+        pr.save(update_fields=['pickup_by'])
+        messages.success(request, 'Cleared pickup date.')
+        return redirect('staff-request-detail', request_id=pr.id)
+    try:
+        # Expect ISO date (YYYY-MM-DD)
+        from datetime import date
+
+        value = date.fromisoformat(raw)
+    except Exception:
+        messages.error(request, 'Invalid date format. Use YYYY-MM-DD.')
+        return redirect('staff-request-detail', request_id=pr.id)
+    pr.pickup_by = value
+    pr.save(update_fields=['pickup_by'])
+    messages.success(request, 'Pickup date updated.')
+    return redirect('staff-request-detail', request_id=pr.id)
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff or u.is_superuser, login_url='login')
 @transaction.atomic
 def assign_item_copy(request, request_id, item_id):
     pr = get_object_or_404(PickupRequest, pk=request_id)
@@ -91,6 +117,9 @@ def mark_request_ready(request, request_id):
     missing = pr.items.filter(assigned_copy__isnull=True).exists()
     if missing:
         messages.error(request, 'All items must be assigned before marking ready.')
+        return redirect('staff-request-detail', request_id=pr.id)
+    if not pr.pickup_by:
+        messages.error(request, 'Set a pickup date before marking ready.')
         return redirect('staff-request-detail', request_id=pr.id)
     pr.status = PickupRequest.STATUS_READY
     pr.ready_at = timezone.now()

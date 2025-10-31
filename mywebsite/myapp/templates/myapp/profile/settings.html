@@ -17,14 +17,26 @@
       <div class="text-gray-600 text-sm">Use a permanent address where you can receive mail.</div>
     </div>
     <div class="lg:col-span-2">
-      <form method="post" class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl p-6">
+      <form method="post" class="bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-gray-100 shadow-xl p-6" enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="hidden" name="action" value="profile" />
+        <input type="hidden" id="settings-action" name="action" value="profile" />
         <div class="flex items-center gap-4 mb-6">
-          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80" alt="avatar" class="rounded-2xl w-20 h-20 object-cover border-2 border-white shadow" />
-          <div>
-            <span class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-gray-300 bg-white text-gray-700 text-sm">Change avatar (coming soon)</span>
-            <div class="text-gray-500 text-xs mt-1">JPG, GIF or PNG. 1MB max.</div>
+          {% with request.user.profile as prof %}
+            {% if prof.avatar %}
+              <img src="{{ prof.avatar.url }}" alt="avatar" class="rounded-2xl w-20 h-20 object-cover border-2 border-white shadow" />
+            {% else %}
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=128&h=128&q=80" alt="avatar" class="rounded-2xl w-20 h-20 object-cover border-2 border-white shadow" />
+            {% endif %}
+          {% endwith %}
+          <div class="flex items-center gap-2">
+            <label class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-gray-300 bg-white text-gray-700 text-sm cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              <span>Choose image</span>
+              <input type="file" name="avatar" accept="image/*" class="hidden" onchange="document.getElementById('settings-action').value='avatar'; this.form.submit();" />
+            </label>
+            <button type="submit" name="remove" value="1" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-gray-300 bg-white text-gray-700 text-sm" onclick="document.getElementById('settings-action').value='avatar-remove'">
+              Remove
+            </button>
           </div>
         </div>
 

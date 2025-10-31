@@ -56,6 +56,7 @@ urlpatterns = [
     # Staff: Requests workflow
     path('staff/requests/', requests_queue, name='staff-requests-queue'),
     path('staff/requests/<int:request_id>/', request_detail, name='staff-request-detail'),
+    path('staff/requests/<int:request_id>/set-pickup-by/', set_pickup_by, name='staff-request-set-pickup-by'),
     path('staff/requests/<int:request_id>/items/<int:item_id>/assign/', assign_item_copy, name='staff-request-assign-item'),
     path('staff/requests/<int:request_id>/items/<int:item_id>/unassign/', unassign_item_copy, name='staff-request-unassign-item'),
     path('staff/requests/<int:request_id>/ready/', mark_request_ready, name='staff-request-mark-ready'),

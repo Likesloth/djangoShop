@@ -21,6 +21,7 @@ from .requests import (
     my_requests,
     requests_queue,
     request_detail,
+    set_pickup_by,
     assign_item_copy,
     unassign_item_copy,
     mark_request_ready,
@@ -58,6 +59,7 @@ __all__ = [
     # cart + requests
     "cart_view", "cart_add", "cart_remove", "cart_place_request",
     "my_requests", "requests_queue", "request_detail", "assign_item_copy", "unassign_item_copy", "mark_request_ready", "confirm_pickup", "cancel_request",
+    "set_pickup_by",
     # staff
     "copy_status_update", "overdues_list", "fines_ledger", "fine_mark_paid", "book_create_manual", "reports_dashboard",
     "report_overdues_csv", "report_top_borrowed_csv", "report_fines_summary_csv", "loans_by_user",

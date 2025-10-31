@@ -28,7 +28,12 @@
       </div>
       <div>
         <div class="text-xs font-bold text-gray-600 uppercase">Pickup By</div>
-        <div class="text-gray-800 font-semibold">{{ pr.pickup_by|date:'Y-m-d' }}</div>
+        <div class="text-gray-800 font-semibold">{{ pr.pickup_by|date:'Y-m-d'|default:'Not set' }}</div>
+        <form method="post" action="{% url 'staff-request-set-pickup-by' pr.id %}" class="mt-2 flex items-center gap-2">
+          {% csrf_token %}
+          <input type="date" name="pickup_by" value="{{ pr.pickup_by|date:'Y-m-d' }}" class="rounded-xl bg-white border-2 border-gray-200 px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-indigo" />
+          <button type="submit" class="px-3 py-2 rounded-xl border-2 border-indigo/30 text-indigo hover:bg-indigo/10 text-sm font-semibold">Save</button>
+        </form>
       </div>
       <div>
         <div class="text-xs font-bold text-gray-600 uppercase">Requested</div>

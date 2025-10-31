@@ -21,10 +21,25 @@ def _get_or_create_cart(user) -> Cart:
 def cart_view(request):
     cart = _get_or_create_cart(request.user)
     # Prefetch copies for availability dropdowns
-    items = cart.items.select_related('book').prefetch_related('book__copies').all()
+    items = list(cart.items.select_related('book').prefetch_related('book__copies').all())
+    # Attach any pre-selected copy choices from session
+    preselected = request.session.get('preselected_copies', {})
+    valid_keys = set()
+    for it in items:
+        key = str(it.id)
+        valid_keys.add(key)
+        setattr(it, 'preselected_copy_id', preselected.get(key))
+    # Trim session mapping to only items still in cart
+    trimmed = {k: v for k, v in preselected.items() if k in valid_keys}
+    if trimmed != preselected:
+        request.session['preselected_copies'] = trimmed
+        request.session.modified = True
+    # Suggest a default pickup date (same policy as place_request fallback)
+    default_pickup_by = (timezone.now() + timedelta(days=HOLD_PICKUP_DAYS)).date()
     return render(request, 'myapp/cart/cart.html', {
         'cart': cart,
         'items': items,
+        'default_pickup_by': default_pickup_by,
     })
 
 
@@ -32,7 +47,14 @@ def cart_view(request):
 def cart_add(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     cart = _get_or_create_cart(request.user)
-    CartItem.objects.get_or_create(cart=cart, book=book)
+    item, _ = CartItem.objects.get_or_create(cart=cart, book=book)
+    # Optional preselected copy id passed via querystring (?copy=ID)
+    copy_param = (request.GET.get('copy') or '').strip()
+    if copy_param.isdigit():
+        pre = request.session.get('preselected_copies', {})
+        pre[str(item.id)] = int(copy_param)
+        request.session['preselected_copies'] = pre
+        request.session.modified = True
     messages.success(request, f'Added "{book.title}" to your cart.')
     return redirect('catalog-detail', book_id=book.id)
 

@@ -99,6 +99,32 @@ def settings_view(request):
                 user_to_update.email = email
                 user_to_update.save()
                 messages.success(request, 'Profile updated.')
+        elif action == 'avatar':
+            # File upload for avatar
+            file = request.FILES.get('avatar')
+            if not file:
+                messages.error(request, 'Please choose an image to upload.')
+            else:
+                profile, _ = Profile.objects.get_or_create(user=request.user)
+                # Optional: delete previous file to avoid orphaned media
+                if getattr(profile, 'avatar', None) and profile.avatar:
+                    try:
+                        profile.avatar.delete(save=False)
+                    except Exception:
+                        pass
+                profile.avatar = file
+                profile.save()
+                messages.success(request, 'Avatar updated.')
+        elif action == 'avatar-remove':
+            profile, _ = Profile.objects.get_or_create(user=request.user)
+            if getattr(profile, 'avatar', None) and profile.avatar:
+                try:
+                    profile.avatar.delete(save=False)
+                except Exception:
+                    pass
+                profile.avatar = None
+                profile.save()
+            messages.success(request, 'Avatar removed.')
         elif action == 'password':
             current_password = (request.POST.get('current_password') or '').strip()
             new_password = (request.POST.get('new_password') or '').strip()

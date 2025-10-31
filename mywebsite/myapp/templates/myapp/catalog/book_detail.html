@@ -118,23 +118,14 @@
                 </div>
 
                 {% if request.user.is_authenticated %}
-                  <div class="flex gap-2">
-                    <a href="{% url 'cart-add' book.id %}" 
-                       class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                      </svg>
-                      Add to Cart
-                    </a>
-                    <a href="{% url 'cart-view' %}" 
-                       class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 hover:border-indigo transition-all hover:scale-105">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                      </svg>
-                      View Cart
-                    </a>
-                  </div>
+                  <a href="{% url 'cart-view' %}" 
+                     class="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 hover:border-indigo transition-all hover:scale-105">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    View Cart
+                  </a>
                 {% else %}
                   <a href="{% url 'login' %}" 
                      class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105">
@@ -166,10 +157,16 @@
     </div>
 
     <div class="overflow-x-auto">
-      <table class="min-w-full">
+      <table class="min-w-full table-fixed">
+        <colgroup>
+          <col class="w-1/4">
+          <col class="w-1/4">
+          <col class="w-1/4">
+          <col class="w-1/4">
+        </colgroup>
         <thead>
-          <tr class="bg-gray-50 border-b-2 border-gray-200">
-            <th class="text-left px-6 py-4 text-sm font-bold text-gray-700 uppercase tracking-wider">
+          <tr class="bg-white/60 backdrop-blur-sm border-b-2 border-gray-200">
+            <th class="text-left px-6 py-4 text-sm font-bold text-gray-600 uppercase tracking-wider">
               <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
@@ -177,7 +174,7 @@
                 Barcode
               </div>
             </th>
-            <th class="text-left px-6 py-4 text-sm font-bold text-gray-700 uppercase tracking-wider">
+            <th class="text-left px-6 py-4 text-sm font-bold text-gray-600 uppercase tracking-wider">
               <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -186,7 +183,7 @@
                 Location
               </div>
             </th>
-            <th class="text-left px-6 py-4 text-sm font-bold text-gray-700 uppercase tracking-wider">
+            <th class="text-left px-6 py-4 text-sm font-bold text-gray-600 uppercase tracking-wider">
               <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -194,6 +191,16 @@
                 Status
               </div>
             </th>
+            {% if request.user.is_authenticated %}
+            <th class="px-6 py-4 text-sm font-bold text-gray-600 uppercase tracking-wider">
+              <div class="w-full flex items-center justify-center gap-2">
+                <svg class="w-4 h-4 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                Add to Cart
+              </div>
+            </th>
+            {% endif %}
             {% if request.user.is_staff or request.user.is_superuser %}
               <th class="text-left px-6 py-4 text-sm font-bold text-gray-700 uppercase tracking-wider">
                 <div class="flex items-center gap-2">
@@ -258,8 +265,21 @@
                   <span class="inline-flex items-center px-3 py-1.5 rounded-lg border-2 border-gray-300 text-gray-700 bg-white text-sm font-bold">
                     {{ copy.status }}
                   </span>
+                 {% endif %}
+               </td>
+              {% if request.user.is_authenticated %}
+              <td class="px-6 py-4 text-center">
+                {% if copy.status == 'AVAILABLE' %}
+                  <a href="{% url 'cart-add' book.id %}?copy={{ copy.id }}"
+                     class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo to-purple-500 text-white text-sm font-bold shadow hover:shadow-md transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Add to Cart
+                  </a>
+                {% else %}
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 border-gray-200 text-gray-400 bg-white text-sm font-semibold">Unavailable</span>
                 {% endif %}
               </td>
+              {% endif %}
               {% if request.user.is_staff or request.user.is_superuser %}
                 <td class="px-6 py-4">
                   <div class="flex flex-wrap gap-2">
@@ -290,7 +310,7 @@
             </tr>
           {% empty %}
             <tr>
-              <td colspan="{% if request.user.is_staff or request.user.is_superuser %}4{% else %}3{% endif %}" class="px-6 py-12 text-center">
+              <td colspan="{% if request.user.is_authenticated and request.user.is_staff or request.user.is_superuser %}5{% elif request.user.is_authenticated %}4{% elif request.user.is_staff or request.user.is_superuser %}4{% else %}3{% endif %}" class="px-6 py-12 text-center">
                 <div class="flex flex-col items-center">
                   <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                     <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
