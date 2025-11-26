@@ -2,352 +2,226 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Library System</title>
-    <link rel="stylesheet" href="{% static 'css/myCss.css' %}?v=20251030c">
 
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      // Tailwind CDN theme override: map existing color names
-      // used across templates to your new palette.
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              // Brand palette (your 4 colors)
-              primary: '#1A374D',   // dark blue
-              secondary: '#406882', // steel blue
-              accent: '#6998AB',    // muted teal-blue
-              muted: '#B1D0E0',     // light blue
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Library System</title>
+  <link rel="stylesheet" href="{% static 'css/myCss.css' %}?v=20251030c">
 
-              // Backward-compat mappings to preserve existing classes
-              // e.g., text-indigo, from-indigo, to-purple-500, pink/20, etc.
-              indigo: '#1A374D',
-              'indigo-500': '#1A374D',
-              purple: { '500': '#406882' },
-              pink: '#6998AB',
-              lavender: '#B1D0E0',
-              peach: '#B1D0E0',
-              'peach-300': '#B1D0E0',
-              'peach-400': '#B1D0E0'
-            }
-          }
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            'pure-black': '#000000', 'dark-gray': '#1A1A1A', 'medium-gray': '#666666',
+            'light-gray': '#E5E5E5', 'off-white': '#F5F5F5', 'pure-white': '#FFFFFF',
+            'success': '#059669', 'warning': '#D97706', 'error': '#EF44 44',
+            primary: '#000000', secondary: '#666666', indigo: '#000000', purple: { '500': '#1A1A1A' },
+          },
+          boxShadow: {
+            'soft': '0 2px 8px rgba(0,0,0,0.08)',
+            'medium': '0 4px 12px rgba(0,0,0,0.12)',
+            'strong': '0 8px 24px rgba(0,0,0,0.16)',
+          },
         }
       }
-    </script>
+    }
+  </script>
 
-    <style>
-      body {
-        /* Soft gradient using your palette (light → mid → secondary) */
-        background: linear-gradient(135deg, #B1D0E0 0%, #6998AB 50%, #406882 100%);
-        background-attachment: fixed;
-        min-height: 100vh;
-      }
+  <style>
+    body {
+      background: #FFF;
+      color: #000;
+      font-family: 'Inter', sans-serif;
+    }
 
-      /* Lighten white surfaces to your light brand color */
-      .bg-white { background-color: #B1D0E0 !important; }
-      .bg-white\/95 { background-color: rgba(177, 208, 224, 0.95) !important; }
-      .bg-white\/90 { background-color: rgba(177, 208, 224, 0.90) !important; }
-      .bg-white\/80 { background-color: rgba(177, 208, 224, 0.80) !important; }
-      .bg-white\/70 { background-color: rgba(177, 208, 224, 0.70) !important; }
-      .bg-white\/60 { background-color: rgba(177, 208, 224, 0.60) !important; }
+    ::selection {
+      background: #000;
+      color: #FFF;
+    }
 
-      /* Hover variants used in a few lists */
-      .hover\:bg-white:hover { background-color: #B1D0E0 !important; }
-      .hover\:bg-white\/90:hover { background-color: rgba(177, 208, 224, 0.90) !important; }
+    a,
+    button,
+    input {
+      transition: all 0.2s;
+    }
+  </style>
 
-      /* Borders previously using white */
-      .border-white { border-color: #1A374D !important; }
-      .border-white\/50 { border-color: rgba(26, 55, 77, 0.5) !important; }
-      .border-white\/60 { border-color: rgba(26, 55, 77, 0.6) !important; }
-    </style>
+  {% block head_extra %}{% endblock %}
+</head>
 
-    {% block head_extra %}{% endblock %}
-  </head>
-  <body class="antialiased">
-    <!-- Navigation -->
-    <nav class="bg-white/80 backdrop-blur-xl border-b-2 border-gray-200 sticky top-0 z-50 shadow-sm">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="relative flex h-16 items-center justify-between">
-          <!-- Mobile menu button -->
-          <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            <button type="button" command="--toggle" commandfor="mobile-menu" class="relative inline-flex items-center justify-center rounded-xl p-2 text-gray-700 hover:bg-indigo/10 hover:text-indigo focus:outline-2 focus:-outline-offset-1 focus:outline-indigo transition-colors">
-              <span class="sr-only">Open main menu</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6 in-aria-expanded:hidden">
-                <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6 not-in-aria-expanded:hidden">
-                <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
+<body class="bg-pure-white text-pure-black">
+  <nav class="bg-pure-white border-b-2 border-light-gray sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <a href="{% url 'home-page' %}" class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-pure-black rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-pure-white" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+            </svg>
           </div>
+          <span class="text-xl font-bold text-pure-black hidden sm:block">Library</span>
+        </a>
 
-          <!-- Logo and Desktop Navigation -->
-          <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div class="flex shrink-0 items-center">
-              <a href="{% url 'home-page' %}" class="inline-flex items-center gap-2" aria-label="Home">
-                <div class="w-10 h-10 bg-gradient-to-br from-indigo to-purple-500 rounded-xl flex items-center justify-center shadow-md">
-                  <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
-                  </svg>
-                </div>
-                <span class="text-lg font-bold text-gray-800 hidden sm:block">Library</span>
-              </a>
-            </div>
-            <div class="hidden sm:ml-8 sm:flex sm:items-center sm:space-x-2">
-              <a href="{% url 'catalog-list' %}" class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all inline-flex items-center gap-2">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 19h18M4 17h16"/>
-                  <rect x="5" y="7" width="3" height="8" rx="1" ry="1"/>
-                  <rect x="10" y="6" width="3" height="9" rx="1" ry="1"/>
-                  <path d="M16 6l2.5 8.5a1 1 0 0 1-1.9.6L14.1 6.6A1 1 0 0 1 16 6z"/>
-                </svg>
-                Catalog
-              </a>
-              <a href="{% url 'about-page' %}" class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all inline-flex items-center gap-2">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 22a10 10 0 110-20 10 10 0 010 20z"/></svg>
-                About
-              </a>
-              <a href="{% url 'contact-page' %}" class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all inline-flex items-center gap-2">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6m-18 0l9-6 9 6v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
-                Contact
-              </a>
-              
-              {% if request.user.is_authenticated %}
-                {% if request.user.is_staff or request.user.is_superuser %}
-                  <details class="relative">
-                    <summary class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo cursor-pointer list-none transition-all">Staff</summary>
-                    <div class="absolute left-0 mt-2 w-56 rounded-2xl border-2 border-gray-200 bg-white/95 backdrop-blur-xl shadow-xl p-2 z-50">
-                      <a class="block px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all inline-flex items-center gap-2" href="{% url 'staff-requests-queue' %}">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6M9 8h6M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>
-                        Requests
-                      </a>
-                      <a class="block px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all inline-flex items-center gap-2" href="{% url 'staff-overdues' %}">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Overdues
-                      </a>
-                      <a class="block px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all inline-flex items-center gap-2" href="{% url 'staff-fines' %}">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.12-3 2.5S10.343 13 12 13s3 1.12 3 2.5S13.657 18 12 18m0-10V6m0 12v-2M4 12a8 8 0 1116 0 8 8 0 01-16 0z"/></svg>
-                        Fines
-                      </a>
-                      <a class="block px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all inline-flex items-center gap-2" href="{% url 'staff-reports' %}">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3v18M6 8v13m10-9v9m5-5v5M1 21h22"/></svg>
-                        Reports
-                      </a>
-                      <a class="block px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all inline-flex items-center gap-2" href="{% url 'staff-loans-by-user' %}">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m0-4a4 4 0 110-8 4 4 0 010 8zm8 0a4 4 0 100-8 4 4 0 000 8z"/></svg>
-                        Loans by User
-                      </a>
-                      <div class="my-2 h-px bg-gray-200"></div>
-                      <a class="block px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all inline-flex items-center gap-2" href="{% url 'staff-book-create' %}">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"/></svg>
-                        Add Book
-                      </a>
-                    </div>
-                  </details>
-                {% endif %}
-              {% endif %}
-            </div>
-          </div>
-
-          <!-- Right side: Cart + Profile -->
-          <div class="absolute inset-y-0 right-0 flex items-center gap-3 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            {% if request.user.is_authenticated %}
-              <!-- Cart Icon -->
-              <a href="{% url 'cart-view' %}" class="relative p-2 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all" aria-label="Cart">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-              </a>
-
-              <!-- Profile Dropdown -->
-              <details class="relative">
-                <summary class="list-none cursor-pointer">
-                  <span class="sr-only">Open user menu</span>
-                  {% with request.user.profile as prof %}
-                    {% if prof.avatar %}
-                      <img src="{{ prof.avatar.url }}" alt="Profile" class="w-10 h-10 rounded-full border-2 border-indigo/30 hover:border-indigo transition-all object-cover" />
-                    {% else %}
-                      <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=64&h=64&q=80" alt="Profile" class="w-10 h-10 rounded-full border-2 border-indigo/30 hover:border-indigo transition-all object-cover" />
-                    {% endif %}
-                  {% endwith %}
-                </summary>
-                <div class="absolute right-0 mt-2 w-56 rounded-2xl border-2 border-gray-200 bg-white/95 backdrop-blur-xl shadow-xl p-2 z-50">
-                  <div class="px-4 py-2 text-xs uppercase text-gray-500 font-bold">Account</div>
-                  <a class="block px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all inline-flex items-center gap-2" href="{% url 'my-loans' %}">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 19.5A2.5 2.5 0 006.5 22h11A2.5 2.5 0 0020 19.5V6a2 2 0 00-2-2H6a2 2 0 00-2 2v13.5z"/></svg>
-                    My Loans
-                  </a>
-                  <a class="block px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all inline-flex items-center gap-2" href="{% url 'my-requests' %}">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6M9 8h6M7 21h10a2 2 0 002-2V7l-5-5H7a2 2 0 00-2 2v15a2 2 0 002 2z"/></svg>
-                    My Requests
-                  </a>
-                  <a class="block px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all inline-flex items-center gap-2" href="{% url 'my-fines' %}">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.12-3 2.5S10.343 13 12 13s3 1.12 3 2.5S13.657 18 12 18m0-10V6m0 12v-2M4 12a8 8 0 1116 0 8 8 0 01-16 0z"/></svg>
-                    My Fines
-                  </a>
-                  <div class="my-2 h-px bg-gray-200"></div>
-                  <a class="block px-4 py-2.5 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo font-medium transition-all inline-flex items-center gap-2" href="{% url 'settings' %}">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317a1 1 0 011.35-.436l.842.421a1 1 0 00.894 0l.842-.421a1 1 0 011.35.436l.447.894a1 1 0 00.746.547l.993.142a1 1 0 01.832.832l.142.993a1 1 0 00.547.746l.894.447a1 1 0 01.436 1.35l-.421.842a1 1 0 000 .894l.421.842a1 1 0 01-.436 1.35l-.894.447a1 1 0 00-.547.746l-.142.993a1 1 0 01-.832.832l-.993.142a1 1 0 00-.746.547l-.447.894a1 1 0 01-1.35.436l-.842-.421a1 1 0 00-.894 0l-.842.421a1 1 0 01-1.35-.436l-.447-.894a1 1 0 00-.746-.547l-.993-.142a1 1 0 01-.832-.832l-.142-.993a1 1 0 00-.547-.746l-.894-.447a1 1 0 01-.436-1.35l.421-.842a1 1 0 000-.894l-.421-.842a1 1 0 01.436-1.35l.894-.447a1 1 0 00.547-.746l.142-.993a1 1 0 01.832-.832l.993-.142a1 1 0 00.746-.547l.447-.894zM12 15a3 3 0 100-6 3 3 0 000 6z"/></svg>
-                    Settings
-                  </a>
-                  <div class="my-2 h-px bg-gray-200"></div>
-                  <a class="block px-4 py-2.5 rounded-xl text-red-600 hover:bg-red-50 font-medium transition-all inline-flex items-center gap-2" href="{% url 'logout' %}">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1"/></svg>
-                    Sign out
-                  </a>
-                </div>
-              </details>
-            {% else %}
-              <a href="{% url 'login' %}" class="px-6 py-2.5 bg-gradient-to-r from-indigo to-purple-500 hover:from-purple-500 hover:to-indigo text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-105">
-                Login
-              </a>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-
-      <!-- Mobile Menu -->
-      <el-disclosure id="mobile-menu" hidden class="sm:hidden border-t-2 border-gray-200">
-        <div class="space-y-1 px-4 py-4 bg-white/50">
-          <a href="{% url 'catalog-list' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all">Catalog</a>
-          <a href="{% url 'about-page' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all">About</a>
-          <a href="{% url 'contact-page' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all">Contact</a>
-          
+        <div class="hidden sm:flex sm:space-x-2">
+          <a href="{% url 'catalog-list' %}"
+            class="px-4 py-2 rounded-lg text-pure-black hover:bg-off-white font-semibold">Catalog</a>
           {% if request.user.is_authenticated %}
-            {% if request.user.is_staff or request.user.is_superuser %}
-              <div class="mt-4 px-4 text-xs uppercase text-gray-500 font-bold">Staff Tools</div>
-              <a href="{% url 'staff-requests-queue' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all inline-flex items-center gap-2"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6M9 8h6M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>Requests</a>
-              <a href="{% url 'staff-overdues' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all inline-flex items-center gap-2"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Overdues</a>
-              <a href="{% url 'staff-fines' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all inline-flex items-center gap-2"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.12-3 2.5S10.343 13 12 13s3 1.12 3 2.5S13.657 18 12 18m0-10V6m0 12v-2M4 12a8 8 0 1116 0 8 8 0 01-16 0z"/></svg>Fines</a>
-              <a href="{% url 'staff-reports' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all inline-flex items-center gap-2"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3v18M6 8v13m10-9v9m5-5v5M1 21h22"/></svg>Reports</a>
-              <a href="{% url 'staff-loans-by-user' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all inline-flex items-center gap-2"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m0-4a4 4 0 110-8 4 4 0 010 8zm8 0a4 4 0 100-8 4 4 0 000 8z"/></svg>Loans by User</a>
-              <a href="{% url 'staff-book-create' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all inline-flex items-center gap-2">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"/></svg>
-                Add Book
-              </a>
-            {% endif %}
-            
-            <div class="mt-4 px-4 text-xs uppercase text-gray-500 font-bold">My Account</div>
-            <a href="{% url 'my-loans' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all">My Loans</a>
-            <a href="{% url 'cart-view' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all">Cart</a>
-            <a href="{% url 'my-requests' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all">My Requests</a>
-            <a href="{% url 'my-fines' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all">My Fines</a>
-            <a href="{% url 'settings' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all">Settings</a>
-            <a href="{% url 'logout' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-red-600 hover:bg-red-50 transition-all">Sign out</a>
-          {% else %}
-            <a href="{% url 'login' %}" class="block rounded-xl px-4 py-3 text-base font-semibold text-white bg-gradient-to-r from-indigo to-purple-500 text-center transition-all">Login</a>
+          <a href="{% url 'my-loans' %}"
+            class="px-4 py-2 rounded-lg text-pure-black hover:bg-off-white font-semibold">My Loans</a>
+          <a href="{% url 'cart-view' %}"
+            class="px-4 py-2 rounded-lg text-pure-black hover:bg-off-white font-semibold">Cart</a>
           {% endif %}
         </div>
-      </el-disclosure>
-    </nav>
 
-    <!-- Messages -->
-    {% if messages %}
-    <div class="max-w-4xl mx-auto mt-6 px-4 space-y-3">
-      {% for message in messages %}
-        {% if 'success' in message.tags %}
-          <div class="rounded-2xl border-2 border-emerald-300 bg-emerald-50 text-emerald-700 px-5 py-4 font-medium shadow-sm flex items-center gap-2">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>{{ message }}</span>
+        <div>
+          {% if request.user.is_authenticated %}
+          <div class="relative">
+            <button type="button" onclick="toggleUserMenu()"
+              class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-off-white" id="user-menu-btn">
+              <div
+                class="w-8 h-8 bg-pure-black rounded-full flex items-center justify-center text-pure-white font-bold text-sm">
+                {{ request.user.username.0|upper }}
+              </div>
+              <span class="hidden md:block font-semibold text-pure-black">{{ request.user.username }}</span>
+              <svg class="w-4 h-4 text-pure-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div id="user-menu"
+              class="hidden absolute right-0 mt-2 w-56 bg-pure-white rounded-lg shadow-strong border-2 border-light-gray z-50">
+              <div class="py-2">
+                <a href="{% url 'settings' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-off-white">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span class="font-medium">Profile & Settings</span>
+                </a>
+                <a href="{% url 'my-loans' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-off-white">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" strokewidth="2"
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                  <span class="font-medium">My Loans</span>
+                </a>
+                <a href="{% url 'my-fines' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-off-white">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="font-medium">My Fines</span>
+                </a>
+                <div class="border-t-2 border-light-gray my-2"></div>
+                <a href="{% url 'logout' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-red-50 text-error">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span class="font-medium">Logout</span>
+                </a>
+              </div>
+            </div>
           </div>
-        {% elif 'error' in message.tags %}
-          <div class="rounded-2xl border-2 border-red-300 bg-red-50 text-red-700 px-5 py-4 font-medium shadow-sm flex items-center gap-2">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-            <span>{{ message }}</span>
-          </div>
-        {% elif 'warning' in message.tags %}
-          <div class="rounded-2xl border-2 border-amber-300 bg-amber-50 text-amber-700 px-5 py-4 font-medium shadow-sm">
-            {{ message }}
-          </div>
-        {% else %}
-          <div class="rounded-2xl border-2 border-gray-300 bg-gray-50 text-gray-700 px-5 py-4 font-medium shadow-sm">
-            {{ message }}
-          </div>
-        {% endif %}
-      {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- Header Block -->
-    <div class="max-w-7xl mx-auto px-4 mt-6">
-      {% block myheader %}{% endblock %}
-    </div>
-
-    <!-- Main Content -->
-    <main>
-      {% block content %}{% endblock %}
-    </main>
-
-    <!-- Footer -->
-    <footer class="mt-16 bg-white/60 backdrop-blur-xl border-t-2 border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 py-12">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <!-- Catalog -->
-          <div>
-            <h5 class="text-lg font-bold text-gray-800 mb-4">Catalog</h5>
-            <ul class="space-y-2">
-              <li><a href="{% url 'catalog-list' %}" class="text-gray-600 hover:text-indigo transition-colors">Browse Books</a></li>
-              <li><a href="{% url 'catalog-list' %}?view=tags" class="text-gray-600 hover:text-indigo transition-colors">Popular Tags</a></li>
-              <li><a href="{% url 'catalog-list' %}?view=categories" class="text-gray-600 hover:text-indigo transition-colors">Categories</a></li>
-            </ul>
-          </div>
-
-          <!-- Library -->
-          <div>
-            <h5 class="text-lg font-bold text-gray-800 mb-4">Library</h5>
-            <ul class="space-y-2">
-              <li><a href="{% url 'about-page' %}" class="text-gray-600 hover:text-indigo transition-colors">About</a></li>
-              <li><a href="{% url 'contact-page' %}" class="text-gray-600 hover:text-indigo transition-colors">Contact</a></li>
-            </ul>
-          </div>
-
-          <!-- Account -->
-          <div>
-            <h5 class="text-lg font-bold text-gray-800 mb-4">Account</h5>
-            <ul class="space-y-2">
-              <li><a href="{% url 'my-loans' %}" class="text-gray-600 hover:text-indigo transition-colors">My Loans</a></li>
-              <li><a href="{% url 'my-requests' %}" class="text-gray-600 hover:text-indigo transition-colors">My Requests</a></li>
-              <li><a href="{% url 'my-fines' %}" class="text-gray-600 hover:text-indigo transition-colors">My Fines</a></li>
-              <li><a href="{% url 'settings' %}" class="text-gray-600 hover:text-indigo transition-colors">Settings</a></li>
-            </ul>
-          </div>
-
-          <!-- Hours & Location -->
-          <div>
-            <h5 class="text-lg font-bold text-gray-800 mb-4">Visit</h5>
-            <ul class="space-y-2 text-gray-600">
-              <li class="flex items-start gap-2"><span class="mt-1 inline-block w-2 h-2 rounded-full bg-indigo/60"></span>Mon–Fri: 8:00–18:00</li>
-              <li class="flex items-start gap-2"><span class="mt-1 inline-block w-2 h-2 rounded-full bg-indigo/60"></span>Sat: 9:00–14:00</li>
-              <li class="flex items-start gap-2"><span class="mt-1 inline-block w-2 h-2 rounded-full bg-indigo/60"></span>Location: Main Campus Library</li>
-              <li><a href="{% url 'contact-page' %}" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-indigo transition">Get in touch</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Copyright -->
-        <div class="flex flex-col sm:flex-row justify-between items-center py-6 mt-8 border-t-2 border-gray-200 gap-4">
-          <p class="text-gray-600 text-sm">&copy; 2024 Library System. All rights reserved.</p>
-          <div class="flex items-center gap-4">
-            <a href="#" class="text-gray-600 hover:text-indigo transition-colors">
-              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
-            </a>
-            <a href="#" class="text-gray-600 hover:text-indigo transition-colors">
-              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01M7.5 2h9a5.5 5.5 0 015.5 5.5v9a5.5 5.5 0 01-5.5 5.5h-9A5.5 5.5 0 012 16.5v-9A5.5 5.5 0 017.5 2z"/></svg>
-            </a>
-            <a href="#" class="text-gray-600 hover:text-indigo transition-colors">
-              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
-            </a>
-          </div>
+          {% else %}
+          <a href="{% url 'login' %}"
+            class="px-6 py-2.5 bg-pure-black hover:bg-dark-gray text-pure-white font-semibold rounded-lg">Login</a>
+          {% endif %}
         </div>
       </div>
-    </footer>
+    </div>
+  </nav>
 
-    <!-- TailwindPlus Elements -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-  </body>
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="mt-16 bg-off-white border-t-2 border-light-gray">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <p class="text-center text-medium-gray text-sm">&copy; 2024 Library System. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleUserMenu() {
+      const menu = document.getElementById('user-menu');
+      menu.classList.toggle('hidden');
+    }
+    document.addEventListener('click', function (e) {
+      const menu = document.getElementById('user-menu');
+      const btn = document.getElementById('user-menu-btn');
+      if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    class ToastManager {
+      constructor() { this.container = null; this.init(); }
+      init() {
+        if (!document.getElementById('toast-container')) {
+          this.container = document.createElement('div');
+          this.container.id = 'toast-container';
+          this.container.className = 'fixed top-20 right-4 z-50 space-y-3';
+          this.container.setAttribute('aria-live', 'polite');
+          document.body.appendChild(this.container);
+        }
+      }
+      show(message, type = 'info', duration = 4000) {
+        const themes = { success: 'bg-white border-success', error: 'bg-white border-error', warning: 'bg-white border-warning', info: 'bg-white border-pure-black' };
+        const icons = {
+          success: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+          error: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+          warning: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>',
+          info: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>'
+        };
+        const toast = document.createElement('div');
+        toast.className = `flex items-center gap-3 px-5 py-4 rounded-lg shadow-lg border-2 min-w-80 max-w-md transform transition-all duration-300 translate-x-full opacity-0 ${themes[type]}`;
+        toast.innerHTML = `<svg class="w-6 h-6 text-${type === 'info' ? 'pure-black' : type} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">${icons[type]}</svg><div class="flex-1 font-medium text-pure-black">${message}</div><button type="button" class="text-medium-gray hover:text-pure-black" onclick="this.parentElement.remove()"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
+        this.container.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.remove('translate-x-full', 'opacity-0'));
+        setTimeout(() => { toast.classList.add('translate-x-full', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, duration);
+      }
+    }
+
+    const toastManager = new ToastManager();
+    window.showToast = (msg, type, duration) => toastManager.show(msg, type, duration);
+    window.showLoading = function (message = 'Loading...') {
+      const overlay = document.createElement('div');
+      overlay.id = 'loading-overlay';
+      overlay.className = 'fixed inset-0 bg-pure-black bg-opacity-50 flex items-center justify-center z-50';
+      overlay.innerHTML = `<div class="bg-pure-white rounded-lg p-8 shadow-strong"><div class="flex flex-col items-center gap-4"><div class="w-12 h-12 border-4 border-light-gray border-t-pure-black rounded-full animate-spin"></div><p class="text-pure-black font-semibold">${message}</p></div></div>`;
+      document.body.appendChild(overlay);
+    };
+    window.hideLoading = function () { const overlay = document.getElementById('loading-overlay'); if (overlay) overlay.remove(); };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('form:not([data-no-enhance])').forEach(form => {
+        form.querySelectorAll('input[required], textarea[required]').forEach(input => {
+          input.addEventListener('invalid', (e) => {
+            e.preventDefault();
+            input.classList.add('border-error');
+            const msg = input.validationMessage || 'This field is required';
+            let err = input.parentElement.querySelector('.input-error');
+            if (!err) { err = document.createElement('p'); err.className = 'input-error text-error text-sm mt-1'; input.parentElement.appendChild(err); }
+            err.textContent = msg;
+          });
+          input.addEventListener('input', () => { input.classList.remove('border-error'); const err = input.parentElement.querySelector('.input-error'); if (err) err.remove(); });
+        });
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+</body>
+
 </html>
-

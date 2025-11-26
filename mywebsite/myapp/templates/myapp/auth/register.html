@@ -1,181 +1,125 @@
 {% extends 'myapp/layout/base.html' %}
 
 {% block myheader %}
-  <!-- Remove default header for register page -->
+<!-- Remove default header for register page -->
 {% endblock %}
 
 {% block content %}
-<!-- Background Gradient -->
-<div class="fixed inset-0 bg-gradient-to-br from-lavender via-pink to-peach -z-10"></div>
-
-<div class="min-h-screen flex items-center justify-center px-4 py-8">
+<div class="min-h-screen flex items-center justify-center px-4 py-8 bg-off-white">
   <div class="w-full max-w-2xl">
-    <!-- Logo and Header -->
-    <div class="text-center mb-6">
-      <div class="flex justify-center mb-4">
-        <div class="w-20 h-20 bg-gradient-to-br from-indigo to-purple-500 rounded-3xl flex items-center justify-center shadow-xl">
-          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-          </svg>
-        </div>
-      </div>
-      
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Create your account</h1>
-      <p class="text-gray-600 text-lg">Join our library community today</p>
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-pure-black mb-2">Create your account</h1>
+      <p class="text-medium-gray text-lg">Join our library community today</p>
     </div>
 
     <!-- Success/Error Message -->
     {% if message %}
-      {% if success %}
-        <div class="rounded-2xl border-2 border-emerald-300 bg-emerald-50 text-emerald-700 px-5 py-4 font-medium shadow-sm flex items-center gap-3 mb-6">
-          <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          <div class="flex-1">
-            <span>{{ message }}</span>
-            <a href="{% url 'login' %}" class="font-bold underline ml-2 hover:text-emerald-800 transition-colors">Go to Login</a>
-          </div>
-        </div>
-      {% else %}
-        <div class="rounded-2xl border-2 border-red-300 bg-red-50 text-red-700 px-5 py-4 font-medium shadow-sm flex items-center gap-3 mb-6">
-          <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          <span>{{ message }}</span>
-        </div>
-      {% endif %}
+    {% if success %}
+    <div
+      class="rounded-lg border-2 border-success bg-emerald-50 text-emerald-700 px-5 py-4 font-medium shadow-soft flex items-center gap-3 mb-6">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <div class="flex-1">
+        <span>{{ message }}</span>
+        <a href="{% url 'login' %}" class="font-bold underline ml-2 hover:text-emerald-800 transition-colors">Go to
+          Login</a>
+      </div>
+    </div>
+    {% else %}
+    <div
+      class="rounded-lg border-2 border-error bg-red-50 text-error px-5 py-4 font-medium shadow-soft flex items-center gap-3 mb-6">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ message }}</span>
+    </div>
+    {% endif %}
     {% endif %}
 
     <!-- Registration Card -->
-    <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border-2 border-white/50 p-6 md:p-8">
+    <div class="bg-pure-white rounded-lg shadow-medium border-2 border-light-gray p-8">
       <form method="post" action="">
         {% csrf_token %}
 
         <!-- Form Header -->
-        <div class="mb-6">
-          <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-            <svg class="w-5 h-5 text-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            Account Information
-          </h3>
-          <p class="text-sm text-gray-600 mt-1">Fill in the details below to create your account</p>
+        <div class="mb-6 pb-4 border-b-2 border-light-gray">
+          <h3 class="text-xl font-bold text-pure-black">Account Information</h3>
+          <p class="text-sm text-medium-gray mt-1">Fill in your details to get started</p>
         </div>
 
         <!-- Form Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
           <!-- Username -->
           <div class="md:col-span-2">
-            <label class="block text-sm font-bold text-gray-700 mb-2">
-              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-              </svg>
+            <label for="username" class="block text-sm font-bold text-pure-black mb-2">
               Username
-              <span class="text-red-500">*</span>
+              <span class="text-error">*</span>
             </label>
-            <input 
-              type="text"
-              name="username" 
-              class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent transition-all" 
-              placeholder="Choose a unique username"
-              required 
-            />
-            <p class="text-xs text-gray-500 mt-1.5 flex items-center gap-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              This will be your login identifier
-            </p>
+            <input type="text" id="username" name="username"
+              class="w-full px-4 py-3 bg-off-white border-2 border-light-gray rounded-lg text-pure-black placeholder-medium-gray focus:outline-none focus:ring-3 focus:ring-pure-black focus:border-pure-black transition-all"
+              placeholder="Choose a unique username" required aria-required="true" />
+            <p class="text-xs text-medium-gray mt-1.5">This will be your login identifier</p>
           </div>
 
           <!-- Password -->
           <div class="md:col-span-2">
-            <label class="block text-sm font-bold text-gray-700 mb-2">
-              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-              </svg>
+            <label for="password" class="block text-sm font-bold text-pure-black mb-2">
               Password
-              <span class="text-red-500">*</span>
+              <span class="text-error">*</span>
             </label>
-            <input 
-              type="password"
-              name="password" 
-              class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent transition-all" 
-              placeholder="Create a strong password"
-              required 
-            />
-            <p class="text-xs text-gray-500 mt-1.5 flex items-center gap-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-              </svg>
-              Use at least 8 characters with letters and numbers
-            </p>
+            <input type="password" id="password" name="password"
+              class="w-full px-4 py-3 bg-off-white border-2 border-light-gray rounded-lg text-pure-black placeholder-medium-gray focus:outline-none focus:ring-3 focus:ring-pure-black focus:border-pure-black transition-all"
+              placeholder="Create a strong password" required aria-required="true" />
+            <p class="text-xs text-medium-gray mt-1.5">Use at least 8 characters with letters and numbers</p>
           </div>
 
           <!-- First Name -->
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">
-              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
+            <label for="first_name" class="block text-sm font-bold text-pure-black mb-2">
               First Name
             </label>
-            <input 
-              type="text"
-              name="first_name" 
-              class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent transition-all" 
-              placeholder="John"
-            />
+            <input type="text" id="first_name" name="first_name"
+              class="w-full px-4 py-3 bg-off-white border-2 border-light-gray rounded-lg text-pure-black placeholder-medium-gray focus:outline-none focus:ring-3 focus:ring-pure-black focus:border-pure-black transition-all"
+              placeholder="John" />
           </div>
 
           <!-- Last Name -->
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-2">
-              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
+            <label for="last_name" class="block text-sm font-bold text-pure-black mb-2">
               Last Name
             </label>
-            <input 
-              type="text"
-              name="last_name" 
-              class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent transition-all" 
-              placeholder="Doe"
-            />
+            <input type="text" id="last_name" name="last_name"
+              class="w-full px-4 py-3 bg-off-white border-2 border-light-gray rounded-lg text-pure-black placeholder-medium-gray focus:outline-none focus:ring-3 focus:ring-pure-black focus:border-pure-black transition-all"
+              placeholder="Doe" />
           </div>
 
           <!-- Email -->
           <div class="md:col-span-2">
-            <label class="block text-sm font-bold text-gray-700 mb-2">
-              <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-              </svg>
+            <label for="email" class="block text-sm font-bold text-pure-black mb-2">
               Email Address
             </label>
-            <input 
-              type="email"
-              name="email" 
-              class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent transition-all" 
-              placeholder="you@example.com"
-            />
-            <p class="text-xs text-gray-500 mt-1.5 flex items-center gap-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              We'll send confirmation and updates to this email
-            </p>
+            <input type="email" id="email" name="email"
+              class="w-full px-4 py-3 bg-off-white border-2 border-light-gray rounded-lg text-pure-black placeholder-medium-gray focus:outline-none focus:ring-3 focus:ring-pure-black focus:border-pure-black transition-all"
+              placeholder="you@example.com" />
+            <p class="text-xs text-medium-gray mt-1.5">We'll send confirmation and updates to this email</p>
           </div>
         </div>
 
         <!-- Terms Notice -->
-        <div class="bg-gradient-to-br from-lavender/20 to-pink/20 rounded-2xl p-4 border-2 border-indigo/10 mb-6">
+        <div class="bg-off-white rounded-lg p-4 border-2 border-light-gray mb-6">
           <div class="flex items-start gap-3">
-            <svg class="w-5 h-5 text-indigo flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            <svg class="w-5 h-5 text-pure-black flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
-            <div class="text-sm text-gray-700">
+            <div class="text-sm text-pure-black">
               <p class="font-semibold mb-1">By creating an account, you agree to:</p>
-              <ul class="space-y-1 text-gray-600">
+              <ul class="space-y-1 text-medium-gray">
                 <li>• Provide accurate information</li>
                 <li>• Follow library policies and guidelines</li>
                 <li>• Keep your account credentials secure</li>
@@ -186,22 +130,20 @@
 
         <!-- Action Buttons -->
         <div class="space-y-3">
-          <button 
-            type="submit" 
-            class="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-indigo to-purple-500 text-white font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all group"
-          >
-            <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+          <button type="submit"
+            class="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-pure-black text-pure-white font-bold shadow-medium hover:shadow-strong hover:bg-dark-gray transition-all group">
+            <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
             </svg>
             Create Account
           </button>
-          
-          <a 
-            href="{% url 'login' %}" 
-            class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-semibold transition-all hover:scale-105"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+
+          <a href="{% url 'login' %}"
+            class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg border-2 border-medium-gray bg-pure-white text-pure-black hover:bg-off-white hover:border-pure-black font-semibold transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Back to Login
           </a>
@@ -210,9 +152,9 @@
     </div>
 
     <!-- Already Have Account -->
-    <p class="text-center text-gray-600 mt-6">
-      Already have an account? 
-      <a href="{% url 'login' %}" class="font-bold text-indigo hover:text-purple-600 transition-colors">
+    <p class="text-center text-medium-gray mt-6">
+      Already have an account?
+      <a href="{% url 'login' %}" class="font-bold text-pure-black hover:text-dark-gray transition-colors underline">
         Sign in instead
       </a>
     </p>
