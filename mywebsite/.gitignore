@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Django
+*.log
+db.sqlite3
+db_local.sqlite3
+db_local.sqlite3-journal
+db.sqlite3-journal
+/media/
+/static/
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Deployment
+.vercel/
+
+# Test/Debug files
+test_*.py
+check_*.py
+*.txt
+output.txt
+write_test.txt
+
+# OS
+.DS_Store
+Thumbs.db

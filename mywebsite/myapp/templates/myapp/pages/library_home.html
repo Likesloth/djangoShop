@@ -250,7 +250,8 @@
       <div class="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg border-2 border-gray-100 overflow-hidden flex flex-col hover:shadow-2xl hover:scale-105 transition-all duration-300 group">
         <div class="relative">
           {% if book.cover %}
-            <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="w-full" style="height:200px; object-fit:contain; object-position:center; background:linear-gradient(135deg, rgba(235,214,251,0.1), rgba(254,235,246,0.1)); display:block;" />
+            <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="w-full" style="height:200px; object-fit:contain; object-position:center; background:linear-gradient(135deg, rgba(235,214,251,0.1), rgba(254,235,246,0.1)); display:block;"
+                 onerror="this.onerror=null;this.src='https://placehold.co/200x260?text=No+Cover';" />
           {% else %}
             <div class="w-full bg-gradient-to-br from-lavender/20 to-pink/20 flex items-center justify-center" style="height:200px;">
               <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

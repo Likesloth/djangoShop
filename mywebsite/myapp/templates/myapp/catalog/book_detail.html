@@ -31,7 +31,8 @@
           {% if book.cover %}
             <img src="{{ book.cover.url }}" 
                  alt="{{ book.title }} cover" 
-                 class="w-full lg:w-64 h-80 object-contain rounded-2xl border-4 border-white shadow-2xl bg-white" />
+                 class="w-full lg:w-64 h-80 object-contain rounded-2xl border-4 border-white shadow-2xl bg-white"
+                 onerror="this.onerror=null;this.src='https://placehold.co/240x360?text=No+Cover';" />
           {% else %}
             <div class="w-full lg:w-64 h-80 bg-gradient-to-br from-white/80 to-white/60 rounded-2xl border-4 border-white shadow-2xl flex items-center justify-center">
               <svg class="w-24 h-24 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
