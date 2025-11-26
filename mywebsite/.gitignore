@@ -18,7 +18,8 @@ db_local.sqlite3
 db_local.sqlite3-journal
 db.sqlite3-journal
 /media/
-/static/
+# /static/  # Source static files should be in version control
+/staticfiles/  # But ignore the collected static files
 
 # Environment variables
 .env

@@ -200,7 +200,7 @@ CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL")
 
 STORAGES = {
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
