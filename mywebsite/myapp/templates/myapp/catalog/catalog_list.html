@@ -317,11 +317,15 @@
         </div>
       </div>
       <div class="p-5 flex flex-col grow">
-        <h5 class="text-lg font-bold text-gray-800 mb-1 line-clamp-2 group-hover:text-indigo transition-colors">{{
-          book.title }}</h5>
+        <h5 class="text-lg font-bold text-gray-800 mb-1 line-clamp-2 group-hover:text-indigo transition-colors">
+          {{ book.title }}
+        </h5>
         <p class="text-sm text-gray-600 mb-3 line-clamp-1">
-          {% for author in book.authors.all %}{% if not forloop.first %}, {% endif %}{{ author.full_name }}{% empty
-          %}<span class="text-gray-400">Unknown Author</span>{% endfor %}
+          {% for author in book.authors.all %}
+            {% if not forloop.first %}, {% endif %}{{ author.full_name }}
+          {% empty %}
+            <span class="text-gray-400">Unknown Author</span>
+          {% endfor %}
         </p>
         <div class="flex items-center gap-2 mb-3">
           {% if book.publish_year %}
@@ -349,12 +353,10 @@
         <div class="mb-4 flex flex-wrap gap-1.5">
           {% for tag_item in book.tags.all|slice:':3' %}
           <a class="inline-flex items-center gap-1 px-2 py-0.5 bg-pink/20 border border-pink/40 text-gray-700 rounded-md text-xs font-medium hover:bg-pink/40 transition-colors"
-            href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if view_mode %}&view={{ view_mode }}{% endif %}">{{
-            tag_item.name }}</a>
+            href="?tag={{ tag_item.slug }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if view_mode %}&view={{ view_mode }}{% endif %}">{{ tag_item.name }}</a>
           {% endfor %}
           {% if book.tags.all.count > 3 %}
-          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded-md text-xs font-medium">+{{
-            book.tags.all.count|add:"-3" }}</span>
+          <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded-md text-xs font-medium">+{{ book.tags.all.count|add:"-3" }}</span>
           {% endif %}
         </div>
         {% endif %}
@@ -526,8 +528,7 @@
       {% for num in books.paginator.page_range %}
       <li>
         <a class="inline-flex items-center justify-center px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-700 hover:bg-indigo/10 hover:text-indigo transition-all {% if books.number == num %}!bg-indigo !text-white !border-indigo{% endif %}"
-          href="?page={{ num }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if selected_tag %}&tag={{ selected_tag.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if view_mode %}&view={{ view_mode }}{% endif %}">{{
-          num }}</a>
+          href="?page={{ num }}{% if selected_category %}&category={{ selected_category.slug }}{% endif %}{% if selected_tag %}&tag={{ selected_tag.slug }}{% endif %}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if view_mode %}&view={{ view_mode }}{% endif %}">{{ num }}</a>
       </li>
       {% endfor %}
 
