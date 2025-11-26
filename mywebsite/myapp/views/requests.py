@@ -34,6 +34,8 @@ def requests_queue(request):
             PickupRequest.STATUS_PREPARING,
             PickupRequest.STATUS_READY,
         ])
+        .prefetch_related('items', 'items__book', 'items__assigned_copy')
+        .select_related('requester')
         .order_by('status', 'requested_at')
     )
     return render(request, 'myapp/staff/requests_list.html', {'requests': qs})
@@ -144,9 +146,13 @@ def confirm_pickup(request, request_id):
     # Enforce loan limit for borrower
     current_active = Loan.objects.filter(borrower=pr.requester, returned_at__isnull=True).count()
     limit = active_loan_limit(pr.requester)
-    if current_active + len(items) > limit:
-        messages.error(request, f'Borrower exceeds loan limit (limit {limit}, has {current_active}, requested {len(items)}).')
-        return redirect('staff-request-detail', request_id=pr.id)
+    limit_overrun = current_active + len(items) > limit
+    if limit_overrun:
+        # Allow staff to override but surface a warning so they know the patron is over limit
+        messages.warning(
+            request,
+            f'Proceeding over limit: borrower limit {limit}, currently has {current_active}, adding {len(items)}.'
+        )
 
     now = timezone.now()
     due_at = calculate_due_at(now, pr.requester)
@@ -165,7 +171,10 @@ def confirm_pickup(request, request_id):
     pr.status = PickupRequest.STATUS_PICKED_UP
     pr.picked_up_at = now
     pr.save(update_fields=['status', 'picked_up_at'])
-    messages.success(request, 'Pickup confirmed and loans created.')
+    if limit_overrun:
+        messages.success(request, 'Pickup confirmed and loans created (limit override).')
+    else:
+        messages.success(request, 'Pickup confirmed and loans created.')
     return redirect('staff-requests-queue')
 
 

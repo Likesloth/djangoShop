@@ -80,6 +80,8 @@
             {% if request.user.is_authenticated %}
             <a href="{% url 'my-loans' %}"
               class="px-4 py-2 rounded-lg text-pure-black hover:bg-off-white font-semibold">My Loans</a>
+            <a href="{% url 'my-requests' %}"
+              class="px-4 py-2 rounded-lg text-pure-black hover:bg-off-white font-semibold">My Requests</a>
             <a href="{% url 'cart-view' %}"
               class="px-4 py-2 rounded-lg text-pure-black hover:bg-off-white font-semibold">Cart</a>
             {% endif %}
@@ -116,6 +118,13 @@
                       d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                   <span class="font-medium">My Loans</span>
+                </a>
+                <a href="{% url 'my-requests' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-off-white">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12h6m-6-4h6m5 8.5V6a2 2 0 00-2-2H6a2 2 0 00-2 2v10.5a2.5 2.5 0 002.5 2.5H17a3 3 0 003-3z" />
+                  </svg>
+                  <span class="font-medium">My Requests</span>
                 </a>
                 <a href="{% url 'my-fines' %}" class="flex items-center gap-3 px-4 py-3 hover:bg-off-white">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -189,6 +198,20 @@
       </div>
     </div>
   </nav>
+
+  {% if messages %}
+  <div class="max-w-7xl mx-auto px-4 mt-4 space-y-3" aria-live="polite">
+    {% for message in messages %}
+    <div class="flex items-center gap-3 px-4 py-3 rounded-xl border-2 shadow-soft
+      {% if 'error' in message.tags %}border-red-300 bg-red-50 text-red-800
+      {% elif 'warning' in message.tags %}border-amber-300 bg-amber-50 text-amber-800
+      {% elif 'success' in message.tags %}border-emerald-300 bg-emerald-50 text-emerald-800
+      {% else %}border-blue-300 bg-blue-50 text-blue-800{% endif %}">
+      <span class="font-semibold">{{ message }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 
   <main id="main-content">
     {% block content %}{% endblock %}

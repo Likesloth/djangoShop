@@ -17,6 +17,7 @@
           <tr class="bg-gray-50 border-b-2 border-gray-200">
             <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">ID</th>
             <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Requester</th>
+            <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Items</th>
             <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
             <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Requested</th>
             <th class="text-left px-6 py-3 text-xs font-bold text-gray-600 uppercase tracking-wider">Pickup By</th>
@@ -29,6 +30,24 @@
               <td class="px-6 py-3 text-gray-700">#{{ r.id }}</td>
               <td class="px-6 py-3 text-gray-800 font-medium">{{ r.requester.username }}</td>
               <td class="px-6 py-3">
+                <div class="flex flex-col gap-1">
+                  {% for it in r.items.all %}
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-800">
+                      <span class="font-semibold">{{ it.book.title }}</span>
+                      {% if it.assigned_copy %}
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-100 border border-emerald-200 rounded-lg text-xs font-mono text-emerald-800">
+                          {{ it.assigned_copy.barcode }}
+                        </span>
+                      {% else %}
+                        <span class="text-gray-500 text-xs italic">Unassigned</span>
+                      {% endif %}
+                    </div>
+                  {% empty %}
+                    <span class="text-gray-500 text-sm italic">No items</span>
+                  {% endfor %}
+                </div>
+              </td>
+              <td class="px-6 py-3">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold border-2 {% if r.status == 'PENDING' %}border-amber-300 text-amber-700 bg-amber-50{% elif r.status == 'READY' %}border-emerald-300 text-emerald-700 bg-emerald-50{% elif r.status == 'PICKED_UP' %}border-blue-300 text-blue-700 bg-blue-50{% else %}border-gray-300 text-gray-700 bg-white{% endif %}">
                   {{ r.get_status_display }}
                 </span>
@@ -40,7 +59,7 @@
               </td>
             </tr>
           {% empty %}
-            <tr><td colspan="6" class="px-6 py-10 text-center text-gray-500">No pending requests.</td></tr>
+            <tr><td colspan="7" class="px-6 py-10 text-center text-gray-500">No pending requests.</td></tr>
           {% endfor %}
         </tbody>
       </table>
