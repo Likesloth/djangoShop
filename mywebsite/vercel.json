@@ -1,16 +1,28 @@
 {
   "version": 2,
   "installCommand": "pip install -r requirements.txt",
-  "buildCommand": "python manage.py collectstatic --noinput",
+  "buildCommand": "python manage.py migrate && python manage.py createcachetable && python manage.py collectstatic --noinput",
   "env": {
     "DJANGO_SETTINGS_MODULE": "mywebsite.settings"
   },
   "builds": [
-    { "src": "mywebsite/wsgi.py", "use": "@vercel/python" },
-    { "src": "staticfiles/**/*", "use": "@vercel/static" }
+    {
+      "src": "mywebsite/wsgi.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "staticfiles/**/*",
+      "use": "@vercel/static"
+    }
   ],
   "routes": [
-    { "src": "/static/(.*)", "dest": "/staticfiles/$1" },
-    { "src": "/(.*)", "dest": "mywebsite/wsgi.py" }
+    {
+      "src": "/static/(.*)",
+      "dest": "/staticfiles/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "mywebsite/wsgi.py"
+    }
   ]
 }
