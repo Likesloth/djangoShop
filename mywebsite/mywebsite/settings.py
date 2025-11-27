@@ -88,10 +88,12 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',  # Cache middleware (before common)
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',  # Cache middleware (after all)
 ]
 
 ROOT_URLCONF = 'mywebsite.urls'
@@ -100,7 +102,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / "myapp" / "templates"],
-        'APP_DIRS': True,
+        'APP_DIRS': DEBUG,  # Set to False when using custom loaders (production)
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -110,6 +112,15 @@ TEMPLATES = [
         },
     },
 ]
+
+# Add cached template loader only in production (when DEBUG=False)
+if not DEBUG:
+    TEMPLATES[0]['OPTIONS']['loaders'] = [
+        ('django.template.loaders.cached.Loader', [
+            'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader',
+        ]),
+    ]
 
 WSGI_APPLICATION = 'mywebsite.wsgi.application'
 
@@ -123,7 +134,7 @@ if DATABASE_URL:
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
-            conn_max_age=600,
+            conn_max_age=3600,  # Increased from 600 to 1 hour for better connection pooling
             ssl_require=True,
         )
     }
@@ -165,6 +176,30 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+# Caching Configuration
+# Using database cache for free PostgreSQL deployment
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache_table',
+        'OPTIONS': {
+            'MAX_ENTRIES': 5000,  # Store up to 5000 cache entries
+            'CULL_FREQUENCY': 3,  # Delete 1/3 of entries when max reached
+        },
+        'TIMEOUT': 300,  # Default cache timeout: 5 minutes
+    }
+}
+
+# Cache settings
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_SECONDS = 300  # Cache pages for 5 minutes
+CACHE_MIDDLEWARE_KEY_PREFIX = 'djshop'
+
+# Session configuration - use database sessions for consistency
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'  # Use cache + DB for sessions
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
 
 
 # Static files (CSS, JavaScript, Images)

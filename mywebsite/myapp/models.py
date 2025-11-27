@@ -67,7 +67,7 @@ class Author(models.Model):
 
 class Book(models.Model):
     isbn13 = models.CharField(max_length=13, unique=True)
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)  # Index for search
     language = models.CharField(max_length=50, blank=True)
     publish_year = models.PositiveIntegerField(null=True, blank=True)
     cover = models.ImageField(upload_to="images/books/", null=True, blank=True)
@@ -81,6 +81,12 @@ class Book(models.Model):
     category = models.ForeignKey("Category", null=True, blank=True, on_delete=models.SET_NULL, related_name="books")
     tags = models.ManyToManyField("Tag", blank=True, related_name="books")
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['title']),
+            models.Index(fields=['category', '-id']),
+        ]
+
     def __str__(self):
         return f"{self.title} ({self.isbn13})"
 
@@ -88,11 +94,14 @@ class Book(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=120)
     slug = models.SlugField(max_length=140, unique=True)
-    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE, related_name="children")
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE, related_name="children", db_index=True)
 
     class Meta:
         verbose_name_plural = "Categories"
         ordering = ["name"]
+        indexes = [
+            models.Index(fields=['parent', 'name']),
+        ]
 
     def __str__(self):
         return self.name
@@ -128,18 +137,23 @@ class BookCopy(models.Model):
     barcode = models.CharField(max_length=64, unique=True)
     location = models.CharField(max_length=120, blank=True)
     condition_note = models.CharField(max_length=255, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_AVAILABLE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_AVAILABLE, db_index=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['status', 'book']),
+        ]
 
     def __str__(self):
         return f"{self.book.title} [{self.barcode}]"
 
 
 class Loan(models.Model):
-    borrower = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="loans")
+    borrower = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="loans", db_index=True)
     copy = models.ForeignKey(BookCopy, on_delete=models.PROTECT, related_name="loans")
     checked_out_at = models.DateTimeField(auto_now_add=True)
-    due_at = models.DateTimeField()
-    returned_at = models.DateTimeField(null=True, blank=True)
+    due_at = models.DateTimeField(db_index=True)
+    returned_at = models.DateTimeField(null=True, blank=True, db_index=True)
     renew_count = models.PositiveIntegerField(default=0)
     note = models.TextField(blank=True)
 
@@ -151,6 +165,10 @@ class Loan(models.Model):
                 name="unique_active_loan_per_copy",
                 condition=models.Q(returned_at=None),
             )
+        ]
+        indexes = [
+            models.Index(fields=['borrower', '-checked_out_at']),
+            models.Index(fields=['returned_at', 'due_at']),
         ]
 
     def __str__(self):
@@ -240,8 +258,8 @@ class PickupRequest(models.Model):
         (STATUS_EXPIRED, "Expired"),
     ]
 
-    requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="pickup_requests")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="pickup_requests", db_index=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING, db_index=True)
     pickup_location = models.CharField(max_length=120, blank=True)
     pickup_by = models.DateField(null=True, blank=True)
     requested_at = models.DateTimeField(auto_now_add=True)
@@ -249,6 +267,12 @@ class PickupRequest(models.Model):
     ready_at = models.DateTimeField(null=True, blank=True)
     picked_up_at = models.DateTimeField(null=True, blank=True)
     canceled_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['status', '-requested_at']),
+            models.Index(fields=['requester', '-requested_at']),
+        ]
 
     def __str__(self):
         return f"Request #{self.id} by {self.requester} ({self.status})"

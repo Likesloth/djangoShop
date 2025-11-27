@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Prefetch
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 import difflib
 
 from ..models import Book, BookCopy, Category, Tag
@@ -62,22 +64,40 @@ def catalog_list(request):
         if selected_tag:
             books_qs = books_qs.filter(tags=selected_tag)
 
-    top_categories = (
-        Category.objects.filter(Q(parent__isnull=True) | Q(books__isnull=False))
-        .distinct()
-        .order_by("name")
-    )
-    popular_tags = Tag.objects.order_by("name")[:20]
+    # Cache category and tag lists (they don't change often)
+    top_categories = cache.get('catalog_top_categories')
+    if top_categories is None:
+        top_categories = list(
+            Category.objects.filter(Q(parent__isnull=True) | Q(books__isnull=False))
+            .distinct()
+            .order_by("name")
+        )
+        cache.set('catalog_top_categories', top_categories, 1800)  # Cache for 30 min
+    
+    popular_tags = cache.get('catalog_popular_tags')
+    if popular_tags is None:
+        popular_tags = list(Tag.objects.order_by("name")[:20])
+        cache.set('catalog_popular_tags', popular_tags, 1800)  # Cache for 30 min
 
-    # Fuzzy suggestions when no results
+    # Optimized fuzzy suggestions - only use recent books (top 500) instead of ALL
     did_you_mean = []
     if query and not books_qs.exists():
-        titles = list(Book.objects.values_list("title", flat=True))
-        did_you_mean = difflib.get_close_matches(query, titles, n=5, cutoff=0.6)
+        recent_titles = cache.get('catalog_recent_titles')
+        if recent_titles is None:
+            recent_titles = list(Book.objects.order_by('-id').values_list("title", flat=True)[:500])
+            cache.set('catalog_recent_titles', recent_titles, 3600)  # Cache for 1 hour
+        did_you_mean = difflib.get_close_matches(query, recent_titles, n=5, cutoff=0.6)
 
-    # Suggestions for the search box (no extra endpoint):
-    all_categories = Category.objects.order_by("name").only("name")
-    sample_titles = Book.objects.order_by("-id").values_list("title", flat=True)[:50]
+    # Suggestions for the search box
+    all_categories = cache.get('catalog_all_categories')
+    if all_categories is None:
+        all_categories = list(Category.objects.order_by("name").only("name"))
+        cache.set('catalog_all_categories', all_categories, 1800)  # Cache for 30 min
+    
+    sample_titles = cache.get('catalog_sample_titles')
+    if sample_titles is None:
+        sample_titles = list(Book.objects.order_by("-id").values_list("title", flat=True)[:50])
+        cache.set('catalog_sample_titles', sample_titles, 1800)  # Cache for 30 min
 
     # Pagination (works for both grid and list views)
     paginator = Paginator(books_qs.order_by("-id"), 12)
@@ -111,6 +131,7 @@ def book_detail(request, book_id):
     return render(request, "myapp/catalog/book_detail.html", context)
 
 
+@cache_page(3600)  # Cache for 1 hour
 def suggest_titles(request):
     """Return up to 10 title suggestions for the given query (prefix then contains)."""
     q = (request.GET.get("q") or "").strip()
@@ -126,10 +147,16 @@ def suggest_titles(request):
                 .values_list("title", flat=True)[: (10 - len(suggestions))]
             )
             suggestions.extend(extra)
-        # If still small, add fuzzy close matches
+        # Optimized fuzzy matching - only use top 1000 recent books instead of ALL
         if len(suggestions) < 10:
-            all_titles = list(Book.objects.values_list("title", flat=True))
-            fuzzy = difflib.get_close_matches(q, all_titles, n=10, cutoff=0.6)
+            # Try to get from cache first
+            cache_key = f'suggest_fuzzy_{q[:20]}'  # Limit cache key length
+            fuzzy = cache.get(cache_key)
+            if fuzzy is None:
+                recent_titles = list(Book.objects.order_by('-id').values_list("title", flat=True)[:1000])
+                fuzzy = difflib.get_close_matches(q, recent_titles, n=10, cutoff=0.6)
+                cache.set(cache_key, fuzzy, 3600)  # Cache for 1 hour
+            
             for s in fuzzy:
                 if s not in suggestions:
                     suggestions.append(s)
